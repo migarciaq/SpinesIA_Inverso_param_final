@@ -142,21 +142,21 @@ We truly appreciate all your valuable comments. After a careful review, we have 
 %1.
  \point{The authors demonstrate a high prediction accuracy for the DMI parameter using only the out-of-plane spin component (sz) as the input image. I think this may be possible because the direction of the DMI vector is fixed and only a limited range of the DMI parameter (for only positive values) is considered. Since the sz component does not contain the full information of the spin chirality, opposite signs of the DMI can potentially generate very similar out-of-plane magnetic textures with opposite in-plane winding directions. Therefore, it would be valuable if the authors could discuss how the prediction performance would be affected when both positive and negative DMI values are included simultaneously in the dataset. This discussion would help clarify the applicability and limitations of the proposed approach for more general DMI systems.}
  
-\reply{Por la simetría, no creemos conveniente la simulación de DMI en los valores negativos.}
+\reply{Por la simetría, no creemos conveniente la simulación de DMI en los valores negativos. Justificar con IA y verificar con Dario. Nota: en el experimental setup o metodos, cuando se describen los rangos de los parametros se debe aclarar esto}
 
 
 
   %2.
 \point{The manuscript appears to employ neural network architectures initialized from ImageNet-pretrained models. However, the features of natural images in ImageNet and magnetic domain images may have considerably different characteristics. For example, magnetic textures are mainly characterized by physical quantities such as correlation length, domain walls, and topological structures rather than object-like features. Could the authors clarify the motivation for using ImageNet-pretrained models in this problem? In addition, it would be helpful if the authors could discuss the difference between training randomly initialized networks and fine-tuning ImageNet-pretrained models, and clarify the role and advantage of pretraining in the present task.}
 
-\reply{Explicar que nos motivó a usar el modelo preentrenado de ImageNet y tambien correr los modelos sin preentrenamiento para mostrar las ventajas del modelo preentrenado de ImageNet con respecto a los inicializados aleatoriamente}
+\reply{Gracias por el comentario. con las pruebas actualizadas incluimos los modelos inicializados aletoriamente e incluimos la red CNN convencional para contrastar los resultados y verificamos que no influye los pesos preentrenamos de ImageNet en el rendimiento de las predicciones de los parametros}
 
  
 
   %3.
 \point{In lines 406–407, the authors state that “This controlled thermal relaxation forces the continuous spin vector field to settle into the absolute global minimum.” However, simulated annealing does not generally guarantee convergence to the absolute global minimum within a finite simulation time. This point is particularly important for DMI-driven magnetic systems, where many metastable states can exist due to chiral and topological energy barriers. Therefore, the expression “absolute global minimum” may be misleading. I suggest that the authors use a more careful description (or provide additional validation to support this statement).} 
 
-\reply{Cambiar la expresión «mínimo global absoluto» por una mas apropiada}
+\reply{We thank the reviewer for this important clarification. We have revised the terminology to avoid the misleading claim of global-minimum convergence and instead describe the outcome as convergence to a low-energy, thermodynamically stable configuration consistent with the annealing schedule (Lines 406–407, revised manuscript). Cambiarlo por suboptimo en las lineas 406-407}
 
   
 
@@ -164,7 +164,7 @@ We truly appreciate all your valuable comments. After a careful review, we have 
 \point{Regarding Fig. 10, although I agree that it is not necessary to show every individual spin configuration in full detail, the current magnetic texture images appear too small to clearly identify the relevant features discussed in the manuscript. Improving the visualization would make the physical interpretation more accessible to readers.}
 
 
-\reply{Mejorar la visualización de la figura 10}
+\reply{Agregar la nueva imagen en donde se mejora la visualización de la figura 10}
 \end{reviewer}
  
  
@@ -178,21 +178,26 @@ We truly appreciate all your valuable comments. After a careful review, we have 
 %1.
 \point{The novelty relative to prior work is not clear enough. The manuscript cites relevant studies, but it does not explain convincingly how this framework goes beyond earlier deep-learning approaches for Hamiltonian parameter estimation and magnetic-image inversion.}
 
-\reply{Ver qué arquitecturas usaron en esos papers. Escribir mejor el estado del arte y la novedad.}
+\reply{Ver qué arquitecturas usaron en esos papers. Escribir mejor el estado del arte y la novedad.
+La novedad va en tres aristas:
+1. La representación matricial del Hamiltoniano generalizado y su implementacion en computo de alto rendimiento en paralelo /agregar en la seccion de amteriales y metodos de la distribucion por Boltzmann la parte que se simulo en paralelo)
+2. Comparación de arquitecturas CNN, Xception, ResNet, ViT y residuales en la estimación de parametros del Hamiltoniano.
+3. Se propone una nueva medida de relevancia denominada RAMs, que permite un analisis por capa y por estructura de las zonas relevantes a la hora de predecir parametros del Hamiltoniano, Esta nueva propuesta  de relevacia se implementa de forma paralelizada (preguntar a Sebastian) presentando rendimientos competitivos en terminos de metricas de deletion con menor costo computacional en comparacion con SHAP, LIME y KernelSHAP.
+Además, el estado del arte se amplía (Maria agregar párrafo en donde se diferencian los que Hamiltoniano usan y como lo simulan, desde las arquitecturas que usan y que parametros estiman y que metricas de rendimeinto tienen y cual es la explicabilidad (que no tienen)}
  
 
 
 %2. 
 \point{The claim that eight Hamiltonian parameters can be recovered is overstated. According to the main results, J3, J4, the anisotropy parameters, and the Zeeman field show low or near-zero identifiability from the two-dimensional Sz projection.}
 
-\reply{Variación del campo en otras direcciones}
+\reply{Se actualizo la base de datos, se hicieron pruebas nuevas y la discusion de las mismas. En el experimental setup describir la base de datos nueva y en los resultados se agregar qué dio en esos parámetros con las nuevas pruebas que realizamos(agregar Sebastian)}
 
 
 
 %3. 
 \point{The generalization test is weak. The training, validation, and test sets are randomly split from the same synthetic dataset, all generated by the same Monte Carlo pipeline. This mainly tests interpolation within one simulator, rather than true generalization to new physical regimes, geometries, imaging conditions, or materials.}
 
-\reply{Explicar que hace parte del trabajo futuro}
+\reply{Gracias por tu comentario, las particiones de entrenamiento, validation y testeo se hicieron siguiendo los entandares de validacion hold out comunmente utilizados para imaganes. Ademas, el framework utilizado estan en cncordancia con los trabajos xx (articulos guia y revisar que validacion utilizaron y los que usan reales y usan solo sinteticos) y mencionar que se hicieron pruebas con validacion cualitativa de la calidad de las predicciones (Sebas agregar subseccion de resultados con pruebas datos reales)}
 
 
 
@@ -201,7 +206,7 @@ We truly appreciate all your valuable comments. After a careful review, we have 
 
 
 
-\reply{Explicación de por qué se escogieron esos rangos de parametros}
+\reply{Los parámetros simulados se muestrean de forma independiente para generar los datos sinteticos, sin embargo, la base de datos completa  se entreno mediante validacion cruzada comunmente utilizada en metodos de IA, lo que permite evitar sesgos y sobreentreamiento en la prediccion de los parametros. Por otra parte, al trabajar con metodos multisalida la red es capaz de generalizar las interaciones entre los parametros estudiados mostrando resultados consistentes para XX (los parametros que mejor dieron) y resultados aceptables para XX (discusion nueva con lo que hara Sebastian)}
 
 
 
