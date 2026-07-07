@@ -1,0 +1,112 @@
+%% Submitted to: 
+%https://www.sciencedirect.com/journal/results-in-engineering
+
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage[numbers]{natbib}
+
+%%%Author macros
+\def\tsc#1{\csdef{#1}{\textsc{\lowercase{#1}}\xspace}}
+\tsc{WGM}
+\tsc{QE}
+\tsc{EP}
+\tsc{PMS}
+\tsc{BEC}
+\tsc{DE}
+%%%
+\usepackage{caption}
+
+\usepackage{float}
+\usepackage{amssymb,amsmath}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{bm}
+\usepackage{placeins}
+\usepackage{hyperref}
+\usepackage{longtable} 
+\usepackage[capitalise]{cleveref}
+\usepackage{svg}
+\usepackage{pifont}
+\usepackage{lineno}
+\usepackage{placeins}
+
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\definecolor{inputgreen}{RGB}{230, 245, 230} % Green for definitions
+\definecolor{processblue}{RGB}{230, 245, 255} % Blue for physics/simulation
+\definecolor{outputorange}{RGB}{255, 245, 230} % Orange for final data
+
+%%Defining some useful variables 
+\providecommand{\ve}[1]{{\bm{#1}}}
+\providecommand{\mat}[1]{{\bm{#1}}} 
+\providecommand{\var}[1]
+
+\DeclareMathOperator{\subconj}{\negthinspace\subset\negthinspace }
+\DeclareMathOperator{\en}{\!\,\in\!\,}
+\DeclareMathOperator{\igual}{\!\,=\!\,}
+\DeclareMathOperator{\dist}{\operatorname{d}}
+\DeclareMathOperator{\xx}{\negthickspace\times\negthickspace}
+\providecommand{\s}[1]{\negthinspace#1\negthinspace}
+
+\begin{document}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\boldV}{\mathbf{V}}
+\newcommand{\dataset}{{\cal D}}
+\newcommand{\gauss}{\mathcal{N}} 
+
+\providecommand{\ch}[1]{\textcolor{blue!50}{#1}}
+
+\let\WriteBookmarks\relax
+\def\floatpagepagefraction{1}
+\def\textpagefraction{.001}
+
+%% Journal name (optional)
+\journal{Results in Engineering}
+
+\begin{frontmatter}
+
+
+\title{Regression-Based Explainable Deep Learning for Estimating Hamiltonian Parameters from Magnetic Nanodot Images}
+
+%% Authors and addresses
+\author[unal]{Juan Sebasti\'an M\'endez-Rond\'on\corref{cor1}}
+\ead{jumendezro@unal.edu.co}
+
+\author[unal]{Mar\'ia Isabel Garc\'ia-Quimbayo}
+\ead{migarciaq@unal.edu.co}
+
+\author[unal]{Andr\'es Marino \'Alvarez-Meza}
+\ead{amalvarezme@unal.edu.co}
+
+\author[unal1]{Jorge Iv\'an Montes-Monsalve}
+\ead{jimontesm@unal.edu.co}
+
+\author[uam]{Jose Dar\'io Agudelo-Giraldo}
+\ead{josed.agudelog@autonoma.edu.co}
+
+\address[unal]{AI-Lab, Signal Processing and Recognition Group, Universidad Nacional de Colombia, Sede Manizales, 170003 Manizales, Colombia}
+
+\address[unal1]{Direcci\'on Acad\'emica, Universidad Nacional de Colombia, Sede de La Paz, 202010 La Paz, Colombia}
+
+\address[uam]{Grupo de Investigaci\'on en F\'isica y Matem\'aticas con \'Enfasis en la Formaci\'on de Ingenieros, Departamento de F\'isica y Matem\'aticas, Facultad de Ingenier\'ia, Universidad Aut\'onoma de Manizales, Antigua Estaci\'on del Ferrocarril, 170002  Manizales, Colombia}
+
+
+\cortext[cor1]{jumendezro@unal.edu.co}
+
+\end{frontmatter}
+
+
+\end{document}

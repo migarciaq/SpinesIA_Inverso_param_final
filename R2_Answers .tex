@@ -1,0 +1,216 @@
+\documentclass[review,12pt]{report}
+\usepackage[switch]{lineno} % numeración de lineas de redacción
+%____________________________ soporte gráfico ___________________________
+\usepackage{graphicx,color} % Soporte gráfico
+%\usepackage{float}
+\usepackage[caption=false]{subfig}
+\usepackage[format=hang]{caption}
+%\usepackage[noend]{algorithmic} 
+\usepackage{amssymb} % For additional symbols
+\usepackage{algorithm} % For the algorithm environment
+\usepackage{algpseudocode}
+%\usepackage{algorithmic} % For algorithmic environment
+ 
+\usepackage{colortbl}
+\usepackage{pgfplots}
+\usepackage{epstopdf}
+\usepackage{epsfig}
+\usepackage{tikz}
+\captionsetup{compatibility=false}
+%\usepackage{pgfplots}
+%\usepackage{pgfplotstable}
+\usepackage{tikz}
+
+\usepackage{booktabs}
+%\usepackage{changepage}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{natbib}
+%_____________________________ soporte de fuentes
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{enumerate}
+\usepackage{amsfonts,dsfont,bm}
+\usepackage[tbtags]{amsmath}
+\usepackage[mathscr]{euscript}
+\usepackage{hyperref}
+\usepackage[capitalise]{cleveref}
+\setlength{\parskip}{4mm}
+\usepackage{graphics,graphicx,color}
+\usepackage{float}
+\usepackage{epstopdf}
+\usepackage{color,colortbl}                 % Creación de fondo y texto en color
+
+
+\usepackage{geometry}                       % Soporte gráfico
+\usepackage{rotating}                       % Soporte gráfico
+\usepackage{enumerate,multirow}
+\usepackage{tabularray}
+%\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{tikz} 
+\usetikzlibrary{matrix}
+
+%\usepackage{algorithm}
+
+
+ 
+
+ 
+
+
+
+
+
+%\usepackage[ansinew]{inputenc}              % Reconocimiento de caracteres nacionales
+% la tilde y la ñ
+%\input EightPt                              % To use small fonts.
+%\usepackage{geometry}                       % Soporte gráfico
+%\usepackage{rotating}                       % Soporte  
+% \usepackage{floatrow}
+%\usepackage[algo2e]{algorithm2e}
+%\usepackage[normal]{subfigure}
+
+%\usepackage{subfigure}
+%\usepackage{titlesec}
+%\usepackage{fancyhdr}
+%\usepackage[pdfstartview=FitB,pdfstartpage=1,backref=true,pagebackref=true,linkbordercolor=0 0 0]{hyperref}
+
+
+
+%%% Put your definitions there:
+\providecommand{\ve}[1]{{\bm{#1}}} %
+\providecommand{\mat}[1]{{\bm{#1}}} %
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\providecommand{\norm}[1]{\lVert#1\rVert}
+%\providecommand{\promed}[1]{\mathds{E}\left\lbrace #1\right\rbrace}% operador de promedio
+\providecommand{\cov}[2]{\ensuremath{cov}\{#1, #2\}}% operador de covarianza
+\providecommand{\s}[1]{\negthickspace#1\negthickspace}%
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}%shrinkage operator
+\newcommand{\C}{\mathbb{C}}
+\providecommand{\est}[1]{{\widetilde {#1}}}
+\providecommand{\var}[1]{{\operatorname{var}}\{#1\}}
+%%%
+\DeclareMathOperator{\subconj}{\negthinspace\subset\negthinspace }
+\DeclareMathOperator{\en}{\negthinspace\in\negthinspace }
+\DeclareMathOperator{\igual}{ \negthinspace=\negthinspace}
+\DeclareMathOperator{\x}{ \negthinspace\times\negthinspace}
+%%%
+\newcommand{\initresponses}{\newcounter{pointcounter}}
+\newenvironment{reviewer}{\setcounter{pointcounter}{1}}{}
+\newcommand{\point}[1]{\medskip \noindent
+ \textsl{{\fontseries{b}\selectfont Point \thepointcounter}.
+ \stepcounter{pointcounter} #1}}
+\newcommand{\reply}{\medskip \noindent \textbf{Response}.\ }
+\providecommand{\gc}[1]{\textcolor{blue}{\slshape {#1}}}
+\newcommand{\dc}[1]{{\textcolor[rgb]{1.00,0.00,0.00}{\upshape{#1}}}}
+\providecommand{\cm}[1]{\textcolor{blue}{#1}}
+\newlength\figureheight
+\newlength\figurewidth
+
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+
+\newcommand{\comentCAJ}[1]{\textcolor[rgb]{0.8,0.00,0.8}{#1}}
+\newcommand{\caj}[1]{\textcolor{blue}{#1}}
+
+\UseTblrLibrary{amsmath, counter}
+\newcommand{\Eq}{\refstepcounter{equation}(\theequation)}
+\providecommand{\ch}[1]{\textcolor{blue!50}{#1}}
+
+\begin{document}
+\linenumbers
+
+\textbf{Dear Editor and Reviewers},
+ 
+We truly appreciate all your valuable comments. After a careful review, we have adopted the observations in our revised manuscript, entitled ``\textsl{Regression-Based Explainable Deep Learning for Estimating Hamiltonian Parameters from Magnetic Nanodot Images}''. Our point-to-point responses to the reviewers’ comments are given below: 
+\initresponses
+
+\begin{reviewer}
+
+
+
+
+
+
+
+\textbf{REVIEWER 1}
+
+%1.
+ \point{The authors demonstrate a high prediction accuracy for the DMI parameter using only the out-of-plane spin component (sz) as the input image. I think this may be possible because the direction of the DMI vector is fixed and only a limited range of the DMI parameter (for only positive values) is considered. Since the sz component does not contain the full information of the spin chirality, opposite signs of the DMI can potentially generate very similar out-of-plane magnetic textures with opposite in-plane winding directions. Therefore, it would be valuable if the authors could discuss how the prediction performance would be affected when both positive and negative DMI values are included simultaneously in the dataset. This discussion would help clarify the applicability and limitations of the proposed approach for more general DMI systems.}
+ 
+\reply{Por la simetría, no creemos conveniente la simulación de DMI en los valores negativos.}
+
+
+
+  %2.
+\point{The manuscript appears to employ neural network architectures initialized from ImageNet-pretrained models. However, the features of natural images in ImageNet and magnetic domain images may have considerably different characteristics. For example, magnetic textures are mainly characterized by physical quantities such as correlation length, domain walls, and topological structures rather than object-like features. Could the authors clarify the motivation for using ImageNet-pretrained models in this problem? In addition, it would be helpful if the authors could discuss the difference between training randomly initialized networks and fine-tuning ImageNet-pretrained models, and clarify the role and advantage of pretraining in the present task.}
+
+\reply{Explicar que nos motivó a usar el modelo preentrenado de ImageNet y tambien correr los modelos sin preentrenamiento para mostrar las ventajas del modelo preentrenado de ImageNet con respecto a los inicializados aleatoriamente}
+
+ 
+
+  %3.
+\point{In lines 406–407, the authors state that “This controlled thermal relaxation forces the continuous spin vector field to settle into the absolute global minimum.” However, simulated annealing does not generally guarantee convergence to the absolute global minimum within a finite simulation time. This point is particularly important for DMI-driven magnetic systems, where many metastable states can exist due to chiral and topological energy barriers. Therefore, the expression “absolute global minimum” may be misleading. I suggest that the authors use a more careful description (or provide additional validation to support this statement).} 
+
+\reply{Cambiar la expresión «mínimo global absoluto» por una mas apropiada}
+
+  
+
+ %4
+\point{Regarding Fig. 10, although I agree that it is not necessary to show every individual spin configuration in full detail, the current magnetic texture images appear too small to clearly identify the relevant features discussed in the manuscript. Improving the visualization would make the physical interpretation more accessible to readers.}
+
+
+\reply{Mejorar la visualización de la figura 10}
+\end{reviewer}
+ 
+ 
+
+
+\newpage
+
+\textbf{REVIEWER 2}
+
+\begin{reviewer}
+%1.
+\point{The novelty relative to prior work is not clear enough. The manuscript cites relevant studies, but it does not explain convincingly how this framework goes beyond earlier deep-learning approaches for Hamiltonian parameter estimation and magnetic-image inversion.}
+
+\reply{Ver qué arquitecturas usaron en esos papers. Escribir mejor el estado del arte y la novedad.}
+ 
+
+
+%2. 
+\point{The claim that eight Hamiltonian parameters can be recovered is overstated. According to the main results, J3, J4, the anisotropy parameters, and the Zeeman field show low or near-zero identifiability from the two-dimensional Sz projection.}
+
+\reply{Variación del campo en otras direcciones}
+
+
+
+%3. 
+\point{The generalization test is weak. The training, validation, and test sets are randomly split from the same synthetic dataset, all generated by the same Monte Carlo pipeline. This mainly tests interpolation within one simulator, rather than true generalization to new physical regimes, geometries, imaging conditions, or materials.}
+
+\reply{Explicar que hace parte del trabajo futuro}
+
+
+
+%4. 
+\point{The parameter sampling strategy needs stronger physical justification. The eight parameters are sampled independently and uniformly, but real materials do not necessarily span such an independent parameter space. The authors should explain whether these sampled combinations are physically realistic, and whether the model is learning transferable physical relationships rather than artificial correlations in the synthetic dataset.}
+
+
+
+\reply{Explicación de por qué se escogieron esos rangos de parametros}
+
+
+
+
+\end{reviewer}
+
+%\bibliographystyle{BibTeXtran}
+\bibliographystyle{cas-model2-names}
+\bibliography{Biblio,refs_R2}
+
+
+\end{document}
