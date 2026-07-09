@@ -142,7 +142,7 @@ We truly appreciate all your valuable comments. After a careful review, we have 
 %1.
  \point{The authors demonstrate a high prediction accuracy for the DMI parameter using only the out-of-plane spin component (sz) as the input image. I think this may be possible because the direction of the DMI vector is fixed and only a limited range of the DMI parameter (for only positive values) is considered. Since the sz component does not contain the full information of the spin chirality, opposite signs of the DMI can potentially generate very similar out-of-plane magnetic textures with opposite in-plane winding directions. Therefore, it would be valuable if the authors could discuss how the prediction performance would be affected when both positive and negative DMI values are included simultaneously in the dataset. This discussion would help clarify the applicability and limitations of the proposed approach for more general DMI systems.}
  
-\reply{Por la simetría, no creemos conveniente la simulación de DMI en los valores negativos. Justificar con IA y verificar con Dario. Nota: en el experimental setup o metodos, cuando se describen los rangos de los parametros se debe aclarar esto}
+\reply{Agradezco su comentario. Por la simetría, no consideramos conveniente la simulación de DMI en los valores negativos. Justificar con estado del arte publicado en los últimos 4 años como máximo. Nota: en el experimental setup o metodos, cuando se describen los rangos de los parametros se debe aclarar esto}
 
 
 
@@ -156,15 +156,27 @@ We truly appreciate all your valuable comments. After a careful review, we have 
   %3.
 \point{In lines 406–407, the authors state that “This controlled thermal relaxation forces the continuous spin vector field to settle into the absolute global minimum.” However, simulated annealing does not generally guarantee convergence to the absolute global minimum within a finite simulation time. This point is particularly important for DMI-driven magnetic systems, where many metastable states can exist due to chiral and topological energy barriers. Therefore, the expression “absolute global minimum” may be misleading. I suggest that the authors use a more careful description (or provide additional validation to support this statement).} 
 
-\reply{We thank the reviewer for this important clarification. We have revised the terminology to avoid the misleading claim of global-minimum convergence and instead describe the outcome as convergence to a low-energy, thermodynamically stable configuration consistent with the annealing schedule (Lines 406–407, revised manuscript). Cambiarlo por suboptimo en las lineas 406-407}
+\reply{We thank the reviewer for this important and entirely valid clarification. We fully agree that the expression ``absolute global minimum'' is misleading in the context of finite-time simulated annealing and have revised the manuscript accordingly.
+
+As the reviewer correctly observes, simulated annealing provides a probabilistic guarantee of convergence to the global energy minimum only under a logarithmic cooling schedule ($T(t) \propto 1/\ln(t)$), which is computationally infeasible in practice. Our implementation employs a linear temperature decrement ($\Delta T = -0.1$~K) with $8{,}000$ Monte Carlo sweeps per temperature step, which constitutes a practical annealing protocol that promotes thorough exploration of the energy landscape but does not formally satisfy the conditions for guaranteed global convergence. This distinction is particularly relevant in DMI-driven magnetic nanodot systems, where the competition between symmetric exchange, antisymmetric exchange, and magnetocrystalline anisotropy generates a highly multimodal energy landscape populated by numerous metastable chiral and topological states separated by non-trivial energy barriers.
+
+In the revised manuscript, we have systematically replaced all instances of ``absolute global minimum'' and ``global energy minimum'' with physically accurate terminology. Specifically, the outcome of the annealing process is now described as convergence to a \emph{low-energy, thermodynamically stable configuration consistent with the annealing schedule}, rather than a guaranteed global minimum. This revision appears in:
+\begin{itemize}
+    \item Section~2.1 (Monte Carlo simulation description, introductory paragraph);
+    \item Section~2.1 (annealing convergence discussion, formerly Lines 406--407);
+    \item Section~3 (Experimental Setup, dataset generation description);
+    \item Section~4.1 (convergence analysis of the representative nanodot).
+\end{itemize}
+
+We believe this revised terminology accurately reflects the thermodynamic behavior of the simulation while avoiding any misleading implication of guaranteed global optimality.}
 
   
 
  %4
 \point{Regarding Fig. 10, although I agree that it is not necessary to show every individual spin configuration in full detail, the current magnetic texture images appear too small to clearly identify the relevant features discussed in the manuscript. Improving the visualization would make the physical interpretation more accessible to readers.}
 
-
 \reply{Agregar la nueva imagen en donde se mejora la visualización de la figura 10}
+
 \end{reviewer}
  
  
@@ -203,8 +215,6 @@ Además, el estado del arte se amplía (Maria agregar párrafo en donde se difer
 
 %4. 
 \point{The parameter sampling strategy needs stronger physical justification. The eight parameters are sampled independently and uniformly, but real materials do not necessarily span such an independent parameter space. The authors should explain whether these sampled combinations are physically realistic, and whether the model is learning transferable physical relationships rather than artificial correlations in the synthetic dataset.}
-
-
 
 \reply{Los parámetros simulados se muestrean de forma independiente para generar los datos sinteticos, sin embargo, la base de datos completa  se entreno mediante validacion cruzada comunmente utilizada en metodos de IA, lo que permite evitar sesgos y sobreentreamiento en la prediccion de los parametros. Por otra parte, al trabajar con metodos multisalida la red es capaz de generalizar las interaciones entre los parametros estudiados mostrando resultados consistentes para XX (los parametros que mejor dieron) y resultados aceptables para XX (discusion nueva con lo que hara Sebastian)}
 
