@@ -1,7 +1,7 @@
 %% Submitted to: 
 %https://www.sciencedirect.com/journal/results-in-engineering
 
-\documentclass[preprint,12pt]{elsarticle}
+\documentclass[final,5p,times,twocolumn]{elsarticle}
 
 \usepackage[numbers]{natbib}
 
@@ -26,6 +26,7 @@
 \usepackage{longtable} 
 \usepackage[capitalise]{cleveref}
 \usepackage{pifont}
+\usepackage{booktabs}
 \usepackage{lineno}
 \usepackage{placeins}
 
@@ -108,29 +109,31 @@
 
 
 \begin{abstract}
-In magnetic nanodots, the stability of emergent topological textures is governed by an energetic competition described by the extended Heisenberg Hamiltonian, involving symmetric exchange, the Dzyaloshinskii–Moriya interaction (DMI), magnetocrystalline anisotropy, and the Zeeman field. Recovering these atomistic parameters from two-dimensional magnetic domain images is a severely ill-posed inverse problem, since distinct parameter combinations yield states with nearly indistinguishable free energies. Empirical fitting and simulation-based searches struggle to discriminate among competing solutions, while standard deep learning regressors collapse the multimodal inverse landscape into opaque, oversmoothed estimates. We propose an inherently explainable regression framework that couples Metropolis–Hastings Monte Carlo sampling with simulated annealing, used to generate thermodynamically relaxed magnetization fields, to convolutional and Vision Transformer architectures trained to recover eight Hamiltonian parameters. Interpretability is delivered by Regression Activation Maps (RAMs), a novel attribution method extending gradient-based saliency to continuous physical targets. On $218{,}256$ simulated configurations, the framework predicts the annealing temperature, second-shell exchange constant, and DMI strength with $R^2$ of $0.91$, $0.93$, and $0.97$. Unsupervised clustering of the latent space recovers four magnetic phases without supervision, and RAMs isolate chiral domain walls and skyrmion cores as the textures driving predictions, establishing a traceable link between atomistic design parameters and observable spin textures.
+Magnetic nanodots host topological spin textures whose stability is dictated by an extended Heisenberg Hamiltonian combining symmetric exchange, the Dzyaloshinskii--Moriya interaction (DMI), magnetocrystalline anisotropy, and the Zeeman field. Inferring these atomistic parameters from two-dimensional magnetization images underpins the design of functional magnetic materials, yet it remains an ill-posed inverse problem: under certain external conditions and transient states, configurations relax into noisy, weakly discriminative textures that render the dataset intrinsically ill-conditioned. Existing deep-learning estimators act as opaque black boxes and rely on slow atomistic simulations. We propose an explainable regression methodology whose novelty lies in data generation and interpretability, not the predictors: a matrix decomposition of the extended Hamiltonian enables GPU-accelerated Metropolis--Hastings Monte Carlo with simulated annealing, accelerating computation without altering the underlying physics, while Regression Activation Maps (RAMs)---a novel error-based attribution metric---turn the network into a traceable gray-box model. Trained on $166{,}141$ configurations, convolutional and Vision Transformer regressors reliably estimate a subset of the parameters, while others remain limited by degeneracy effects from the sampled ranges and the $s_z$ projection. Comparing both families through their attention maps and accuracy-versus-size trade-off, RAMs isolate the chiral domain walls and skyrmion cores driving predictions.
 \end{abstract}
 
 %%Graphical abstract
-\begin{graphicalabstract}
-\begin{figure}[h]
-    \centering
-    \resizebox{\linewidth}{!}{
-    \includegraphics{graphical}}
-    \label{fig:graphical_abstract}
-\end{figure}
-\end{graphicalabstract}
+%% NOTE: graphical abstract and highlights are submitted separately to the journal;
+%% kept in the source but commented out so they do NOT render in the compiled PDF.
+%\begin{graphicalabstract}
+%\begin{figure}[h]
+%    \centering
+%    \resizebox{\linewidth}{!}{
+%    \includegraphics{graphical}}
+%    \label{fig:graphical_abstract}
+%\end{figure}
+%\end{graphicalabstract}
 
 
 
 %%Research highlights
 
-\begin{highlights}
-\item Atomistic Hamiltonian generates relaxed 2D magnetic domain images for training.
-\item Deep learning regression recovers Hamiltonian parameters from nanodot images.
-\item Regression Activation Maps explain continuous prediction errors spatially.
-\item Framework isolates degenerate textures linking black-box AI to magnetic physics.
-\end{highlights}
+%\begin{highlights}
+%\item Atomistic Hamiltonian generates relaxed 2D magnetic domain images for training.
+%\item Deep learning regression recovers Hamiltonian parameters from nanodot images.
+%\item Regression Activation Maps explain continuous prediction errors spatially.
+%\item Framework isolates degenerate textures linking black-box AI to magnetic physics.
+%\end{highlights}
 
 
 
@@ -150,7 +153,7 @@ Explainable AI \sep Magnetic Nanodots \sep Hamiltonian Parameters \sep Regressio
 Understanding and controlling magnetic behavior at the nanometric scale is a central challenge in modern condensed matter physics and materials engineering~\cite{heinrich2021quantum}. This capability is particularly relevant to the development of spintronic devices, ultrahigh-density magnetic memories, and neuromorphic computing platforms based on topological magnetic textures~\cite{wang2022fundamental, fert2024electrical}. At such length scales, surface effects, geometric confinement, and energy quantization substantially modify magnetic properties relative to the bulk~\cite{issa2013magnetic}. The resulting enhancement of surface anisotropy, structural imperfections, and thermal fluctuations strongly affects the stability and dynamics of spin configurations~\cite{charalampidis2023metadynamics}. These effects give rise to emergent collective states—including ferromagnetic, helical, labyrinthine, and skyrmionic textures~\cite{yua2017magnetic, birch2020real, yu2021magnetic, zhang2023magnetic}—whose stability is governed by the interplay of competing microscopic interactions~\cite{tokura2020magnetic}. In this context, magnetic nanodots constitute an ideal model platform, as their lateral confinement favors the formation of single-domain states, vortices, and skyrmion-like configurations controlled by the balance among symmetric exchange, magnetic anisotropy, DMI, and external magnetic fields~\cite{zelent2023stabilization, rohart2013skyrmion}. Therefore, inferring these underlying physical parameters directly from magnetic domain images has become a critical inverse problem for the rational engineering of functional magnetic materials~\cite{kong2023quantifying}.
 
 %hammiltonian and ill conditioned problem (degenerecy)
-Within this framework, atomistic Hamiltonian-based modeling constitutes the most rigorous description of the discrete spin interactions, localized dynamics, and boundary effects that dominate nanoscale magnetic systems. Unlike continuum micromagnetic models, which can mask essential surface and finite-size contributions, the extended Heisenberg Hamiltonian explicitly captures the atomistic interactions responsible for stabilizing complex topological textures in magnetic nanodots~\cite{evans2014atomistic}. In its general form, the Hamiltonian includes several competing terms: the symmetric exchange interaction ($\tilde{J}$ [meV]), which promotes collinear alignment; the DMI ($\tilde{D}$ [meV]), which favors chiral and non-collinear spin textures; the magnetocrystalline anisotropy ($\tilde{K}$ [meV]), which selects preferred crystallographic orientations; and the Zeeman coupling to an external magnetic field ($\tilde{H}$ [meV])~\cite{aldarawsheh2023intrinsic}. The competition among these contributions generates a highly multimodal energy landscape~\cite{tokura2020magnetic,finocchio2016magnetic}, in which physically distinct parameter sets may produce spin states with nearly indistinguishable free energies. This degeneracy can lead to the coexistence of helical, skyrmion-like, and other metastable textures~\cite{back20202020, he2023ferroelectrically}, thereby rendering the inverse estimation of Hamiltonian parameters from two-dimensional magnetic domain images intrinsically ill-conditioned and structurally ambiguous~\cite{murakami2022inverse, kwon2020magnetic}.
+Within this framework, atomistic Hamiltonian-based modeling constitutes the most rigorous description of the discrete spin interactions, localized dynamics, and boundary effects that dominate nanoscale magnetic systems. Unlike continuum micromagnetic models, which can mask essential surface and finite-size contributions, the extended Heisenberg Hamiltonian explicitly captures the atomistic interactions responsible for stabilizing complex topological textures in magnetic nanodots~\cite{evans2014atomistic}. In its general form, the Hamiltonian includes several competing terms: the symmetric exchange interaction ($\tilde{J}$ [meV]), which promotes collinear alignment; the DMI ($\tilde{K}_{DM}$ [meV]), which favors chiral and non-collinear spin textures; the magnetocrystalline anisotropy ($\tilde{K}$ [meV]), which selects preferred crystallographic orientations; and the Zeeman coupling to an external magnetic field ($\tilde{H}_{ex}$ [meV])~\cite{aldarawsheh2023intrinsic}. The competition among these contributions generates a highly multimodal energy landscape~\cite{tokura2020magnetic,finocchio2016magnetic}, in which physically distinct parameter sets may produce spin states with nearly indistinguishable out-of-plane textures, allowing helical, skyrmion-like, and other metastable configurations to coexist~\cite{back20202020, he2023ferroelectrically}. Compounded by the noise that external conditions and transient states introduce during thermal relaxation, this degeneracy renders the inverse estimation of Hamiltonian parameters from two-dimensional magnetic domain images intrinsically ill-conditioned, imposing a physical limit on parameter identifiability that must be explicitly characterized rather than assumed away~\cite{murakami2022inverse, kwon2020magnetic}.
 
 % SOTA 1: Experimental and simulation limitations
 The intrinsic ambiguity of the inverse problem is further exacerbated by the limitations of current experimental and analytical methodologies. Although advanced imaging techniques, including magnetic force microscopy, Lorentz transmission electron microscopy, and spin-polarized scanning tunneling microscopy~\cite{nguyen2022cooperative}, enable high-resolution visualization of magnetic textures, they typically provide indirect or transformed measurements that are subject to modality-dependent distortions, noise, and finite spatial resolution~\cite{zhao2025overview, gaida2023lorentz}. In practice, parameter estimation therefore relies heavily on empirical fitting or on comparison with synthetic magnetic configurations generated by atomistic spin simulations or continuum micromagnetic models~\cite{d2023micromagnetic, lepadatu2021micromagnetic}. Yet similarity measures defined in image space—such as mean squared error or structural similarity—are often inadequate for resolving topologically distinct states, since they primarily quantify visual resemblance rather than physical equivalence. Consequently, the optimization process remains structurally ambiguous, and substantially different Hamiltonian parameter sets may produce magnetic domain patterns that are visually indistinguishable ~\cite{yin2023computational, karnatov2025analysis}.
@@ -158,13 +161,13 @@ The intrinsic ambiguity of the inverse problem is further exacerbated by the lim
 % SOTA 2: Deep Learning & Interpretability challenges
 To circumvent the prohibitive cost of iterative simulation-based optimization, recent efforts have reformulated this inverse problem as a data-driven learning task using deep neural architectures~\cite{lee2024deep}. Although supervised regression models allow fast parameter inference, they generally impose an implicit one-to-one mapping and therefore tend to collapse the intrinsic multimodality of degenerate magnetic systems into oversmoothed point predictions~\cite{chen2024data}. Methods designed to explicitly capture this uncertainty—such as Bayesian inference, diffusion models, cycle-consistent networks, and physics-informed neural networks—offer improved representational flexibility, but often introduce substantial computational overhead and pronounced optimization stiffness~\cite{lan2022scaling, huang2023cycle, baldan2023physics}. Beyond these computational challenges, a central limitation remains their opacity. In strongly degenerate parameter spaces, conventional black-box models offer little or no mechanistic understanding of how localized spatial features contribute to the inferred Hamiltonian parameters~\cite{wang2021learning, vcadevz2026neural}. Moreover, although gradient-based attribution tools such as class activation maps are widely used in classification, analogous interpretability methods for continuous regression in highly multimodal physical systems remain underdeveloped~\cite{he2022survey}. This interpretability gap restricts the physical traceability required for robust and scientifically meaningful machine-learning-based inference.
 
-\ch{Recent advances have demonstrated the immense potential of deep learning in resolving the inverse problem of magnetic Hamiltonian parameter estimation from domain images. For example, Kwon \textit{et al.} \cite{kwon2020magnetic} employed ResNet architectures to estimate Dzyaloshinskii-Moriya, anisotropy, and dipolar interactions from Monte Carlo-simulated spin configurations, while Kong \textit{et al.} \cite{kong2023quantifying} utilized customized convolutional neural networks to extract exchange stiffness, effective anisotropy, and interfacial DMI from micromagnetic simulations. More recently, Lee \textit{et al.} \cite{lee2024deep} demonstrated the applicability of fully connected networks for estimating interlayer and intralayer interactions in twisted van der Waals magnets. Despite their impressive predictive accuracy, these pioneering approaches predominantly treat the neural network as a ``black box.'' Specifically, while some works analyze intermediate feature maps \cite{kong2023quantifying} or perform statistical error analysis \cite{kwon2020magnetic, lee2024deep}, they lack spatially resolved attribution mechanisms to explicitly identify which morphological features of the spin textures drive specific parameter predictions. Furthermore, physical identifiability limits---such as degenerate spin configurations arising from competing symmetric interactions---are often encountered as empirical estimation errors rather than explicitly quantified boundaries. In this work, we address these critical gaps by integrating modern deep learning architectures (DenseNet121 and Vision Transformers) with a comprehensive Explainable AI (XAI) framework. By employing Regression Activation Mapping (RAM) and UMAP/HDBSCAN clustering, we provide direct spatial mappings of the network's attention on specific magnetic textures (e.g., skyrmions, domain walls). Moreover, we explicitly establish the physical identifiability boundaries for an 8-parameter extended Heisenberg Hamiltonian, thereby bridging the gap between high-throughput parameter regression and interpretable microscopic physics.}
+\ch{Recent advances have demonstrated the immense potential of deep learning in resolving the inverse problem of magnetic Hamiltonian parameter estimation from domain images. For example, Kwon \textit{et al.} \cite{kwon2020magnetic} employed ResNet architectures to estimate Dzyaloshinskii-Moriya, anisotropy, and dipolar interactions from Monte Carlo-simulated spin configurations, while Kong \textit{et al.} \cite{kong2023quantifying} utilized customized convolutional neural networks to extract exchange stiffness, effective anisotropy, and interfacial DMI from micromagnetic simulations. More recently, Lee \textit{et al.} \cite{lee2024deep} demonstrated the applicability of fully connected networks for estimating interlayer and intralayer interactions in twisted van der Waals magnets. Despite their impressive predictive accuracy, these pioneering approaches predominantly treat the neural network as a ``black box.'' Specifically, while some works analyze intermediate feature maps \cite{kong2023quantifying} or perform statistical error analysis \cite{kwon2020magnetic, lee2024deep}, they lack spatially resolved attribution mechanisms to explicitly identify which morphological features of the spin textures drive specific parameter predictions. Furthermore, physical identifiability limits---such as degenerate spin configurations arising from competing symmetric interactions---are often encountered as empirical estimation errors rather than explicitly quantified boundaries. These gaps motivate the explainable, physics-grounded regression methodology developed in this work.}
 
 % Proposal and Novelty
-To address these limitations, we propose an inherently explainable framework grounded in an atomistic extended Heisenberg Hamiltonian. The proposed methodology explicitly captures the competition among symmetric exchange, DMI, magnetocrystalline anisotropy, and Zeeman coupling through Metropolis–Hastings Monte Carlo sampling and simulated annealing, enabling the generation of thermodynamically relaxed and highly accurate two-dimensional magnetization fields. These physically grounded data are subsequently integrated with a regression-based deep learning architecture for robust inverse estimation of the governing Hamiltonian parameters. The main contributions of this work are summarized as follows. First, we develop an atomistic Hamiltonian simulation framework based on the extended Heisenberg Hamiltonian, in which stochastic Monte Carlo sampling and simulated annealing are used to generate thermodynamically relaxed two-dimensional magnetization images and to establish an explicit correspondence between physical parameters and their associated topological magnetic states. Second, we integrate advanced convolutional neural networks and vision transformer architectures into a generalized regression framework for the robust prediction of fundamental Hamiltonian parameters from magnetic domain images. Third, we introduce RAMs, a novel interpretability framework that extends gradient-based activation mapping to continuous-valued physical targets, thereby providing both visual and quantitative insight into the relationship between the network’s latent representations and the underlying magnetic phenomena. Finally, we demonstrate that RAMs can isolate degenerate magnetic textures, such as chiral domain walls and skyrmions, that most strongly govern the prediction of specific Hamiltonian parameters, thus providing a physically traceable alternative to conventional deterministic models whose predictive mechanisms remain opaque.
+To address these limitations, we propose an inherently explainable framework grounded in an atomistic extended Heisenberg Hamiltonian. The proposed methodology explicitly captures the competition among symmetric exchange, DMI, magnetocrystalline anisotropy, and Zeeman coupling through Metropolis–Hastings Monte Carlo sampling and simulated annealing, enabling the generation of thermodynamically relaxed and highly accurate two-dimensional magnetization fields. These physically grounded data are subsequently integrated with a regression-based deep learning architecture for robust inverse estimation of the governing Hamiltonian parameters. The main contributions of this work are summarized as follows. First, we introduce a matrix/tensor decomposition of the extended Heisenberg Hamiltonian that recasts the atomistic energy as linear-algebra operations, enabling a GPU-accelerated Metropolis--Hastings Monte Carlo with simulated annealing that generates thermodynamically relaxed two-dimensional magnetization images far faster than traditional (Fortran-based) atomistic codes, without altering the underlying physics. Second, we propose Regression Activation Maps (RAMs), a novel error-based attribution method that extends gradient activation mapping to continuous-valued physical targets, turning the regressor into a traceable gray-box model that---together with UMAP/HDBSCAN clustering---links predictions to physically meaningful spin textures such as chiral domain walls and skyrmion cores. Third, we present a comparative study of convolutional and Vision Transformer regressors---contrasting their attention and RAM maps as well as their predictive accuracy relative to model size---and explicitly map the identifiability boundaries of the eight-parameter extended Heisenberg Hamiltonian from the $s_z$ projection, distinguishing reliably recoverable parameters from those that remain degenerate.
 
 % Experiments & Results Summary
-To assess the effectiveness of the proposed framework, extensive experiments were performed using a custom-generated dataset of simulated magnetic domain images covering a broad range of Hamiltonian parameter configurations. The obtained results indicate that the proposed method enables accurate inverse prediction of key magnetic parameters, with the DenseNet121 architecture achieving the strongest overall performance among the tested models. In particular, the framework shows high predictive capability for the DMI and symmetric exchange parameters. Moreover, the qualitative and quantitative analyses based on RAMs indicate that the learned representations are associated with physically relevant spin topologies rather than dataset-specific noise or superficial correlations, thereby strengthening the interpretability and reliability of the proposed approach. The remainder of the paper is organized as follows. Section~\ref{sec:related} presents the related work. Section~\ref{sec:materials} details the materials and methods. Section~\ref{sec:experiments} describes the experimental setup. Section~\ref{sec:results_dis} presents and discusses the results. Finally, Section~\ref{sec:conclusions} concludes the paper and highlights future research directions.
+To assess the effectiveness of the proposed framework, extensive experiments were performed using a custom-generated dataset of simulated magnetic domain images covering a broad range of Hamiltonian parameter configurations. The obtained results indicate that the proposed method enables accurate inverse prediction of a subset of the Hamiltonian parameters---most notably the DMI and symmetric exchange---while explicitly exposing the identifiability limits of the remaining terms under the $s_z$ projection, with competitive performance across the evaluated convolutional and transformer models. Moreover, the qualitative and quantitative analyses based on RAMs indicate that the learned representations are associated with physically relevant spin topologies rather than dataset-specific noise or superficial correlations, thereby strengthening the interpretability and reliability of the proposed approach. The remainder of the paper is organized as follows. Section~\ref{sec:related} presents the related work. Section~\ref{sec:materials} details the materials and methods. Section~\ref{sec:experiments} describes the experimental setup. Section~\ref{sec:results_dis} presents and discusses the results. Finally, Section~\ref{sec:conclusions} concludes the paper and highlights future research directions.
 
 \section{Related Work}\label{sec:related}
 
@@ -184,7 +187,56 @@ To explicitly model uncertainty and capture this multimodality, probabilistic fr
 Despite the growing predictive capabilities of advanced deep neural networks, their fundamental opacity remains a critical barrier to their widespread adoption in condensed matter physics. In the context of nanoscale magnetism, the delicate energetic competition among the exchange interaction, the DMI, and magnetocrystalline anisotropy creates a densely degenerate parameter space where multiple physical configurations present nearly identical free energies~\cite{vcadevz2026neural, will2021application}. Traditional black-box deep learning architectures provide no mechanistic insight into how specific spatial features within a magnetic domain image correlate with the predicted Hamiltonian constants~\cite{wang2021learning, sridharan2022modern}. This lack of interpretability prevents researchers from distinguishing whether a model has genuinely captured the underlying physical laws or merely memorized superficial dataset artifacts. While gradient-based attribution methods like Class Activation Maps have been widely adopted for discrete classification tasks, interpreting continuous regression outputs in highly multimodal physical systems remains largely underexplored~\cite{he2022survey}. The inability to spatially trace and quantify the sources of prediction errors restricts the scientific traceability of these models, underscoring an urgent necessity for architectures that inherently couple high predictive accuracy with transparent, physics-informed spatial interpretations.
 
 %novelty
-To overcome the limitations, our methodology is fundamentally grounded in a rigorous atomistic extended Heisenberg Hamiltonian framework. By explicitly modeling the delicate energetic competition among symmetric exchange, DMI, magnetocrystalline anisotropy, and Zeeman coupling through Metropolis-Hastings Monte Carlo sampling and simulated annealing, we computationally stabilize and extract highly accurate, thermodynamically relaxed two-dimensional spatial magnetization fields. In contrast to prevalent black-box methodologies and computationally prohibitive probabilistic frameworks, we directly couple these physically exhaustive simulations with an inherently explainable, regression-based deep learning architecture explicitly designed for the rigorous inverse estimation of these governing parameters. By integrating advanced Convolutional and Visual Transformer networks, we robustly tackle the structural ambiguity of the inverse problem without sacrificing architectural transparency. Also, we introduce a RAMs, an interpretability approach that directly correlates localized spatial activations within the simulated magnetic domain visualizations to the absolute prediction error of the continuous physical variables. Unlike standard structural metrics or deterministic regression models that obscure the origin of their predictions, our method visually and quantitatively bridges the latent behavior of the neural network with the rigorously modeled phenomena. This enables the precise isolation of degenerate magnetic textures—such as chiral domain walls and skyrmions—that drive specific parameter estimations, establishing a highly reliable, transparent, and traceable pathway for analyzing complex nanoscale magnetic systems.
+To overcome these limitations, our methodology departs from prior work along three concrete axes. First, whereas most existing approaches operate at the continuum micromagnetic scale, we adopt an atomistic description at the nanometric scale, grounded in a rigorous extended Heisenberg Hamiltonian that explicitly resolves the discrete spin interactions and the surface and finite-size effects governing magnetic nanodots. Second, in contrast to the predominantly black-box models used in this field---which expose no mechanism to trace how spatial features drive the inferred parameters---we introduce RAMs, an error-based attribution method that correlates localized spatial activations with the absolute prediction error of the continuous physical targets, turning the regressor into a transparent, physically traceable gray-box model. Third, rather than relying on conventional classical simulation software, we build the data-generation process from a matrix/tensor (algebraic) decomposition of the extended Hamiltonian that, coupled with GPU computing, substantially accelerates the Metropolis--Hastings Monte Carlo with simulated annealing without altering the underlying physics. Together, these choices couple physics-grounded, high-throughput simulation with an inherently explainable regression model, enabling the precise isolation of the degenerate magnetic textures---such as chiral domain walls and skyrmions---that drive specific parameter estimations, and establishing a reliable, transparent, and traceable pathway for analyzing complex nanoscale magnetic systems. Table~\ref{tab:literature_comparison} contrasts these distinctions with representative deep-learning approaches for magnetic Hamiltonian parameter estimation across six technical dimensions.
+
+\begin{table*}[!t]
+\centering
+\caption{Comparative analysis of deep learning approaches for magnetic Hamiltonian parameter estimation. The works of Kong~\textit{et al.}~\cite{kong2023quantifying}, Kwon~\textit{et al.}~\cite{kwon2020magnetic}, and Lee~\textit{et al.}~\cite{lee2024deep} are contrasted against the proposed framework across six technical dimensions.}
+\label{tab:literature_comparison}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{p{2.8cm} p{3.2cm} p{3.2cm} p{3.2cm} p{4.0cm}}
+\toprule
+\textbf{Dimension} & \textbf{Kong \textit{et al.}}~\cite{kong2023quantifying} & \textbf{Kwon \textit{et al.}}~\cite{kwon2020magnetic} & \textbf{Lee \textit{et al.}}~\cite{lee2024deep} & \textbf{Ours} \\
+\midrule
+\textbf{Hamiltonian terms}
+& Symmetric exchange ($A$), effective anisotropy ($K_\text{eff}$), interfacial DMI ($D$)
+& Exchange ($J$), DMI ($\beta$), dipolar ($D$), perpendicular anisotropy ($K$)
+& Intralayer FM exchange ($J$), single-ion anisotropy ($A$), interlayer coupling ($J_{ij}^{\perp}$)
+& Extended Heisenberg: $\tilde{J}_1$--$\tilde{J}_4$, $\tilde{K}_{DM}$, $\tilde{H}_{ex}$, $\tilde{K}_{an1}$, $\tilde{K}_{anS}$ (8 parameters) \\
+\midrule
+\textbf{Simulation method}
+& Micromagnetic (mumax3, LLG equation)
+& Monte Carlo simulated annealing
+& Atomistic spin simulations (iterative optimization + stochastic LLG)
+& Atomistic Monte Carlo with Metropolis--Hastings and simulated annealing (HPC--parallelized) \\
+\midrule
+\textbf{DL architecture}
+& Custom CNN (10 conv.\ + 4 FC layers)
+& ResNet18, ResNet50, custom CNN
+& Fully connected networks (MLPs)
+& Conventional CNN baseline and robust architectures (DenseNet121, ViT-B/16, Xception, ResNet50) \\
+\midrule
+\textbf{Parameters estimated}
+& $A$, $K_\text{eff}$, $D$, $\kappa$ (4)
+& $\beta$, $K$, $D$ (3)
+& $\theta$, $J$, $A$ (3)
+& $\tilde{J}_1$--$\tilde{J}_4$, $\tilde{K}_{DM}$, $\tilde{H}_{ex}$, $\tilde{K}_{an1}$, $\tilde{K}_{anS}$ (8) \\
+\midrule
+\textbf{Performance metrics}
+& MAE loss; $R^2 > 0.85$ (test), $R^2 \ge 0.98$ (validation)
+& MAE mapped across parameter space + PCA of error vectors
+& MAPE and MSE; MAPE $< 0.1$ for small twist angles
+& $R^2$ and MAE per parameter; UMAP + HDBSCAN structural clustering \\
+\midrule
+\textbf{Interpretability}
+& Intermediate feature map visualization (black box)
+& Black box; statistical error analysis only
+& Black box; PCA on error vectors
+& \textbf{Regression Activation Mapping (RAM)}: spatially resolved, layer-wise and structure-wise attribution; UMAP/HDBSCAN latent space analysis; explicit identifiability boundaries \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
 
 
 
@@ -202,46 +254,48 @@ Formally, let $\mathcal{V} = \{1, \dots, N\}$ denote the set of indices for the 
 $\|\mathbf{s}_i\|_2 = 1$, for $i\in\mathcal{V}$. In a generalized theoretical context, all pairwise symmetric and antisymmetric interactions, as well as site-specific field and anisotropy alignments, can be collapsed into a unified geometric approach~\cite{moriya1960anisotropic,eriksson2017atomistic}. The total effective energy of the system $\mathcal{H}\in\mathbb{R}$ [meV] is thus defined by the following generalized quadratic form:
 
 \begin{equation}\label{eq:GeneralizedHamiltonian}
-\mathcal{H}\left(\mathbf{S}| \breve{\theta}\right) = 
-- \sum_{i=1}^{N}\sum_{j\in \mathcal{N}(i)} 
-    \langle \mathbf{s}_i, \tilde{\mathbf{M}}_{ij}\mathbf{s}_j \rangle
-- \sum_{i=1}^{N} \langle\tilde{\mathbf{h}}_{i},\mathbf{s}_i\rangle 
-- \sum_{i=1}^{N} \langle\mathbf{s}_i \tilde{\mathbf{K}}_i, 
+\begin{split}
+\mathcal{H}\left(\mathbf{S}| \breve{\theta}\right) ={}
+&- \sum_{i=1}^{N}\sum_{j\in \mathcal{N}(i)}
+    \langle \mathbf{s}_i, \tilde{\mathbf{M}}_{ij}\mathbf{s}_j \rangle \\
+&- \sum_{i=1}^{N} \langle\tilde{\mathbf{h}}_{i},\mathbf{s}_i\rangle
+- \sum_{i=1}^{N} \langle\mathbf{s}_i \tilde{\mathbf{K}}_i,
     \mathbf{s}_i\rangle,
+\end{split}
 \end{equation}
 where $\mathcal{N}(i)$ defines the set of interacting nearest neighbors for a given site $i$, and the matrix $\mathbf{S}\in\mathbb{R}^{N\times 3}$ 
 gathers the continuous spin vectors across the lattice with 
 $\mathbf{s}_i\in\mathbf{S}$. Here, 
 $\breve{\theta}=\{\tilde{\mathbf{M}}_{ij},\tilde{\mathbf{h}}_{i},
 \tilde{\mathbf{K}}_{i}\}$, where 
-$\tilde{\mathbf{M}}_{ij} \in \mathbb{R}^{3 \times 3}$ represents the complete bilinear interaction matrix coupling neighboring spins, $\tilde{\mathbf{h}}_i \in \mathbb{R}^{3}$ accounts for linear external field interactions, and $\tilde{\mathbf{K}}_i \in \mathbb{R}^{3 \times 3}$ 
-is the anisotropy tensor governing site-specific directional preferences.
+$\tilde{\mathbf{M}}_{ij} \in \mathbb{R}^{3 \times 3}$ represents the complete bilinear interaction matrix coupling neighboring spins, $\tilde{\mathbf{h}}_i \in \mathbb{R}^{3}$ accounts for linear external field interactions, and $\tilde{\mathbf{K}}_i \in \mathbb{R}^{3 \times 3}$
+is the anisotropy tensor governing site-specific directional preferences. Casting every interaction as dense linear-algebra operations acting on the spin matrix $\mathbf{S}$ is a deliberate modeling choice: it recasts the atomistic energy as batched matrix and tensor products rather than the sequential site-by-site loops of conventional atomistic codes, which is precisely what enables the GPU-accelerated evaluation and sampling detailed in Section~\ref{sec:montecarlo_sim}, without altering the underlying physics.
 
 %Decomposition and Factorization
 Afterward, to recover the isolated physical phenomena and define an extended target scalar parameter space 
 $\boldsymbol{\theta}=[\tilde{J}_1,\tilde{J}_2,\tilde{J}_3,\tilde{J}_4,
-\tilde{D},\tilde{H},\tilde{K}_{an1},\tilde{K}_{anS}]$, the generalized matrices must be mathematically decomposed. By factorizing these parameters, we can map each matrix operation to its specific energetic contribution:
+\tilde{K}_{DM},\tilde{H}_{ex},\tilde{K}_{an1},\tilde{K}_{anS}]$, the generalized matrices must be mathematically decomposed. By factorizing these parameters, we can map each matrix operation to its specific energetic contribution:
 
 \begin{itemize}
 
     \item[--] \emph{Bilinear Coupling ($\tilde{\mathbf{M}}_{ij}$):} A 
     real square matrix can be separated into its symmetric and skew-symmetric components. Here, 
-    $\tilde{\mathbf{M}}_{ij}$ is parameterized by factorizing the isotropic exchange scalar $\tilde{J}_r$ for the $r$-th neighbor shell and the DMI magnitude $\tilde{D}$ along a predefined spatial direction vector $\hat{\mathbf{d}}_{ij} \in \mathbb{R}^3$ 
+    $\tilde{\mathbf{M}}_{ij}$ is parameterized by factorizing the isotropic exchange scalar $\tilde{J}_r$ for the $r$-th neighbor shell and the DMI magnitude $\tilde{K}_{DM}$ along a predefined spatial direction vector $\hat{\mathbf{d}}_{ij} \in \mathbb{R}^3$ 
     ($\|\hat{\mathbf{d}}_{ij}\|_2=1$), yielding:
     
     \begin{equation}\label{eq:MatrixDecomposition}
-    \tilde{\mathbf{M}}_{ij}(\tilde{J}_r,\tilde{D}) = 
-        \tilde{J}_r \mathbf{I} - \tilde{D} [\hat{\mathbf{d}}_{ij}]_{\times},
+    \tilde{\mathbf{M}}_{ij}(\tilde{J}_r,\tilde{K}_{DM}) = 
+        \tilde{J}_r \mathbf{I} - \tilde{K}_{DM} [\hat{\mathbf{d}}_{ij}]_{\times},
     \end{equation}
     where $\mathbf{I} \in \mathbb{R}^{3 \times 3}$ represents the identity matrix and 
     $[\hat{\mathbf{d}}_{ij}]_{\times} \in \mathbb{R}^{3 \times 3}$ denotes the skew-symmetric matrix representation of the cross-product. The symmetric exchange is modeled across four neighbor shells $r \in \{1,2,3,4\}$, where $\mathcal{N}_r(i)$ denotes the 
     set of neighbors at shell $r$ around site $i$, ordered by 
     increasing interatomic distance ($d_1 < d_2 < d_3 < d_4$). To resolve the fundamental scale ambiguity of the inverse problem---whereby multiplying all parameters by a common factor leaves the observable spin configuration unchanged---the first-shell exchange is fixed as the energy reference unit, $\tilde{J}_1\in \mathbb{R}$ in meV, while $\tilde{J}_2, \tilde{J}_3, \tilde{J}_4 \in \mathbb{R}$ are free parameters (also in meV). The DMI acts exclusively between first-shell neighbors and is therefore indexed only over $\mathcal{N}_1(i)$.
 
-    \item[--] \emph{Zeeman Interaction ($\tilde{\mathbf{h}}_i$):} The linear field term is factorized by extracting the scalar field magnitude $\tilde{H}$ and the fixed normalized direction vector 
-    $\hat{\mathbf{h}} = \hat{\mathbf{e}}_x,$ with 
-    $\|\hat{\mathbf{e}}_x\|_2 = 1$, of the externally applied 
-    magnetic field, yielding $\tilde{\mathbf{h}}_i = \tilde{H}\,\hat{\mathbf{e}}_x\in\mathbb{R}^3$. Fixing the field direction along $\hat{\mathbf{e}}_x$ eliminates the orientational degree of freedom of $\tilde{\mathbf{h}}_i$, ensuring that $\tilde{H}$ alone serves as the free parameter governing the Zeeman 
+    \item[--] \emph{Zeeman Interaction ($\tilde{\mathbf{h}}_i$):} The linear field term is factorized by extracting the scalar field magnitude $\tilde{H}_{ex}$ and a fixed normalized direction vector
+    $\hat{\mathbf{h}}$, with
+    $\|\hat{\mathbf{h}}\|_2 = 1$, of the externally applied
+    magnetic field, yielding $\tilde{\mathbf{h}}_i = \tilde{H}_{ex}\,\hat{\mathbf{h}}\in\mathbb{R}^3$. The orientation $\hat{\mathbf{h}}$ is held constant within each simulation but is selected among the principal crystallographic axes---either in-plane ($\hat{\mathbf{e}}_x$) or out-of-plane ($\hat{\mathbf{e}}_z$)---to stabilize distinct families of topological textures. Fixing this direction eliminates the orientational degree of freedom of $\tilde{\mathbf{h}}_i$, ensuring that $\tilde{H}_{ex}$ alone serves as the free parameter governing the Zeeman
     contribution.
 
     \item[--] \emph{Magnetocrystalline Anisotropy 
@@ -266,20 +320,24 @@ $\boldsymbol{\theta}=[\tilde{J}_1,\tilde{J}_2,\tilde{J}_3,\tilde{J}_4,
 Substituting these factorized relationships back into 
 Equation~\ref{eq:GeneralizedHamiltonian} yields the following explicit formulation for the total extended Hamiltonian:
 
-\begin{align}\label{eq:Hamiltonian}
-\mathcal{H}\left(\mathbf{S}|\hat{\mathbf{d}}_{ij},\hat{\mathbf{e}}_x;
-\boldsymbol{\theta}\right) = 
-&- \sum_{r=1}^{4}\tilde{J}_r 
-    \sum_{i=1}^{N}\sum_{j\in \mathcal{N}_r(i)} 
-    \langle \mathbf{s}_i, \mathbf{s}_j \rangle \nonumber + \tilde{D} \sum_{i=1}^{N}\sum_{j\in \mathcal{N}_1(i)} 
+\begin{equation}\label{eq:Hamiltonian}
+\begin{split}
+\mathcal{H}\left(\mathbf{S}|\hat{\mathbf{d}}_{ij},\hat{\mathbf{h}};
+\boldsymbol{\theta}\right) ={}
+&- \sum_{r=1}^{4}\tilde{J}_r
+    \sum_{i=1}^{N}\sum_{j\in \mathcal{N}_r(i)}
+    \langle \mathbf{s}_i, \mathbf{s}_j \rangle \\
+&+ \tilde{K}_{DM} \sum_{i=1}^{N}\sum_{j\in \mathcal{N}_1(i)}
     \langle \hat{\mathbf{d}}_{ij},(\mathbf{s}_i \times \mathbf{s}_j)
-    \rangle \nonumber \\
-&- \tilde{H} \sum_{i=1}^{N} 
-    \langle \hat{\mathbf{e}}_x, \mathbf{s}_i \rangle \nonumber + \frac{1}{S_o^4}\sum_{i=1}^{N} \tilde{K}_i^{eff}
-    \left(s_{i\hat{x}}^2 s_{i\hat{y}}^2 + 
-          s_{i\hat{x}}^2 s_{i\hat{z}}^2 + 
+    \rangle \\
+&- \tilde{H}_{ex} \sum_{i=1}^{N}
+    \langle \hat{\mathbf{h}}, \mathbf{s}_i \rangle \\
+&+ \frac{1}{S_o^4}\sum_{i=1}^{N} \tilde{K}_i^{eff}
+    \left(s_{i\hat{x}}^2 s_{i\hat{y}}^2 +
+          s_{i\hat{x}}^2 s_{i\hat{z}}^2 +
           s_{i\hat{y}}^2 s_{i\hat{z}}^2\right),
-\end{align}
+\end{split}
+\end{equation}
 with $\tilde{J}_1 = 1.0$~meV fixed as the energy reference unit. The cubic anisotropy form in the last term follows directly from expanding $\frac{1}{2}(1 - \|\mathbf{s}_i\mathbf{E}\|_4^4)$ under the $L_2$ normalization constraint $\|\mathbf{s}_i\|_2 = 1$, which 
 yields $s_{i\hat{x}}^2 s_{i\hat{y}}^2 + s_{i\hat{y}}^2 
 s_{i\hat{z}}^2 + s_{i\hat{z}}^2 s_{i\hat{x}}^2$, normalized by $S_o^4$ to maintain dimensional consistency across spin magnitudes.
@@ -290,23 +348,25 @@ alignment, while negative values ($\tilde{J}_r < 0$) drive
 antiparallel, antiferromagnetic order. This multi-shell formulation is essential in confined nanodot geometries, where longer-range exchange pathways--mediated through intermediate atomic orbitals--contribute non-negligibly to the global energetic competition and can selectively stabilize or destabilize complex topological textures beyond what first-shell interactions alone would predict~\cite{eriksson2017atomistic}. Among these constants, $\tilde{J}_1$ plays a privileged role: it 
 corresponds to the strongest and most spatially direct exchange pathway, coupling each spin to its nearest neighbors in the cubic lattice and establishing the dominant energy scale of the magnetic system. For this reason, $\tilde{J}_1$ is fixed to $1.0$~meV throughout all simulations, serving as the absolute energy reference unit against which all remaining interaction strengths are expressed. The remaining constants $\tilde{J}_2$, $\tilde{J}_3$, and $\tilde{J}_4$ are free parameters whose magnitudes decay with increasing shell distance, consistent with the exponential attenuation of quantum mechanical exchange integrals with interatomic separation~\cite{coey2010magnetism}.
 
-The DMI magnitude, represented by $\tilde{D}$, is responsible for driving chiral, non-collinear spin winding in systems exhibiting broken spatial inversion symmetry~\cite{fert2017magnetic}. By actively competing with the dominant first-shell exchange $\tilde{J}_1$, 
+The DMI magnitude, represented by $\tilde{K}_{DM}$, is responsible for driving chiral, non-collinear spin winding in systems exhibiting broken spatial inversion symmetry~\cite{fert2017magnetic}. By actively competing with the dominant first-shell exchange $\tilde{J}_1$, 
 this antisymmetric contribution stabilizes complex topological textures, such as chiral domain walls and skyrmions. It acts exclusively between first-shell neighbors, as longer-range antisymmetric exchange pathways are negligibly small compared to the dominant spin-orbit coupling at nearest-neighbor interfaces. Measured in meV per interacting spin pair, its magnitude is fundamentally dependent on the strength of the spin-orbit coupling 
 at the material's interfaces, with typical values spanning 
 $[-0.5, 0.5]$~meV as a fraction of the first-shell exchange 
 energy~\cite{fert2017magnetic}.
 
-The Zeeman coupling energy, parameterized as $\tilde{H}$, quantifies the interaction between the localized atomic spins and the externally applied magnetic field~\cite{evans2014atomistic}. It systematically 
-penalizes magnetic misalignment with the fixed crystallographic axis $\hat{\mathbf{e}}_x$, frequently serving as the primary thermodynamic driving force for macroscopic magnetic phase transitions. This 
+The Zeeman coupling energy, parameterized as $\tilde{H}_{ex}$, quantifies the interaction between the localized atomic spins and the externally applied magnetic field~\cite{evans2014atomistic}. It systematically 
+penalizes magnetic misalignment with the fixed field axis $\hat{\mathbf{h}}$, frequently serving as the primary thermodynamic driving force for macroscopic magnetic phase transitions. This 
 parameter is expressed in meV per atom, mathematically representing the effective energy equivalence ($g\mu_B B$) that transitions a macroscopic magnetic field $B$ measured in Tesla into the atomistic energy regime. Its boundaries range from $0.0$~meV to approximately $2.0$~meV, directly correlating to laboratory-scale magnetic fields 
-between $0$ and $10$~Tesla. Also, fixing the field direction along $\hat{\mathbf{e}}_x$ reduces the dimensionality of the inverse problem by eliminating the orientational degree of freedom of $\tilde{\mathbf{h}}_i$, ensuring that $\tilde{H}$ alone governs the Zeeman contribution as a single identifiable scalar.
+between $0$ and $10$~Tesla. Also, fixing the field direction along $\hat{\mathbf{h}}$ reduces the dimensionality of the inverse problem by eliminating the orientational degree of freedom of $\tilde{\mathbf{h}}_i$, ensuring that $\tilde{H}_{ex}$ alone governs the Zeeman contribution as a single identifiable scalar. Notably, when the field is applied out-of-plane ($\hat{\mathbf{h}} = \hat{\mathbf{e}}_z$), the Zeeman term couples directly to the observable $s_z$ component, which---as discussed below---renders $\tilde{H}_{ex}$ recoverable from the two-dimensional projection.
 
 Finally, the magnetocrystalline anisotropy encodes the intrinsic directional preference for magnetization relative to the underlying crystal lattice~\cite{cullity2011introduction}. Arising from 
 relativistic spin-orbit coupling, this term rigorously establishes the energetically favorable (easy) and unfavorable (hard) crystallographic axes for spin orientation within the nanodot. Both constants are measured in meV per atom and represent a relatively subtle symmetry-breaking energy compared to the dominant isotropic 
 exchange. The bulk anisotropy constant $\tilde{K}_{an1}$ governs interior lattice sites $i \in \mathcal{V}_{bulk}$, where each atom is fully coordinated by neighbors in all spatial directions, yielding a locally symmetric energetic environment. Its conventional boundaries range from roughly $0.001$~meV in soft bulk magnets to $1.0$~meV in 
 highly anisotropic hard nanomaterials~\cite{cullity2011introduction}. The surface anisotropy constant $\tilde{K}_{anS}$, by contrast, 
-governs boundary sites $i \in \mathcal{V}_{surf}$, where broken spatial inversion symmetry---arising from the absence of neighbors on the exterior side of the nanodot---produces an asymmetric local environment that intensifies the directional preference for spin orientation. Consequently, $|\tilde{K}_{anS}|$ is generally larger than $|\tilde{K}_{an1}|$, reflecting the enhanced symmetry-breaking at the nanodot boundary. This two-constant formulation is essential for accurately capturing the finite-size and surface-dominated effects that critically govern the stability of emergent topological textures 
+governs boundary sites $i \in \mathcal{V}_{surf}$, where broken spatial inversion symmetry---arising from the absence of neighbors on the exterior side of the nanodot---produces an asymmetric local environment that intensifies the directional preference for spin orientation. Consequently, $|\tilde{K}_{anS}|$ is generally larger than $|\tilde{K}_{an1}|$, reflecting the enhanced symmetry-breaking at the nanodot boundary. This two-constant formulation is essential for accurately capturing the finite-size and surface-dominated effects that critically govern the stability of emergent topological textures
 in confined nanoscale geometries~\cite{fert2024electrical,borisov2021heisenberg}.
+
+Although the parameter vector $\boldsymbol{\theta}$ governs the full three-dimensional spin field, the observable exploited in this work is restricted to its out-of-plane projection, the $s_z$ component. This choice is dictated by experimental measurability: the most widely available magnetic imaging modalities---such as magnetic force microscopy and the polar magneto-optical Kerr effect---are primarily sensitive to the out-of-plane magnetization, whereas resolving the in-plane components requires substantially more specialized techniques. Working on $s_z$ therefore keeps the framework consistent with the information realistically accessible from experiment. This restriction, however, imposes a theoretical limit on parameter identifiability: distinct parameter sets---most notably those related by the sign of the antisymmetric exchange, which reverses the in-plane chirality while leaving $s_z$ invariant---become indistinguishable in the observation space, so that a regressor exposed to both would collapse its predictions toward a degenerate average. To avoid this pathology, the present study deliberately samples the Hamiltonian parameters over value ranges that remain well-posed under the $s_z$-only observation, ensuring that the retained configurations do not induce the aforementioned averaging saturation; the specific bounds and the associated sign convention are detailed in Section~\ref{sec:experiments}.
 
 \subsection{Image-Based Dataset Generation From Monte Carlo Simulations}\label{sec:montecarlo_sim}
 
@@ -334,25 +394,27 @@ Physically, the instantaneous temperature parameter $T^{(t)}$ actively scales th
 
 Moreover, to ensure that each simulation consistently originates from a fully randomized paramagnetic phase regardless of the specific parameter configuration, the initial annealing temperature (i.e., $T^{(t)}$ at $t=0$) is established as an \textit{exchange-normalized initial temperature}. Consistent with foundational statistical mechanics~\cite{eriksson2017atomistic}, this starting temperature is dynamically rescaled in direct proportion to the dominant symmetric exchange energy ($\tilde{J}$). This energetic normalization guarantees that the initial thermal fluctuations are strictly sufficient to overcome the highest localized energetic barriers ($\Delta \mathcal{H}$) for that specific Hamiltonian. This effectively erases initial state bias and prevents the continuous spin vector field from prematurely collapsing into metastable local minima before the controlled cooling protocol begins.
 
-To generate a robust and diverse dataset for deep learning evaluation, the magnetic parameters governing the Hamiltonian were systematically varied across the simulations. Key variables included the exchange interaction constant ($\tilde{J}$), the magnetocrystalline anisotropy ($\tilde{K}$), the external Zeeman field ($\tilde{H}$), and the DMI strength ($\tilde{D}$), alongside variations in the base initial temperature ($T^{(0)}$). Subsequently, the transformation of these raw, converged 3D spin states into normalized 2D image arrays followed a strict procedural pipeline:
+The stochastic sampling described above is realized as a fully vectorized, GPU-resident computation, which constitutes one of the core methodological contributions of this work. Leveraging the matrix formulation of Section~\ref{sec:hamiltonian}, the local energy variation $\Delta\mathcal{H}$ is not evaluated site by site---as in conventional atomistic simulators---but for the entire spin lattice at once: the neighbor contributions are gathered through tensor-shift operations and combined as batched matrix and tensor products in a single pass. To update many spins simultaneously while preserving the validity of the Markov chain, the lattice is split into two interpenetrating sublattices via a checkerboard decomposition ($(x+y+z)\bmod 2$), so that all mutually non-adjacent sites of a given sublattice are proposed and accepted in parallel within each Metropolis substep. To obtain reliable thermodynamic averages, a large ensemble of independent stochastic replicas is propagated concurrently as an additional batch dimension, and the complete annealing trajectory---both thermalization and measurement sweeps---is just-in-time compiled and executed entirely on-device, eliminating host--device transfers at every sweep. Finally, the independent parameter configurations are distributed across multiple GPUs following a single-program multiple-data scheme, so that entire families of nanodot simulations are relaxed simultaneously. This matrix-based, massively parallel formulation reduces the wall-clock cost of dataset generation by orders of magnitude relative to sequential atomistic codes, without introducing any approximation to the underlying physics.
+
+To generate a robust and diverse dataset for deep learning evaluation, the magnetic parameters governing the Hamiltonian were systematically varied across the simulations. Key variables included the exchange interaction constant ($\tilde{J}$), the magnetocrystalline anisotropy ($\tilde{K}$), the external Zeeman field ($\tilde{H}_{ex}$), and the DMI strength ($\tilde{K}_{DM}$), alongside variations in the base initial temperature ($T^{(0)}$). Subsequently, the transformation of these raw, converged 3D spin states into normalized 2D image arrays followed a strict procedural pipeline:
 
 \begin{itemize}
     \item[--] \emph{Geometry parsing:} Spatial coordinates defining the nanodot geometry (with a fixed disk radius and thickness as Magnetic Unit Cell (MUC) measure) were established using a binary circular lattice mask.
     \item[--] \emph{Spin state mapping:} The topological structure was projected into two dimensions by extracting the out-of-plane $s_z$ component of the continuous spin vectors ($\mathbf{s}_i$) across the valid lattice coordinates. 
     \item[--] \emph{Image rendering:} The isolated configurations were rasterized onto a fixed $\breve{H} \times \breve{W}$ pixel grid. A divergent red--blue colormap was utilized to strictly encode opposite spin polarities, visually capturing the chiral winding from the nanodot's core to its perimeter.
-    \item[--] \emph{Preprocessing:} Pixel intensities corresponding to the $S_z$ magnitude were normalized to a strict interval $[0, 1]$ to ensure stable gradient flows during the deep learning optimization phase. To preserve the intrinsic physical symmetries and chiral handedness dictated by the DMI, no spatial augmentations (such as random rotations or structural flips) were applied to the dataset.
+    \item[--] \emph{Preprocessing:} Pixel intensities corresponding to the $s_z$ magnitude were normalized to a strict interval $[0, 1]$ to ensure stable gradient flows during the deep learning optimization phase. Since every component of the target vector $\boldsymbol{\theta}$ is a scalar magnitude that remains invariant under the discrete rotational symmetries of the lattice, the dataset is stored in its raw form and augmented on the fly at training time through random $90^\circ$ rotations (Section~\ref{sec:Deep_Learning}); being proper rotations, these operations enlarge the effective sample diversity while strictly preserving both the physical parameters and the chiral handedness dictated by the DMI.
 \end{itemize}
 
 %dataset
-Lastly, the simulation pipeline yields a comprehensive image-based dataset, formalized as $\mathcal{D} = \{\mathbf{X}_n, \boldsymbol{\theta}_n\}_{n=1}^{\breve{N}}$, which serves as the final collection of input-output pairs for the deep learning parameter estimation task. Each input tensor $\mathbf{X}_n \in [0,1]^{\breve{H} \times \breve{W}}$ encodes the two-dimensional spatial magnetization field (the normalized $s_z$ projection), while the corresponding target vector $\boldsymbol{\theta}_n \in \mathbb{R}^{\breve{P}}$ stores the $\breve{P}$-dimensional array of generating thermodynamic and Hamiltonian parameters (e.g., $\boldsymbol{\theta}_n = [T^{(0)}_n,\tilde{J}_{1n},\tilde{J}_{2n},\tilde{J}_{3n},\tilde{J}_{4n},\tilde{D_n},\tilde{H_n},\tilde{K}_{an1n},\tilde{K}_{anSn}]$). Figure~\ref{fig:methodology_flowchart} depicts the main flowchart of our image-based magnetic dataset generation approach.
+Lastly, the simulation pipeline yields a comprehensive image-based dataset, formalized as $\mathcal{D} = \{\mathbf{X}_n, \boldsymbol{\theta}_n\}_{n=1}^{\breve{N}}$, which serves as the final collection of input-output pairs for the deep learning parameter estimation task. Each input tensor $\mathbf{X}_n \in [0,1]^{\breve{H} \times \breve{W}}$ encodes the two-dimensional spatial magnetization field (the normalized $s_z$ projection), while the corresponding target vector $\boldsymbol{\theta}_n \in \mathbb{R}^{\breve{P}}$ stores the $\breve{P}$-dimensional array of generating thermodynamic and Hamiltonian parameters (e.g., $\boldsymbol{\theta}_n = [T^{(0)}_n,\tilde{J}_{1,n},\tilde{J}_{2,n},\tilde{J}_{3,n},\tilde{J}_{4,n},\tilde{K}_{DM,n},\tilde{H}_{ex,n},\tilde{K}_{an1,n},\tilde{K}_{anS,n}]$). Figure~\ref{fig:methodology_flowchart} depicts the main flowchart of our image-based magnetic dataset generation approach.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \resizebox{\linewidth}{!}{
     \input{diagram}}
  \caption{Main flowchart detailing the generation of the image-based magnetic dataset. The pipeline initializes with the foundational inputs (green), encompassing the Hamiltonian interaction parameters ($\boldsymbol{\theta}$), the discrete unit cell geometry, and the external directional vectors. These constraints govern the atomistic simulation (blue), which employs the Metropolis Monte Carlo algorithm coupled with simulated annealing to thermodynamically relax the system into a converged 3D topological state. Finally, the resulting continuous vector field is projected, rendered, and preprocessed (yellow) to formulate the labelled dataset $\mathcal{D}$, mapping 2D spatial magnetization images to their generating physical parameters.}
     \label{fig:methodology_flowchart}
-\end{figure}
+\end{figure*}
 
 \subsection{Deep Regression Framework for Hamiltonian Parameter Estimation}\label{sec:Deep_Learning}
 
@@ -365,9 +427,20 @@ Here, $f_\Theta$ denotes a deep neural network architecture parameterized by a s
 \end{equation}
 where $\mathcal{L}$ represents the chosen regression objective, typically the Mean Squared Error (MSE) or Huber loss, which mitigates the influence of outlier topological states during optimization. By minimizing this objective, the network intrinsically learns to untangle the highly multimodal spatial features mapping to the specific energetic balances of the extended Heisenberg Hamiltonian.
 
-To achieve robust feature extraction across varying scales of magnetic textures (e.g., from localized domain walls to global skyrmion geometries), this framework evaluates four distinct, state-of-the-art deep learning architectures: ResNet50, DenseNet, Xception, and the Visual Transformer (ViT).
+To achieve robust feature extraction across varying scales of magnetic textures (e.g., from localized domain walls to global skyrmion geometries), this framework evaluates a conventional convolutional baseline alongside four state-of-the-art deep learning architectures: ResNet50, DenseNet, Xception, and the Visual Transformer (ViT). All models are trained from scratch on the magnetic dataset, without any transfer learning from natural-image collections.
 
 \begin{itemize}
+
+\item[--] \emph{Conventional CNN (baseline)}: To quantify the accuracy attainable without transfer learning or the specialized inductive biases of the architectures below, we include a compact convolutional network trained from scratch directly on the native-resolution $s_z$ maps. It stacks four convolutional stages of increasing width (each comprising two $3 \times 3$ convolutions with batch normalization, ReLU activation, and spatial dropout, interleaved with spatial max-pooling), followed by global average pooling and the shared regression head. Lacking residual, dense, depthwise-separable, or attention mechanisms, this baseline isolates the marginal contribution of those components to the inverse estimation and serves as the reference against which the deeper architectures are compared (see Figure~\ref{fig:cnn_implementation}).
+
+%CNN baseline
+\begin{figure*}[!t]
+    \centering
+    \resizebox{\linewidth}{!}{
+    \input{CNN}}
+\caption{Conventional CNN baseline pipeline for Hamiltonian parameter estimation. The native-resolution single-channel $s_z$ map is augmented on the fly with $90^\circ$ rotations and processed by four convolutional stages of increasing width interleaved with spatial max-pooling. A detailed view illustrates the internal structure of each convolutional block, composed of two $3\times3$ convolutions with batch normalization, ReLU activation, and spatial dropout. The final feature maps are aggregated via Global Average Pooling (GAP) and mapped to the physical constants through the customized regression head.}
+\label{fig:cnn_implementation}
+\end{figure*}
 
 \item[--] \emph{Residual Networks (ResNet50)}~\cite{koonce2021resnet}: Standard deep convolutional networks often suffer from the vanishing gradient problem as depth increases, hindering the learning of complex physical mappings. ResNet50 circumvents this by introducing shortcut connections that bypass multiple convolutional layers, directly propagating spatial information and gradients. Mathematically, if $\mathbf{x}$ is the input to a sequence of layers, and $\mathcal{F}(\mathbf{x}, \{\mathbf{W}_l\})$ represents the residual mapping to be learned (comprising convolutions, batch normalization, and ReLU activations) for the $l$-th layer, the output $\mathbf{y}$ of the residual block is defined as:
 
@@ -378,13 +451,13 @@ To achieve robust feature extraction across varying scales of magnetic textures 
 In the context of magnetic domain images, these skip connections allow the network to simultaneously preserve low-level spatial features (like abrupt chiral boundaries) while composing deep, high-level abstractions of the global thermodynamic state (see Figure~\ref{fig:resnet_implementation}).
 
 %ResNet50
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \resizebox{\linewidth}{!}{
     \input{ResNet50}}
-\caption{ResNet50 architecture pipeline for Hamiltonian parameter estimation. The pipeline progresses from single-channel input preprocessing through a pre-trained feature extractor. The Residual bottleneck structure used extensively in Conv5\_x. The deepest features are processed by the customized regression head containing a Global Average Pooling (GAP) and a final dense layer with linear activation to output the predicted physical constants.}
+\caption{ResNet50 architecture pipeline for Hamiltonian parameter estimation. The pipeline progresses from single-channel input preprocessing through a feature extractor trained from scratch. The Residual bottleneck structure used extensively in Conv5\_x. The deepest features are processed by the customized regression head containing a Global Average Pooling (GAP) and a final dense layer with linear activation to output the predicted physical constants.}
 \label{fig:resnet_implementation}
-\end{figure}
+\end{figure*}
 
 \item[--] \emph{Densely Connected Convolutional Networks (DenseNet)}~\cite{huang2017densely}: While ResNet adds features via summation, DenseNet concatenates them, maximizing information flow and feature reuse throughout the network. This is particularly advantageous for the Hamiltonian inverse problem, as the delicate energetic competition often manifests in subtle, overlapping spatial frequencies that require dense multi-scale analysis. In a DenseNet block, the feature maps of all preceding layers are used as inputs to the current layer. If $\mathbf{x}_l$ denotes the output of the $l$-th layer, and $H_l(\cdot)$ represents a composite function of batch normalization, ReLU, and convolution, the forward pass is expressed as:
 
@@ -393,13 +466,13 @@ In the context of magnetic domain images, these skip connections allow the netwo
 \end{equation}
 where $[\dots]$ denotes the concatenation operation. This dense topological structure ensures that the final regression head has direct access to both fine-grained pixel interactions and coarse global structures (see Figure~\ref{fig:densenet_implementation}).
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \resizebox{\linewidth}{!}{
     \input{DenseNet}}
 \caption{DenseNet121 architecture pipeline for Hamiltonian parameter estimation. The pipeline progresses left-to-right, processing single-channel inputs through the feature extractor composed of Dense Blocks and Transition layers. A detailed horizontal view illustrates the dense connectivity mechanism where feature maps from all preceding layers are concatenated before convolution. The final aggregated features are mapped to physical constants via the customized regression head.}
 \label{fig:densenet_implementation}
-\end{figure}
+\end{figure*}
 
 
 \item[--] \emph{Xception (Extreme Inception)}~\cite{chollet2017xception}: This architecture operates on the hypothesis that cross-channel correlations and spatial correlations in feature maps can be entirely decoupled. It replaces standard Inception modules with depthwise separable convolutions, drastically reducing computational overhead while enhancing representational efficiency. A depthwise separable convolution splits the standard convolution into two distinct steps. First, a depthwise convolution applies a single spatial filter to each input channel independently. Second, a pointwise convolution ($1 \times 1$ convolution) projects the output of the depthwise step onto a new channel space to capture cross-channel correlations. If $\mathbf{X} \in \mathbb{R}^{\breve{H} \times \breve{W} \times \breve{C}}$ is the input tensor, the operation is formally approximated as:
@@ -410,12 +483,12 @@ where $[\dots]$ denotes the concatenation operation. This dense topological stru
 
 For nanoscale magnetism, this extreme decoupling allows the network to efficiently isolate specific topological frequency patterns (depthwise) before correlating them to the complex parameter space $\boldsymbol{\theta}_n$ (see Figure~\ref{fig:xception_implementation}).
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \resizebox{\linewidth}{!}{
     \input{xception}}
 \caption{Xception architecture pipeline for Hamiltonian parameter estimation. The feature extractor composed of Entry, Middle, and Exit flows. A detailed horizontal view illustrates the depthwise separable convolution mechanism where spatial feature extraction (depthwise) and cross-channel correlations (pointwise) are entirely decoupled. The final aggregated features are mapped to physical constants.}\label{fig:xception_implementation}
-\end{figure}
+\end{figure*}
 
 
 
@@ -426,16 +499,16 @@ For nanoscale magnetism, this extreme decoupling allows the network to efficient
 \end{equation}
 where $d_k$ is the scaling factor (the dimension of the keys). By employing MSA, the ViT can explicitly correlate a localized structural defect on one edge of the nanodot with a compensatory chiral boundary on the opposite edge, mapping these distant correlations directly to the global DMI or symmetric exchange strengths.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \resizebox{\linewidth}{!}{
     \input{ViT}}
 \caption{ViT architecture pipeline for Hamiltonian parameter estimation. The pipeline progresses left-to-right, processing single-channel inputs through patch extraction, linear projection, and a sequential backbone of Transformer Encoder blocks. The core Transformer block mechanism, highlighting the MSA that explicitly models long-range spatial dependencies across the magnetic nanodot. The final sequence of high-level token representations is aggregated via 1D GAP and mapped to the physical constants through the customized regression head.}
 \label{fig:vit_implementation}
-\end{figure}
+\end{figure*}
 
 
-To optimize the parameter set $\hat{\Theta}$ in Equation~\ref{eq:LossFunction} across all evaluated architectures, the models are trained utilizing the MSE as the explicit continuous loss function $\mathcal{L}$. The optimization process is executed using the Adam optimizer, relying on backpropagation and automatic differentiation to efficiently compute the network gradients~\cite{murakami2022inverse}. By iteratively updating the model weights based on these computed gradients, the training pipeline systematically minimizes the structural and energetic discrepancies between the predicted outputs and the true Hamiltonian constants, ensuring robust convergence in estimating the underlying physical parameters.
+To optimize the parameter set $\hat{\Theta}$ in Equation~\ref{eq:LossFunction} across all evaluated architectures, the models are trained utilizing the MSE as the explicit continuous loss function $\mathcal{L}$. The optimization process is executed using the Adam optimizer, relying on backpropagation and automatic differentiation to efficiently compute the network gradients~\cite{murakami2022inverse}. By iteratively updating the model weights based on these computed gradients, the training pipeline systematically minimizes the structural and energetic discrepancies between the predicted outputs and the true Hamiltonian constants, ensuring robust convergence in estimating the underlying physical parameters. All architectures---the conventional baseline and the four deeper models---are trained from scratch under an identical protocol, including the on-the-fly $90^\circ$ rotation augmentation of the input $s_z$ maps, so that any observed performance difference reflects the architecture itself rather than pretraining or data-pipeline discrepancies.
 
 \end{itemize}
 
@@ -447,7 +520,7 @@ In standard classification paradigms, given an input image $\mathbf{X}$ and a di
 
 \subsubsection{RAMs for CNN-based Approaches}\label{sec:CNN_RAMs}
 
-To overcome the fundamental limitations of discrete activation methods in highly degenerate physical systems, we introduce RAMs, a novel formulation explicitly tailored to bridge continuous parameter estimation with spatial topologies. Given an input magnetic domain visualization $\mathbf{X}$ and the optimized regression model $f_{\hat{\Theta}} : \mathbb{R}^{\breve{H} \times \breve{W}} \rightarrow \mathbb{R}^{\breve{P}}$, the network predicts a vector of physical constants $\hat{\boldsymbol{\theta}} = f_{\hat{\Theta}}(\mathbf{X})$. Let $\hat{\theta}_p \in \hat{\boldsymbol{\theta}}$ denote the continuous prediction for the $p$-th target Hamiltonian parameter (e.g., the DMI strength $\tilde{D}$ or symmetric exchange $\tilde{J}$), and let $\theta_p \in \boldsymbol{\theta}$ represents its corresponding ground truth. Instead of utilizing a raw predicted scalar, we formulate a scale-invariant, error-based activation objective $\mathcal{O}_p$. To prevent the mathematical discontinuities and negative objective bounds inherent to absolute error formulations ($1 - |\theta_p - \hat{\theta}_p|$), we utilize a normalized Gaussian decay function:
+To overcome the fundamental limitations of discrete activation methods in highly degenerate physical systems, we introduce RAMs, a novel formulation explicitly tailored to bridge continuous parameter estimation with spatial topologies. Given an input magnetic domain visualization $\mathbf{X}$ and the optimized regression model $f_{\hat{\Theta}} : \mathbb{R}^{\breve{H} \times \breve{W}} \rightarrow \mathbb{R}^{\breve{P}}$, the network predicts a vector of physical constants $\hat{\boldsymbol{\theta}} = f_{\hat{\Theta}}(\mathbf{X})$. Let $\hat{\theta}_p \in \hat{\boldsymbol{\theta}}$ denote the continuous prediction for the $p$-th target Hamiltonian parameter (e.g., the DMI strength $\tilde{K}_{DM}$ or symmetric exchange $\tilde{J}$), and let $\theta_p \in \boldsymbol{\theta}$ represents its corresponding ground truth. Instead of utilizing a raw predicted scalar, we formulate a scale-invariant, error-based activation objective $\mathcal{O}_p$. To prevent the mathematical discontinuities and negative objective bounds inherent to absolute error formulations ($1 - |\theta_p - \hat{\theta}_p|$), we utilize a normalized Gaussian decay function:
 
 \begin{equation}\label{eq:RAM_Objective}
 \mathcal{O}_p = \exp\left(-\gamma_p \left(\theta_p - \hat{\theta}_p\right)^2\right),
@@ -470,7 +543,7 @@ The application of the ReLU activation ensures that only spatial features exerti
 
 
 %RAMs
-\begin{figure}[h]
+\begin{figure*}[!t]
   \centering
   \vspace{0.3cm}
   \resizebox{0.7\linewidth}{!}{
@@ -478,7 +551,7 @@ The application of the ReLU activation ensures that only spatial features exerti
   }
   \caption{RAMs extraction pipeline. Latent feature maps and continuous predictions from the network backbone are explicitly coupled via an error-decay objective. Gradient-based importance weights combine these features to produce a normalized, physically traceable spatial saliency map for the target Hamiltonian parameter $\theta_{p}$.}
   \label{fig:rams_pipeline}
-\end{figure}
+\end{figure*}
 
 
 \subsubsection{RAMs for ViT-based Approaches}\label{sec:ViT_RAMs}
@@ -505,7 +578,48 @@ To rigorously compare the spatial activations across different Hamiltonian param
 \tilde{\mathcal{R}}_{\text{RAM}}^{(l,p)} = \frac{\mathcal{R}_{\text{RAM}}^{(l,p)}}{\max\limits_{l' \in \{1,\dots,L\}, p' \in \{1,\dots,\breve{P}\}} \left( \max\limits_{i,j} \left[ \mathcal{R}_{\text{RAM}}^{(l',p')}\right]_{i,j} \right)}.
 \end{equation}
 
-This comprehensive normalization ensures that the gradient magnitudes are dimensionally consistent and comparable, preventing parameters with intrinsically higher variance or layers with larger gradient flows from disproportionately dominating the interpretability metrics. By tracking the evolution of $\tilde{\mathcal{R}}_{\text{RAM}}^{(l,p)}$ across the network depth, this formulation explicitly reveals how the deep learning architecture bypasses the intrinsically ill-conditioned nature of the inverse problem. In magnetic nanodots, severe structural ambiguity arises because disparate energetic combinations of the symmetric exchange ($\tilde{J}$), DMI ($\tilde{D}$), magnetocrystalline anisotropy ($\tilde{K}$), and Zeeman field ($\tilde{H}$) can yield highly degenerate states with nearly identical free energies. Then, the global normalization aim to code how the network dynamically resolves this degeneracy through a hierarchical physical decoupling. We establish that early network layers (lower $l$) exhibit high relative activations for parameters governing short-range spin interactions, capturing the localized chiral winding angles and domain wall boundaries dictated primarily by the delicate competition between $\tilde{J}$ and $\tilde{D}$. Conversely, deeper layers (higher $l$) aggregate these localized topological textures to resolve macro-scale thermodynamic stability. These terminal layers exhibit dominant spatial activations for $\tilde{H}$ and $\tilde{K}$, which govern the global topological confinement, phase transitions, and spatial alignment of emergent structures such as skyrmion cores and labyrinthine patterns. By correlating the intensity and spatial localization of $\tilde{\mathcal{R}}_{\text{RAM}}^{(l,p)}$ across the network hierarchy, our framework utilizes both localized boundary chirality and global domain spacing to disambiguate the underlying Hamiltonian parameters.
+This comprehensive normalization ensures that the gradient magnitudes are dimensionally consistent and comparable, preventing parameters with intrinsically higher variance or layers with larger gradient flows from disproportionately dominating the interpretability metrics. By tracking the evolution of $\tilde{\mathcal{R}}_{\text{RAM}}^{(l,p)}$ across the network depth, this formulation explicitly reveals how the deep learning architecture bypasses the intrinsically ill-conditioned nature of the inverse problem. In magnetic nanodots, severe structural ambiguity arises because disparate energetic combinations of the symmetric exchange ($\tilde{J}$), DMI ($\tilde{K}_{DM}$), magnetocrystalline anisotropy ($\tilde{K}$), and Zeeman field ($\tilde{H}_{ex}$) can yield highly degenerate states with nearly identical free energies. Then, the global normalization aim to code how the network dynamically resolves this degeneracy through a hierarchical physical decoupling. We establish that early network layers (lower $l$) exhibit high relative activations for parameters governing short-range spin interactions, capturing the localized chiral winding angles and domain wall boundaries dictated primarily by the delicate competition between $\tilde{J}$ and $\tilde{K}_{DM}$. Conversely, deeper layers (higher $l$) aggregate these localized topological textures to resolve macro-scale thermodynamic stability. These terminal layers exhibit dominant spatial activations for $\tilde{H}_{ex}$ and $\tilde{K}$, which govern the global topological confinement, phase transitions, and spatial alignment of emergent structures such as skyrmion cores and labyrinthine patterns. By correlating the intensity and spatial localization of $\tilde{\mathcal{R}}_{\text{RAM}}^{(l,p)}$ across the network hierarchy, our framework utilizes both localized boundary chirality and global domain spacing to disambiguate the underlying Hamiltonian parameters.
+
+\subsubsection{Perturbation-Based Attribution Baselines}\label{sec:xai_baselines}
+
+To rigorously assess the RAMs formulation, we benchmark it against three widely used model-agnostic attribution methods---the Local Interpretable Model-agnostic Explanations (LIME), the Shapley Additive Explanations (SHAP), and its efficient KernelSHAP estimator---adapted here to the continuous regression setting. For a target parameter $p$, let $f_p : \mathbb{R}^{\breve{H} \times \breve{W}} \rightarrow \mathbb{R}$ denote the scalar map returning the $p$-th predicted parameter, $f_p(\mathbf{X}) = \hat{\theta}_p$. The input image is partitioned into $d$ disjoint interpretable regions (superpixels) $\{\mathcal{X}_1, \dots, \mathcal{X}_d\}$ obtained by spatial segmentation. A coalition vector $\mathbf{z} \in \{0,1\}^d$ encodes which regions are retained ($z_i = 1$) or masked to a reference baseline $b$ ($z_i = 0$), and the map $h_{\mathbf{X}}(\mathbf{z})$ reconstructs the corresponding perturbed image.
+
+\emph{LIME.} This method fits a sparse linear surrogate $g(\mathbf{z}) = \phi_0 + \sum_{i=1}^{d} \phi_i z_i$ that locally approximates $f_p$ in the neighborhood of $\mathbf{X}$, by minimizing a proximity-weighted least-squares objective:
+
+\begin{equation}\label{eq:lime}
+\boldsymbol{\phi}^{\text{LIME}} = \arg\min_{g}\ \sum_{\mathbf{z}} \pi_{\mathbf{X}}(\mathbf{z})\,\big(f_p(h_{\mathbf{X}}(\mathbf{z})) - g(\mathbf{z})\big)^2 + \Omega(g),
+\end{equation}
+where $\pi_{\mathbf{X}}(\mathbf{z})$ is a proximity kernel that weights each perturbation by its similarity to the original image, and $\Omega(g)$ penalizes surrogate complexity to enforce sparsity. The coefficient $\phi_i$ is taken as the attribution of region $i$.
+
+\emph{Shapley values (SHAP).} Grounded in cooperative game theory, SHAP attributes to each region $i$ the average marginal contribution it makes to the prediction across all possible coalitions:
+
+\begin{equation}\label{eq:shap}
+\phi_i = \sum_{\mathcal{S} \subseteq \mathcal{I} \setminus \{i\}} \frac{|\mathcal{S}|!\,(d - |\mathcal{S}| - 1)!}{d!} \Big( f_p\big(h_{\mathbf{X}}(\mathbf{z}_{\mathcal{S} \cup \{i\}})\big) - f_p\big(h_{\mathbf{X}}(\mathbf{z}_{\mathcal{S}})\big) \Big),
+\end{equation}
+where $\mathcal{I} = \{1, \dots, d\}$ and $\mathbf{z}_{\mathcal{S}}$ is the coalition activating only the regions in $\mathcal{S}$. This estimator is the unique attribution satisfying local accuracy, missingness, and consistency, but its exact evaluation requires $2^{d}$ model queries.
+
+\emph{KernelSHAP.} To circumvent this exponential cost, KernelSHAP recovers the Shapley values as the solution of a weighted linear regression over sampled coalitions, using the Shapley kernel
+
+\begin{equation}\label{eq:kernelshap}
+\pi_{\text{SHAP}}(\mathbf{z}) = \frac{d - 1}{\binom{d}{|\mathbf{z}|}\,|\mathbf{z}|\,(d - |\mathbf{z}|)},
+\end{equation}
+so that $\boldsymbol{\phi}^{\text{KS}} = \arg\min_{\boldsymbol{\phi}} \sum_{\mathbf{z}} \pi_{\text{SHAP}}(\mathbf{z}) \big( f_p(h_{\mathbf{X}}(\mathbf{z})) - \phi_0 - \sum_i \phi_i z_i \big)^2$; the resulting coefficients provably converge to the Shapley values of Equation~\ref{eq:shap} while requiring far fewer coalition evaluations.
+
+Crucially, all three baselines are perturbation-based: each explanation demands hundreds to thousands of forward evaluations of $f_p$ to sample the coalition space, whereas a RAM is obtained from a single backward pass through the network.
+
+To quantitatively and fairly compare the spatial faithfulness of every attribution method---RAMs and the perturbation baselines alike---we adopt a deletion protocol based on the \emph{Most Relevant First} (MoRF) criterion. Given the relevance map produced by a method $m$ for the parameter $p$, the $\breve{H}\breve{W}$ input locations are ranked in order of decreasing relevance, yielding the ordering $\pi_1^{(m)}, \pi_2^{(m)}, \dots, \pi_{\breve{H}\breve{W}}^{(m)}$. For a deletion fraction $\rho \in [0, \rho_{\max}]$, the $\lfloor \rho\,\breve{H}\breve{W} \rfloor$ most relevant locations are replaced by the reference baseline $b$, producing the perturbed image $\mathbf{X}^{(m)}(\rho)$, and the induced deviation of the prediction is measured as
+
+\begin{equation}\label{eq:deletion_dev}
+\Delta_p^{(m)}(\rho) = \big| f_p\big(\mathbf{X}^{(m)}(\rho)\big) - f_p(\mathbf{X}) \big|.
+\end{equation}
+
+A faithful attribution concentrates relevance on the locations that genuinely drive the prediction, so that removing them induces a large and rapid deviation. The overall faithfulness of method $m$ for parameter $p$ is therefore summarized by the area under the deletion curve,
+
+\begin{equation}\label{eq:deletion_auc}
+\text{AUC}_p^{(m)} = \int_0^{\rho_{\max}} \Delta_p^{(m)}(\rho)\, d\rho,
+\end{equation}
+
+where a larger $\text{AUC}_p^{(m)}$ indicates a more spatially localized and physically faithful explanation; a random-relevance map is included as a lower-bound control. This deletion score, together with the per-explanation computational cost, provides the quantitative basis for the interpretability comparison reported in Section~\ref{sec:results_dis}.
 
 
 \section{Experimental Set-Up}\label{sec:experiments}
@@ -542,17 +656,16 @@ paramagnetic ceiling. The system was systematically
 cooled to a near-ground state of $T^{(f)} = 0.1$~K 
 utilizing a linear decrement of $\Delta T = -0.1$~K. 
 At each discrete temperature interval, the spin lattice 
-underwent $8{,}000$ Monte Carlo Sweeps (MCS) exclusively 
-dedicated to thermalization, thereby overcoming metastable 
-localized energetic barriers. This thermalization phase 
-was subsequently followed by $100$ measurement MCS to 
+underwent $10{,}000$ Monte Carlo Sweeps (MCS) exclusively
+dedicated to thermalization, thereby overcoming metastable
+localized energetic barriers. This thermalization phase
+was subsequently followed by $2{,}000$ measurement MCS to
 compute macroscopic thermodynamic averages (e.g., specific 
 heat and magnetic susceptibility) and verify strict 
 energetic convergence. To overcome the prohibitive 
 computational bottleneck traditionally associated with 
 sequential Monte Carlo methods, the atomistic simulation 
-was rigorously optimized utilizing PyTorch tensor 
-operations on CUDA-enabled GPUs.
+was rigorously optimized implemented in JAX as a fully vectorized, just-in-time-compiled routine distributed across multiple GPUs via single-program multiple-data (\texttt{pmap}) parallelism in single precision.
 
 Upon converging to \ch{a low-energy thermodynamically stable state} at $0.1$~K, 
 the final topological state was isolated. To mimic 
@@ -576,46 +689,54 @@ where the first-shell exchange constant $\tilde{J}_1 =
 break the scale symmetry of the inverse problem and 
 ensure a well-posed regression target, as described 
 in Section~\ref{sec:hamiltonian}. Each of the eight 
-free parameters was independently and uniformly sampled 
+free parameters was independently sampled 
 within the physically motivated bounds summarized in 
 Table~\ref{tab:param_ranges}.
 
-It is important to note that while all eight parameters 
-are simultaneously estimated by the regression models, 
-their effective identifiability from the $s_z$ 
-projection varies substantially due to the physical 
-constraints of the observational modality. The 
-higher-order exchange constants $\tilde{J}_3$ and 
-$\tilde{J}_4$ produce energetic contributions that are 
-strongly dominated by the first- and second-shell 
-interactions $\tilde{J}_1$ and $\tilde{J}_2$, rendering 
-their individual spatial signatures largely 
-indistinguishable in the magnetization texture. Similarly, 
-the magnetocrystalline anisotropy constants 
-$\tilde{K}_{an1}$ and $\tilde{K}_{anS}$ and the 
-external field $\tilde{H}_{ex}$ couple primarily to 
-the in-plane spin components $s_x$ and $s_y$, which 
-are not observable in the $s_z$ projection extracted 
-from the central layer. These parameters were 
-nevertheless included in the regression target 
-$\boldsymbol{\theta}$ to provide a complete and 
-physically honest characterization of the inverse 
-problem, including its fundamental identifiability 
-limits. Their inclusion does not degrade the 
-predictive accuracy of the three most identifiable 
-parameters ($T^{(0)}$, $\tilde{J}_2$, and 
-$\tilde{K}_{DM}$), since the multi-output regression 
-head learns to allocate gradient capacity independently 
-to each output dimension. The resulting dataset is 
-publicly available and can be accessed through the 
+It is important to note that while all eight parameters
+are simultaneously estimated by the regression models,
+their effective identifiability from the $s_z$
+projection varies substantially due to the physical
+constraints of the observational modality. Six of the
+eight parameters---the annealing temperature $T^{(0)}$,
+the second-shell exchange $\tilde{J}_2$, the DMI strength
+$\tilde{K}_{DM}$, the bulk and surface anisotropy
+constants $\tilde{K}_{an1}$ and $\tilde{K}_{anS}$, and the
+external field $\tilde{H}_{ex}$---are effectively
+recovered from the two-dimensional projection. This is
+made possible by the deliberate enrichment of the dataset:
+applying the external field along the out-of-plane axis in
+part of the simulations couples the Zeeman term directly
+to the observable $s_z$ component, while the extended
+anisotropy range produces sufficiently distinct domain-wall
+morphologies for the anisotropy constants to leave a
+measurable spatial signature. In contrast, the
+higher-order exchange constants $\tilde{J}_3$ and
+$\tilde{J}_4$ remain essentially unidentifiable: their
+energetic contributions are strongly dominated by the
+first- and second-shell interactions $\tilde{J}_1$ and
+$\tilde{J}_2$, rendering their individual spatial
+signatures indistinguishable in the magnetization texture.
+These two constants are nevertheless retained in the
+regression target $\boldsymbol{\theta}$ to provide a
+complete and physically honest characterization of the
+inverse problem, explicitly delineating its fundamental
+identifiability limits rather than concealing them. Their
+inclusion does not degrade the accuracy of the six
+recoverable parameters, since the multi-output regression
+head learns to allocate gradient capacity independently
+to each output dimension. The resulting dataset is
+publicly available and can be accessed through the
 Kaggle repository%
 \footnote{\url{https://www.kaggle.com/datasets/carloscanamejoy/dataset-spines-complete}}. 
-It contains a total of $218{,}256$ samples, where 
+It contains a total of $166{,}141$ samples, where 
 each input is a grayscale magnetic domain image of 
 size $39 \times 39 \times 1$ pixels, and each 
-corresponding target is a vector of eight physical 
-parameters $\boldsymbol{\theta} \in \mathbb{R}^8$ 
+corresponding target is a vector of eight physical
+parameters $\boldsymbol{\theta} \in \mathbb{R}^8$
 as defined above.
+
+To broaden the structural diversity of the dataset beyond a single field geometry, the external field orientation was varied across simulation batches: in addition to the in-plane configuration, an out-of-plane field was employed to stabilize additional topologies such as isolated skyrmions, while the magnetocrystalline anisotropy range was deliberately extended toward high values to access an Ising-like regime characterized by sharper, more discrete domain walls. This controlled heterogeneity enriches the space of magnetic phases that the regression models must disentangle and, together with the sampling bounds of Table~\ref{tab:param_ranges}, exposes the models to a wide range of competing energetic regimes.
 
 \begin{table}[h]
 \centering
@@ -634,19 +755,19 @@ field in meV/atom.}
 \textbf{Parameter} & \textbf{Physical role} & 
 \textbf{Min} & \textbf{Max} \\
 \hline
-$T^{(0)}$ [K]                & Annealing temperature  & $0.2$  & $20.0$ \\
-$\tilde{J}_2$ [meV]          & 2nd-shell exchange     & $-0.66$ & $0.66$  \\
+$T^{(0)}$ [K]                & Annealing temperature  & $0.0$  & $20.0$ \\
+$\tilde{J}_2$ [meV]          & 2nd-shell exchange     & $-0.33$ & $0.66$  \\
 $\tilde{J}_3$ [meV]          & 3rd-shell exchange     & $-0.29$ & $0.29$  \\
-$\tilde{J}_4$ [meV]          & 4th-shell exchange     & $-0.23$ & $0.23$  \\
-$\tilde{K}_{an1}$ [meV/atom] & Bulk anisotropy        & $0.0$  & $0.2$  \\
-$\tilde{K}_{anS}$ [meV/atom] & Surface anisotropy     & $0.0$  & $0.2$  \\
-$\tilde{H}_{ex}$ [meV/atom]  & External Zeeman field  & $0.0$  & $0.05$  \\
-$\tilde{K}_{DM}$ [meV]       & DMI strength           & $0.0$  & $1.2$  \\
+$\tilde{J}_4$ [meV]          & 4th-shell exchange     & $-0.23$ & $0.24$  \\
+$\tilde{K}_{an1}$ [meV/atom] & Bulk anisotropy        & $0.0$  & $4.57$  \\
+$\tilde{K}_{anS}$ [meV/atom] & Surface anisotropy     & $0.0$  & $0.20$  \\
+$\tilde{H}_{ex}$ [meV/atom]  & External Zeeman field  & $0.0$  & $1.20$  \\
+$\tilde{K}_{DM}$ [meV]       & DMI strength           & $0.0$  & $1.20$  \\
 \hline
 \end{tabular}
 \end{table}
 
-\ch{It is important to note that the DMI strength $\tilde{K}_{DM}$ is sampled exclusively over non-negative values ($\tilde{K}_{DM} \in [0.0, 1.2]$~meV).  This restriction is a physically motivated convention arising from the symmetry properties of the antisymmetric exchange term in Equation~\ref{eq:Hamiltonian}. Under the transformation $\tilde{D} \to -\tilde{D}$, the equilibrium spin configuration undergoes a reversal of its in-plane chirality---the rotational sense of the chiral winding inverts---while the out-of-plane magnetization component $s_z$ at every lattice site remains strictly invariant. Since the regression models operate exclusively on the two-dimensional $s_z$ projection, configurations with $+\tilde{D}$ and $-\tilde{D}$ are exactly degenerate in the observation space, rendering the sign of the DMI fundamentally unidentifiable from $s_z$ images alone. Including both signs simultaneously would introduce a strict two-fold degeneracy in the input--output mapping, collapsing the model's predictions toward $\hat{\tilde{D}} \approx 0$ and precluding meaningful regression. The chirality handedness is instead encoded through the fixed direction vector $\hat{\mathbf{d}}_{ij}$, consistent with standard conventions in atomistic modeling of interfacial DMI~\cite{fert2017magnetic, bogdanov1989thermodynamically}. Recovering the DMI sign would require access to chirality-sensitive observables, such as the full three-dimensional spin vector field or in-plane magnetization components, which constitutes a direction for future investigation (Section~\ref{sec:conclusions}).}
+\ch{It is important to note that the DMI strength $\tilde{K}_{DM}$ is sampled exclusively over non-negative values ($\tilde{K}_{DM} \in [0.0, 1.2]$~meV).  This restriction is a physically motivated convention arising from the symmetry properties of the antisymmetric exchange term in Equation~\ref{eq:Hamiltonian}. Under the transformation $\tilde{K}_{DM} \to -\tilde{K}_{DM}$, the equilibrium spin configuration undergoes a reversal of its in-plane chirality---the rotational sense of the chiral winding inverts---while the out-of-plane magnetization component $s_z$ at every lattice site remains strictly invariant. Since the regression models operate exclusively on the two-dimensional $s_z$ projection, configurations with $+\tilde{K}_{DM}$ and $-\tilde{K}_{DM}$ are exactly degenerate in the observation space, rendering the sign of the DMI fundamentally unidentifiable from $s_z$ images alone. Including both signs simultaneously would introduce a strict two-fold degeneracy in the input--output mapping, collapsing the model's predictions toward $\hat{\tilde{K}_{DM}} \approx 0$ and precluding meaningful regression. The chirality handedness is instead encoded through the fixed direction vector $\hat{\mathbf{d}}_{ij}$, consistent with standard conventions in atomistic modeling of interfacial DMI~\cite{fert2017magnetic, bogdanov1989thermodynamically}. Recovering the DMI sign would require access to chirality-sensitive observables, such as the full three-dimensional spin vector field or in-plane magnetization components, which constitutes a direction for future investigation (Section~\ref{sec:conclusions}).}
 
 To ensure robust evaluation and prevent information 
 leakage during the deep learning optimization phase, 
@@ -678,20 +799,14 @@ statistical distribution of the training set. This
 identical transformation is subsequently applied to 
 the validation and test sets to maintain inferential 
 consistency and directly support the bounded RAMs 
-objective $\mathcal{O}_p \in (0,1]$. For the input 
-images ($\mathbf{X}_n$), the single-channel $s_z$ 
+objective $\mathcal{O}_p \in (0,1]$. For the four deep backbone architectures, the single-channel $s_z$ 
 matrices are spatially resized to $224 \times 224$ 
 pixels and duplicated across three channels 
-(grayscale-to-RGB conversion). This dimensional 
-expansion is critical to seamlessly leverage the 
-hierarchical spatial filters learned from an 
-ImageNet-based pretraining~\cite{radosavovic2023real}.
+(grayscale-to-RGB conversion). This dimensional expansion matches the input dimensionality expected by the standard deep backbone architectures; the conventional CNN baseline instead operates directly on the native $39\times39\times1$ maps. No pretrained weights are used, and all architectures are trained entirely from scratch.
 
 The configuration of the evaluated deep learning 
 architectures (see Section~\ref{sec:Deep_Learning}) 
-is summarized in Table~\ref{tab:model_config}. All 
-four architectures share a unified preprocessing 
-pipeline and an extended regression head designed 
+is summarized in Table~\ref{tab:model_config}. All five architectures share the same extended regression head designed 
 to mitigate overfitting in the high-dimensional 
 parameter space. Specifically, the global pooling 
 output is passed through a Batch Normalization layer, 
@@ -701,9 +816,7 @@ activation and $\ell_2$ weight regularization
 ($\lambda = 10^{-4}$), a second Batch Normalization 
 layer, a second Dropout layer with rate $p = 0.3$, 
 and a final linear Dense layer outputting the 
-$\breve{P} = 8$ target parameters. For the 
-CNN-based architectures (ResNet50, DenseNet121, and 
-Xception), the global aggregation is performed via 
+$\breve{P} = 8$ target parameters. For the convolutional architectures (the conventional CNN, ResNet50, DenseNet121, and Xception), the global aggregation is performed via 
 Global Average Pooling over the spatial feature maps, 
 whereas for the ViT-B/16 the token sequence output 
 of the terminal encoder block is first collapsed via 
@@ -714,13 +827,13 @@ biases of convolutional and attention-based backbones
 while ensuring a strictly comparable regression 
 capacity across all evaluated models.
 
-\begin{table}[h]
+\begin{table*}[!t]
 \centering
-\caption{Configuration of evaluated deep learning 
-architectures for inverse Hamiltonian parameter 
-estimation. All models share a standardized regularized 
-regression head mapped to the $\breve{P}=8$-dimensional 
-physical parameter space. BN: Batch Normalization; 
+\caption{Configuration of evaluated deep learning
+architectures for inverse Hamiltonian parameter
+estimation. All models share a standardized regularized
+regression head mapped to the $\breve{P}=8$-dimensional
+physical parameter space. BN: Batch Normalization;
 Drop($p$): Dropout with rate $p$.}
 \label{tab:model_config}
 \resizebox{\textwidth}{!}{%
@@ -730,45 +843,44 @@ Drop($p$): Dropout with rate $p$.}
 \textbf{Pretraining} & \textbf{Global Aggregation} & 
 \textbf{Output Head} \\
 \hline
-ResNet50    & Residual CNN            & ImageNet & 
+Conventional CNN & Custom CNN         & None (from scratch) &
+  Global Avg.\ Pooling (spatial) &
+  BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
+ResNet50    & Residual CNN            & None (from scratch) &
+  Global Avg.\ Pooling (spatial) &
+  BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
+DenseNet121 & Densely Connected CNN   & None (from scratch) & 
   Global Avg.\ Pooling (spatial) & 
   BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
-DenseNet121 & Densely Connected CNN   & ImageNet & 
+Xception    & Depthwise Separable CNN & None (from scratch) & 
   Global Avg.\ Pooling (spatial) & 
   BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
-Xception    & Depthwise Separable CNN & ImageNet & 
-  Global Avg.\ Pooling (spatial) & 
-  BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
-ViT-B/16    & Patch-based Transformer & ImageNet & 
-  Global Avg.\ Pooling (tokens)  & 
+ViT-B/16    & Patch-based Transformer & None (from scratch) &
+  Global Avg.\ Pooling (tokens)  &
   BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
 \hline
 \end{tabular}}
-\end{table}
+\end{table*}
 
 The optimization of the parameter set $\hat{\Theta}$ 
 was executed utilizing the Adam optimizer with a 
 unified initial learning rate of $\eta = 10^{-4}$ 
 for all architectures, including the ViT-B/16, 
-reflecting the well-established sensitivity of both 
-transformer-based and deep convolutional models to 
-aggressive learning rate schedules when fine-tuning 
-from ImageNet pretraining. All models were trained 
+chosen for stable convergence when training all architectures from scratch. All models were trained 
 to minimize the MSE loss function, while the MAE 
 was actively monitored as a secondary diagnostic. 
 Training was conducted using a highly parallelized 
-batch size of $512$ samples over a maximum of 
+batch size of $256$ samples over a maximum of 
 100 epochs. To actively prevent overfitting and 
 manage the learning dynamics within the highly 
 degenerate optimization landscape, two primary 
 callbacks were implemented: a dynamic learning 
 rate scheduler (\texttt{ReduceLROnPlateau}) that 
 reduced the learning rate by a factor of 0.3 if 
-the validation loss stagnated for 4 consecutive 
-epochs, and an \texttt{EarlyStopping} protocol 
+the validation loss stagnated for 5 consecutive epochs, and an \texttt{EarlyStopping} protocol 
 that halted training and restored the best network 
 weights if no validation improvement was observed 
-after 8 consecutive epochs.
+after 12 consecutive epochs.
 
 The predictive performance on the unseen test set 
 was quantitatively assessed using two complementary 
@@ -905,23 +1017,18 @@ averaged over all parameters and layers was
 chosen as the phase representative 
 $\mathbf{X}_n^*$.
 
-All experiments were conducted in a cloud-based 
-environment using Google Colab. The computational 
-setup was equipped with an NVIDIA H100 GPU with 
-97~GB of VRAM, supported by 210~GB of system RAM 
-and 230~GB of available disk storage. The training 
+All experiments were conducted in a cloud environment on RunPod. The computational 
+setup was equipped with an NVIDIA H200 GPU. The training 
 pipeline was implemented in Python using TensorFlow, 
-leveraging GPU acceleration for efficient model 
-training and inference. The complete source code 
+leveraging GPU acceleration for efficient model training and inference. The atomistic state simulations were executed separately on the multi-GPU JAX configuration described in Section~\ref{sec:montecarlo_sim}. The complete source code 
 is publicly available at 
 \url{https://github.com/deathperminut/PaperInverseProblemEstimation}, 
 organized into three modules: 
 \texttt{/simulation} containing the atomistic 
 Monte Carlo Hamiltonian simulation scripts 
-implemented in PyTorch with CUDA GPU 
-parallelization; \texttt{/regression} containing 
-the training, validation, and evaluation pipelines 
-for all four deep learning architectures; and 
+implemented in JAX with multi-GPU (\texttt{pmap}) parallelization; \texttt{/regression} containing 
+the training, validation, and evaluation pipelines
+for all five deep learning architectures; and
 \texttt{/rams} containing the Regression Activation 
 Maps computation and visualization code for both 
 the Xception CNN and the Vision Transformer.
@@ -934,103 +1041,107 @@ the Xception CNN and the Vision Transformer.
 \label{sec:image_results}
 
 %parameter kde
-We present the main results of the proposed atomistic Hamiltonian simulation framework (see Section~\ref{sec:materials}). Figure~\ref{fig:parameter_distributions} delineates the empirical probability density functions---comprising histograms and kernel density estimates---for the extended parameter space $\theta$, capturing the foundational statistical architecture of the simulated dataset. While the higher-order exchange constants ($\tilde{J}_{2}$, $\tilde{J}_{3}$, $\tilde{J}_{4}$) and the DMI ($\tilde{K}_{DM}$) exhibit tight, highly symmetric distributions, macroscopic scaling variables like the initial annealing temperature ($T^{(0)}$) display pronounced right-skewed behavior. This rigorous statistical characterization is crucial because these specific distributional shapes, bounded ranges, and sampling heterogeneities explicitly govern the topological diversity of the generated magnetic phase space. Consequently, this varying sampling density directly dictates the learning dynamics, optimization stability, and predictive limits of the downstream deep regression frameworks, particularly when navigating the highly degenerate regimes of the extended Heisenberg Hamiltonian.
+We present the main results of the proposed atomistic Hamiltonian simulation framework (see Section~\ref{sec:materials}). Figure~\ref{fig:parameter_distributions} delineates the empirical probability density functions---comprising histograms and kernel density estimates---for the extended parameter space $\theta$, capturing the foundational statistical architecture of the simulated dataset. The exchange constants $\tilde{J}_{2}$, $\tilde{J}_{3}$, and $\tilde{J}_{4}$ concentrate sharply around zero with narrow, nearly symmetric distributions, whereas the DMI strength $\tilde{K}_{DM}$ spans its full $[0, 1.2]$~meV range with a broad, well-populated distribution. The initial annealing temperature $T^{(0)}$ exhibits a pronounced right-skewed profile, while the bulk anisotropy $\tilde{K}_{an1}$ and the external field $\tilde{H}_{ex}$ are strongly peaked near zero with heavy tails extending toward high values---reflecting the deliberate inclusion of high-anisotropy, Ising-like regimes and out-of-plane field configurations. This rigorous statistical characterization is crucial because these specific distributional shapes, bounded ranges, and sampling heterogeneities explicitly govern the topological diversity of the generated magnetic phase space. Consequently, this varying sampling density directly dictates the learning dynamics, optimization stability, and predictive limits of the downstream deep regression frameworks, particularly when navigating the highly degenerate regimes of the extended Heisenberg Hamiltonian.
 
 %parameter kde
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]{distributions}
+    \includegraphics[width=\linewidth]{parameter_distributions_kde}
     \caption{Empirical distributions of the thermodynamic and Hamiltonian parameters $\{T^{(0)}, \tilde{J}_2, \tilde{J}_3, \tilde{J}_4, \tilde{K}_{an1}, \tilde{K}_{anS}, \tilde{H}_{ex}, \tilde{K}_{DM}\}$ 
     used to generate the dataset. Each subplot presents a histogram and KDE for a given variable, along with 
     summary statistics including mean, standard deviation, and value range.}
     \label{fig:parameter_distributions}
-\end{figure}
+\end{figure*}
 
 %convergence monte carlo example
-To further validate the physical consistency of the generated dataset and provide an intuitive understanding of the underlying spin dynamics, Figure~\ref{fig:convergence} illustrates the thermodynamic evolution of a representative magnetic nanodot during the Metropolis--Hastings Monte Carlo annealing process. This simulation is conducted under the fixed parameter configuration $\tilde{J}_1 = 1.0$~meV, $\tilde{J}_2 = \tilde{J}_3 = \tilde{J}_4 = 0.0$~meV, $\tilde{K}_{an1} = 0.10$~meV/atom, $\tilde{K}_{anS} = 0.00$~meV/atom, $\tilde{H}_{ex} = 0.00$~meV/atom, and $\tilde{K}_{DM} = 1.00$~meV, which constitutes a representative point within the full height-dimensional parameter space $\boldsymbol{\theta}$ defined in Table~\ref{tab:param_ranges}. The vanishing values of the higher-order exchange constants ($\tilde{J}_2$, $\tilde{J}_3$, $\tilde{J}_4$), surface anisotropy ($\tilde{K}_{anS}$), and external field ($\tilde{H}_{ex}$) isolate the dominant energetic competition between the first-shell symmetric exchange $\tilde{J}_1$ and the DMI $\tilde{K}_{DM}$, making this configuration particularly illustrative of the chiral ordering mechanism. The main panel tracks the total Hamiltonian energy $\mathcal{H}$ [meV] as a function of the exchange-normalized annealing temperature $T^{(0)}$ [K], while each inset displays the corresponding two-dimensional out-of-plane magnetization field $s_z$ of the central layer at that specific thermal state. At elevated temperatures ($T^{(0)} \gtrsim 15$~K), the spin configurations exhibit a fully disordered, paramagnetic character, manifesting as spatially uncorrelated fluctuations of $s_z$ with no preferred orientation. As the system is progressively cooled through the intermediate regime ($5~\text{K} \lesssim T^{(0)} \lesssim 15$~K), short-range correlated domains begin to nucleate, reflecting the growing dominance of the symmetric exchange interaction $\tilde{J}_1$ over thermal fluctuations. In this regime, the competition between $\tilde{J}_1$ and the $\tilde{K}_{DM}$ progressively induced non-collinear and chiral spin winding, visible as the emergence of alternating red-blue stripe-like patterns. Upon convergence to the near-ground state at $T^{(0)} = 0.1$~K, the system stabilizes into a well-defined labyrinthine domain configuration, characteristic of the helical phase governed by a strong DMI relative to the exchange energy. The monotonic decrease $\mathcal{H}$ throughout the annealing trajectory confirms the thermodynamic relaxation of the system toward \ch{a low-energy stable configuration}, validating the physical correctness of the Monte Carlo pipeline and the quality of the generated dataset as input for the deep learning regression framework.
+To further validate the physical consistency of the generated dataset and provide an intuitive understanding of the underlying spin dynamics, Figure~\ref{fig:convergence} illustrates the thermodynamic evolution of a representative magnetic nanodot during the Metropolis--Hastings Monte Carlo annealing process. This simulation is conducted under the fixed parameter configuration $\tilde{J}_1 = 1.0$~meV, $\tilde{J}_2 = \tilde{J}_3 = \tilde{J}_4 = 0.0$~meV, $\tilde{K}_{an1} = 0.10$~meV/atom, $\tilde{K}_{anS} = 0.00$~meV/atom, $\tilde{H}_{ex} = 0.00$~meV/atom, and $\tilde{K}_{DM} = 1.00$~meV, which constitutes a representative point within the full eight-dimensional parameter space $\boldsymbol{\theta}$ defined in Table~\ref{tab:param_ranges}. The vanishing values of the higher-order exchange constants ($\tilde{J}_2$, $\tilde{J}_3$, $\tilde{J}_4$), surface anisotropy ($\tilde{K}_{anS}$), and external field ($\tilde{H}_{ex}$) isolate the dominant energetic competition between the first-shell symmetric exchange $\tilde{J}_1$ and the DMI $\tilde{K}_{DM}$, making this configuration particularly illustrative of the chiral ordering mechanism. The main panel tracks the total Hamiltonian energy $\mathcal{H}$ [meV] as a function of the exchange-normalized annealing temperature $T^{(0)}$ [K], while each inset displays the corresponding two-dimensional out-of-plane magnetization field $s_z$ of the central layer at that specific thermal state. At elevated temperatures ($T^{(0)} \gtrsim 15$~K), the spin configurations exhibit a fully disordered, paramagnetic character, manifesting as spatially uncorrelated fluctuations of $s_z$ with no preferred orientation. As the system is progressively cooled through the intermediate regime ($5~\text{K} \lesssim T^{(0)} \lesssim 15$~K), short-range correlated domains begin to nucleate, reflecting the growing dominance of the symmetric exchange interaction $\tilde{J}_1$ over thermal fluctuations. In this regime, the competition between $\tilde{J}_1$ and the $\tilde{K}_{DM}$ progressively induced non-collinear and chiral spin winding, visible as the emergence of alternating red-blue stripe-like patterns. Upon convergence to the near-ground state at $T^{(0)} = 0.1$~K, the system stabilizes into a well-defined labyrinthine domain configuration, characteristic of the helical phase governed by a strong DMI relative to the exchange energy. The monotonic decrease $\mathcal{H}$ throughout the annealing trajectory confirms the thermodynamic relaxation of the system toward \ch{a low-energy stable configuration}, validating the physical correctness of the Monte Carlo pipeline and the quality of the generated dataset as input for the deep learning regression framework.
 
 %Monte carlo convergence
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth]{convergence}
     \caption{Thermodynamic convergence of a representative magnetic nanodot during simulated annealing. The main panel shows the total Hamiltonian energy $\mathcal{H}$ [meV] as a function of the exchange-normalized annealing temperature $T^{(0)}$ [K] under the fixed parameter configuration. Each inset depicts the 
     two-dimensional out-of-plane magnetization field $s_z$ of the central layer at the corresponding thermal state, illustrating the progressive transition from a fully disordered paramagnetic phase at high $T^{(0)}$ to a thermodynamically relaxed labyrinthine domain configuration at $T^{(0)} = 0.1$~K, driven by the competing energetic contributions of $\tilde{J}_1$ and $\tilde{K}_{DM}$.}
     \label{fig:convergence}
-\end{figure}
+\end{figure*}
 
 %2D and 3D configuration
 Figure~\ref{fig:spin_configuration} illustrates the converged ground-state spin configuration of a magnetic nanodot at $T^{(0)}_{final}=0.1$~K, simulated with specific fixed parameters ($\tilde{J}_1=1.0$~meV, $\tilde{K}_{DM}=1.00$~meV, $\tilde{K}_{an1}=0.10$~meV/atom, and all other parameters zeroed; see Table~\ref{tab:param_ranges}). Panel~(a) maps the 2D out-of-plane magnetization ($s_z$) on the central layer---using dots for out-of-plane moments and arrows for transverse components---while Panel~(b) displays the full 3D volumetric spin texture. The nanodot exhibits a labyrinthine domain pattern characterized by chiral walls. This morphology is driven directly by the energetic competition between the ferromagnetic symmetric exchange ($\tilde{J}_1$) and the DMI ($\tilde{K}_{DM}$). With a ratio of $\tilde{K}_{DM}/\tilde{J}_1=1.0$, the system stabilizes in the helical phase. By nullifying higher-order exchange, surface anisotropy, and external fields, this $\tilde{J}_1$--$\tilde{K}_{DM}$ competition is fully isolated, allowing the stripe-like domains to develop freely without preferential axial pinning.
 
 %2D and 3D configuration
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth]{3D}
     \caption{Converged ground-state spin configuration of a representative magnetic nanodot at $T^{(0)}_{final} = 0.1$~K under a fixed parameter configuration. (a)~Two-dimensional projection of the out-of-plane magnetization field $s_z$: colored dots indicate spins oriented predominantly out-of-plane, while colored arrows represent the in-plane orientation $(s_x, s_y)$ of transverse moments. (b)~Full three-dimensional spin configuration, revealing the volumetric coherence of the labyrinthine chiral domain structure stabilized by the competition between $\tilde{J}_1$ and $\tilde{K}_{DM}$. Color encodes the $s_z$ component.}
     \label{fig:spin_configuration}
-\end{figure}
+\end{figure*}
 
-Now, to fully characterize the structural diversity generated by the Monte Carlo annealing protocol across the entire dataset, Figure~\ref{fig:phase_diagrams} presents two-dimensional phase diagrams of the magnetization image as a function of key Hamiltonian parameter pairs: $T^{(0)}$ versus $\tilde{J}_2$ and $T^{(0)}$ versus $\tilde{K}_{DM}$. These diagrams illustrate the macroscopic topological transitions driven by the underlying atomistic energetic competition. At elevated annealing temperatures, specifically above the effective Curie temperature $T_C$, thermal fluctuations overwhelm the magnetic interactions, collapsing all configurations into an indistinguishable, highly degenerate paramagnetic noise phase regardless of the specific exchange or DMI strengths. Conversely, in the low-temperature regime, the system stabilizes into ordered states, revealing distinct boundaries between chiral, ferromagnetic, and antiferromagnetic phases. Notably, the phase diagrams expose critical transition zones---such as the boundary between chiral and disordered states near $\tilde{K}_{DM} \approx 0$ meV, and the sign transition near $\tilde{J}_2 \approx 0$ meV---where disparate parameter combinations yield visually overlapping spatial textures. By comprehensively sampling this phase space, the thermodynamic simulation establishes a highly diverse and structurally ambiguous dataset (ill-conditioned mapping), setting a rigorously challenging foundation for the subsequent inverse deep learning parameter estimation.
+Now, to fully characterize the structural diversity generated by the Monte Carlo annealing protocol across the entire dataset, Figure~\ref{fig:phase_diagrams} presents two-dimensional phase diagrams of the magnetization image as a function of key Hamiltonian parameter pairs: $T^{(0)}$ versus $\tilde{J}_2$ and $T^{(0)}$ versus $\tilde{K}_{DM}$. These diagrams illustrate the macroscopic topological transitions driven by the underlying atomistic energetic competition. In the low-temperature regime, the system stabilizes into well-defined ordered textures whose morphology is dictated by the parameters: increasing $\tilde{K}_{DM}$ drives the sequence from nearly uniform ferromagnetic states, through chiral stripe and labyrinthine domains, to isolated skyrmionic textures, while the sign of $\tilde{J}_2$ separates ferromagnetic from antiferromagnetically modulated exchange ordering. Crucially, these ordered configurations remain visually distinguishable across the parameter space, which is precisely what allows the majority of the Hamiltonian parameters to be recovered by the inverse models. The principal source of ill-conditioning is instead thermal in origin: as the annealing temperature approaches the effective Curie point $T_C$, thermal fluctuations progressively overwhelm the magnetic interactions, and the system passes through transient, partially ordered states before collapsing into a paramagnetic, spatially uncorrelated texture that carries little discriminative information about the generating parameters. This temperature-driven loss of structure---together with the weakly discriminative transient regimes, rather than any intrinsic parameter degeneracy---constitutes the dominant challenge the dataset poses to the inverse estimation, consistent with the noisy, ill-conditioned regimes highlighted in the abstract. By comprehensively sampling this phase space, including these transient and high-temperature regimes, the thermodynamic simulation establishes a rich yet rigorously challenging foundation for the subsequent inverse deep learning parameter estimation.
 
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]{dataset}
-    \caption{Two-dimensional phase diagrams of the magnetization 
-    texture $\mathbf{X}_n$ as a function of pairs of Hamiltonian 
-    parameters. \textbf{(a)}~$T^{(0)}$ vs $\tilde{J}_2$. 
-    \textbf{(b)}~$T^{(0)}$ vs $\tilde{K}_{DM}$. Each cell 
-    displays a representative magnetization image sampled from the 
-    dataset at the corresponding parameter combination; background 
-    color encodes the value of the vertical-axis parameter.}
+    \includegraphics[width=\linewidth]{phase_diagrams}
+    \caption{Two-dimensional phase diagrams of the magnetization
+    texture $\mathbf{X}_n$ as a function of pairs of Hamiltonian
+    parameters. \textbf{(a)}~$T^{(0)}$ vs $\tilde{J}_2$.
+    \textbf{(b)}~$T^{(0)}$ vs $\tilde{K}_{DM}$. Each cell
+    displays an enlarged, representative magnetization image at the
+    corresponding parameter combination, selected over a coarse
+    sampling grid so that the underlying spin textures remain clearly
+    identifiable; the background color encodes the value of the
+    vertical-axis parameter.}
     \label{fig:phase_diagrams}
-\end{figure}
+\end{figure*}
 
 
 \subsection{Deep Learning Regression Results}\label{sec:dl_results}
 
-The predictive performance of the studied architectures (DenseNet,
-ResNet, Xception, and ViT) was assessed on the held-out test set
-comprising 15\% of the total dataset. Each model was tasked with
-simultaneously inferring the complete extended parameter vector
-$\boldsymbol{\theta}$ directly from the two-dimensional out-of-plane
-magnetization image $\mathbf{X}_n$, without any auxiliary physical
-information. As shown in Figures~\ref{fig:r2_metrics}
-and~\ref{fig:mae_metrics}, no single architecture uniformly dominates
-both metrics: the ViT attains the highest $R^2$ score for seven of the
-eight Hamiltonian parameters ($T^{(0)}$, $\tilde{J}_3$, $\tilde{J}_4$,
-$\tilde{K}_{an1}$, $\tilde{K}_{anS}$, $\tilde{H}_{ex}$, and
-$\tilde{K}_{DM}$), while Xception achieves the highest $R^2$ for the
-second-shell exchange constant $\tilde{J}_2$. Notably, despite the ViT's superior variance-explained
-performance, Xception consistently produces the lowest Mean Absolute
-Error across most parameters, including $T^{(0)}$, $\tilde{J}_2$,
-$\tilde{J}_3$, $\tilde{J}_4$, $\tilde{H}_{ex}$, and $\tilde{K}_{DM}$,
-whereas the ViT only minimizes the MAE for the anisotropy constants
-$\tilde{K}_{an1}$ and $\tilde{K}_{anS}$. This complementary behavior
-between $R^2$ and MAE indicates that, while the ViT captures a larger
-fraction of the parameter variance and is therefore more sensitive
-to the long-range correlations governing global magnetic order
-Xception yields tighter absolute predictions in the dense ordered
-regions of the parameter space, where local spatial structure is the
-dominant predictive signal. The ViT's broad advantage in $R^2$ is
-physically interpretable: by processing the magnetization field
-$\mathbf{X}_n$ as a sequence of non-overlapping spatial patches and
-computing multi-head self-attention scores across all patch pairs, the
-ViT explicitly captures long-range correlations between distant spin
-textures, such as the global chirality imposed by $\tilde{K}_{DM}$
-and the large-scale ordering driven by $\tilde{J}_1$, that are
-fundamentally inaccessible to purely local convolutional receptive
-fields. Xception's competitive behavior, in turn, stems from its
-depthwise separable convolution mechanism, which efficiently decouples
-the extraction of spatial spin-texture frequencies from the
-cross-channel correlations required to map those features onto the
-Hamiltonian parameter space, yielding the most accurate point
-predictions for the dominantly identifiable parameters.
+The predictive performance of the five evaluated architectures (the
+conventional CNN baseline, DenseNet, ResNet, Xception, and ViT) was
+assessed on the held-out test set comprising 15\% of the total dataset.
+Each model was tasked with simultaneously inferring the complete
+extended parameter vector $\boldsymbol{\theta}$ directly from the
+two-dimensional out-of-plane magnetization image $\mathbf{X}_n$,
+without any auxiliary physical information. As shown in
+Figures~\ref{fig:r2_metrics} and~\ref{fig:mae_metrics}, all five
+architectures perform competitively, with the differences on the
+identifiable parameters typically confined to a few percent of $R^2$.
+Among them, Xception emerges as the strongest overall model: it attains
+the highest $R^2$ for six of the eight parameters --- including the
+most identifiable ones, $T^{(0)}$, $\tilde{J}_2$, $\tilde{K}_{an1}$,
+and $\tilde{K}_{DM}$ --- while the ViT marginally leads on the external
+field $\tilde{H}_{ex}$ and the conventional CNN baseline on the surface
+anisotropy $\tilde{K}_{anS}$. The same ranking is largely mirrored in
+the MAE panels, where Xception yields the lowest absolute error for the
+physically dominant parameters $T^{(0)}$, $\tilde{K}_{an1}$, and
+$\tilde{K}_{DM}$. A particularly informative observation is that the
+conventional CNN baseline --- trained from scratch and devoid of
+pretraining or specialized inductive biases --- matches, and for some
+parameters even exceeds, the deeper backbones. This confirms that
+neither transfer learning from natural images nor the sophisticated
+residual, dense, depthwise, or attention mechanisms provide a decisive
+advantage for this task; the estimation accuracy is instead governed by
+the physical information that the $s_z$ projection makes available.
+Physically, Xception's slight edge stems from its depthwise separable
+convolution mechanism, which efficiently decouples the extraction of
+spatial spin-texture frequencies from the cross-channel correlations
+required to map those features onto the Hamiltonian parameter space,
+yielding the most accurate point predictions for the dominantly
+identifiable parameters. The ViT, in turn, remains competitive by
+processing $\mathbf{X}_n$ as a sequence of non-overlapping spatial
+patches and computing multi-head self-attention across all patch pairs,
+explicitly capturing the long-range correlations---such as the global
+chirality imposed by $\tilde{K}_{DM}$ and the large-scale ordering
+driven by $\tilde{J}_1$---that are inaccessible to purely local
+convolutional receptive fields.
 
 Figures~\ref{fig:r2_metrics} and~\ref{fig:mae_metrics} reveal a
 pronounced and physically interpretable heterogeneity in predictive
 accuracy across the parameter space. The initial annealing temperature
-$T^{(0)}$, the second-shell exchange constant $\tilde{J}_2$, and the
-DMI strength $\tilde{K}_{DM}$ consistently yield the highest $R^2$
+$T^{(0)}$, the second-shell exchange $\tilde{J}_2$, the DMI strength
+$\tilde{K}_{DM}$, the bulk anisotropy $\tilde{K}_{an1}$, and the
+external field $\tilde{H}_{ex}$ consistently yield high $R^2$
 scores across all architectures, reflecting the robust and spatially
 distinctive topological imprints they leave on the observable
 magnetization texture: $T^{(0)}$ governs the global degree of spin
@@ -1042,8 +1153,8 @@ emerges when examining the MAE panels in Figure~\ref{fig:mae_metrics}:
 despite their high $R^2$ scores, $T^{(0)}$, $\tilde{J}_2$, and
 $\tilde{K}_{DM}$ also exhibit comparatively larger absolute errors in
 their respective physical units --- reaching up to approximately
-$1.0\,\mathrm{K}$ for $T^{(0)}$, $0.065\,\mathrm{meV}$ for
-$\tilde{J}_2$, and $0.05\,\mathrm{meV}$ for $\tilde{K}_{DM}$ in the
+$0.49\,\mathrm{K}$ for $T^{(0)}$, $0.021\,\mathrm{meV}$ for
+$\tilde{J}_2$, and $0.037\,\mathrm{meV}$ for $\tilde{K}_{DM}$ in the
 worst-performing architecture. This apparent inconsistency is not a
 failure of the models but rather a direct consequence of the
 thermodynamic landscape of the dataset. As illustrated in the phase
@@ -1051,21 +1162,21 @@ diagrams of Figure~\ref{fig:phase_diagrams}, the parameter space
 contains extensive high-temperature regions where thermal
 fluctuations above the effective Curie temperature $T_C$ collapse the
 magnetization texture into an indistinguishable paramagnetic noise
-phase, regardless of the specific values of $\tilde{J}_2$ or
-$\tilde{K}_{DM}$. Within these thermally disordered regimes, visually
-identical configurations correspond to widely different parameter
-values, rendering the inverse mapping fundamentally ill-posed and
-inflating the absolute prediction error even when the global
-correlation structure --- captured by $R^2$ --- remains strong. The
-MAE values for $T^{(0)}$, $\tilde{J}_2$, and $\tilde{K}_{DM}$
-therefore reflect the intrinsic degeneracy of the high-temperature
-paramagnetic phase rather than a systematic modeling deficiency: the
-same parameter that is most accurately recovered in the ordered
-low-temperature regime (where the spin texture preserves a clear
-topological signature) is simultaneously the most degenerate in the
-disordered high-temperature regime (where the texture collapses into
-noise), producing non-negligible global MAE values driven primarily
-by the ill-conditioned subset of the dataset. A rigorous quantitative
+regime, regardless of the specific values of $\tilde{J}_2$ or
+$\tilde{K}_{DM}$. Within these thermally disordered regimes,
+configurations generated by widely different parameter values relax
+into statistically similar noise textures, inflating the absolute
+prediction error even when the global correlation structure ---
+captured by $R^2$ --- remains strong. The MAE values for $T^{(0)}$,
+$\tilde{J}_2$, and $\tilde{K}_{DM}$ therefore reflect the thermal
+indistinguishability of the high-temperature paramagnetic regime
+rather than a systematic modeling deficiency: the same parameter that
+is most accurately recovered in the ordered low-temperature regime
+(where the spin texture preserves a clear topological signature)
+becomes the least constrained in the disordered high-temperature
+regime (where the texture collapses into thermal noise), producing
+non-negligible global MAE values driven primarily by the
+ill-conditioned, temperature-dominated subset of the dataset. A rigorous quantitative
 decomposition of this effect requires first separating the dataset
 into its constituent magnetic structural categories, as the global
 aggregation of all configurations inevitably conflates high-accuracy
@@ -1075,67 +1186,62 @@ further ahead, where the unsupervised structural clustering of the
 magnetization images allows us to isolate and quantify the specific
 contribution of each magnetic phase to the observed prediction error.
 
-Conversely, the models exhibit two qualitatively distinct regimes of
-limited predictive performance for the remaining Hamiltonian
-parameters, which together delimit the fundamental identifiability
-boundaries of the inverse problem in the 2D observation space. The
-higher-order exchange constants $\tilde{J}_3$ and $\tilde{J}_4$
-constitute the most severe case: their $R^2$ scores remain near zero
-across all evaluated architectures, indicating that the models are
-unable to recover meaningful information about these parameters
-beyond the dataset mean. Physically, the spatial signatures of these
-subordinate exchange constants are energetically dominated by the
-primary $\tilde{J}_1$ and $\tilde{J}_2$ interactions, progressively
-masking their observable effect on the magnetization texture and
-rendering them effectively unidentifiable from the $s_z$ projection
-alone. Notably, however, their MAE values --- on the order of
-$0.03$--$0.05\,\mathrm{meV}$ --- remain numerically comparable to
-those of the better-identified parameters, which is a direct
-consequence of their narrow physical range in the dataset rather than
-genuine predictive skill: a model predicting the dataset mean for
-$\tilde{J}_3$ and $\tilde{J}_4$ will naturally incur a small absolute
+Conversely, the higher-order exchange constants $\tilde{J}_3$ and
+$\tilde{J}_4$ delimit the fundamental identifiability boundary of the
+inverse problem in the 2D observation space. They constitute the only
+genuinely unidentifiable parameters: their $R^2$ scores remain near
+zero across all evaluated architectures, indicating that the models
+are unable to recover meaningful information about them beyond the
+dataset mean. Physically, the spatial signatures of these subordinate
+exchange constants are energetically dominated by the primary
+$\tilde{J}_1$ and $\tilde{J}_2$ interactions, masking their individual
+effect on the magnetization texture and rendering them effectively
+unidentifiable from the $s_z$ projection alone. Notably, their MAE
+values --- on the order of $0.03\,\mathrm{meV}$ --- remain numerically
+comparable to those of the better-identified parameters, which is a
+direct consequence of their narrow physical range rather than genuine
+predictive skill: a model defaulting to the dataset mean for
+$\tilde{J}_3$ and $\tilde{J}_4$ naturally incurs a small absolute
 error simply because the dynamic range of these parameters is itself
-limited. The magnetocrystalline anisotropy constants $\tilde{K}_{an1}$
-and $\tilde{K}_{anS}$ together with the external Zeeman field
-$\tilde{H}_{ex}$, in turn, occupy an intermediate identifiability
-regime. This partial predictability is physically consistent: these
-parameters couple primarily to the in-plane spin components $s_x$
-and $s_y$ rather than to the observable out-of-plane component
-$s_z$, so the models are able to recover them only indirectly through
-the secondary topological imprints they induce on the chiral domain
-structure, such as the modulation of stripe periodicity or the
-preferential orientation of skyrmion cores. Furthermore, the visual
-manifestations of surface anisotropy $\tilde{K}_{anS}$ remain
-partially entangled with bulk anisotropy $\tilde{K}_{an1}$ and
-geometrically confined to the boundary layer of the nanodot, while
-the Zeeman contribution $\tilde{H}_{ex}$ --- with MAE values below
-$0.009\,\mathrm{meV/atom}$ across all architectures --- becomes
-increasingly indistinguishable from thermal disorder in the
-high-temperature regime. Together, these effects render the anisotropy
-and field parameters intrinsically partially observable and define the
-fundamental identifiability limits of the inverse problem within the
-two-dimensional $s_z$ projection.
+limited. In contrast --- and in marked departure from what a purely
+in-plane field geometry would permit --- the external Zeeman field
+$\tilde{H}_{ex}$ and the bulk anisotropy $\tilde{K}_{an1}$ are
+recovered with high fidelity ($R^2 \gtrsim 0.94$). Applying the field
+along the out-of-plane axis in part of the dataset couples the Zeeman
+term directly to the observable $s_z$ component, while the extended
+anisotropy range imprints sufficiently distinct domain-wall
+morphologies for $\tilde{K}_{an1}$ to leave a strong, recoverable
+spatial signature. The surface anisotropy $\tilde{K}_{anS}$ occupies
+an intermediate regime ($R^2 \approx 0.65$), as its visual
+manifestation remains partially entangled with the bulk anisotropy
+$\tilde{K}_{an1}$ and is geometrically confined to the thin boundary
+layer of the nanodot. Taken together, these results establish that six
+of the eight Hamiltonian parameters are effectively recovered from the
+two-dimensional $s_z$ projection, with only the two higher-order
+exchange constants $\tilde{J}_3$ and $\tilde{J}_4$ marking the
+fundamental identifiability limit of the inverse problem.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth]
-    {r2_metrics}
-    \caption{Per-variable $R^2$ score across all evaluated 
-    architectures for the eight Hamiltonian parameters 
-    $\boldsymbol{\theta}$, reported on the held-out test set. Each 
-    panel corresponds to one target parameter and shows one bar per 
-    architecture. Negative $R^2$ values, 
-    indicating predictions no better than the dataset mean, are 
-    clipped to zero for visualization clarity. Gold-bordered bars 
-    indicate the best-performing architecture for each parameter.}
+    {model_comparison_r2}
+    \caption{Per-variable $R^2$ score across the five evaluated
+    architectures (Xception, DenseNet, ResNet, ViT, and the
+    conventional CNN baseline) for the eight Hamiltonian parameters
+    $\boldsymbol{\theta}$, reported on the held-out test set. Each
+    panel corresponds to one target parameter and shows one bar per
+    architecture. Negative $R^2$ values, indicating predictions no
+    better than the dataset mean, are clipped to zero for
+    visualization clarity. Black-bordered bars indicate the
+    best-performing architecture for each parameter.}
     \label{fig:r2_metrics}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.75\linewidth]
-    {mae_metrics}
-    \caption{Per-variable Mean Absolute Error (MAE) across all
+    \includegraphics[width=\linewidth]
+    {model_comparison_mae}
+    \caption{Per-variable Mean Absolute Error (MAE) across the five
     evaluated architectures for the eight Hamiltonian parameters
     $\boldsymbol{\theta}$, reported on the held-out test set in the
     original physical units of each parameter (K for $T^{(0)}$, meV
@@ -1143,34 +1249,34 @@ two-dimensional $s_z$ projection.
     external field parameters). Each panel corresponds to one target
     parameter and shows one bar per architecture. The comparatively
     larger MAE observed for $T^{(0)}$, $\tilde{J}_2$, and
-    $\tilde{K}_{DM}$ --- reaching up to $1.0\,\mathrm{K}$,
-    $0.065\,\mathrm{meV}$, and $0.05\,\mathrm{meV}$ respectively in
+    $\tilde{K}_{DM}$ --- reaching up to $0.49\,\mathrm{K}$,
+    $0.021\,\mathrm{meV}$, and $0.037\,\mathrm{meV}$ respectively in
     the worst-performing architecture --- is attributable to the
     thermally disordered paramagnetic configurations populating the
     high-temperature regime of the dataset (see
-    Figure~\ref{fig:phase_diagrams}), where visually identical
-    textures correspond to widely different parameter values,
-    rendering the inverse mapping fundamentally ill-posed even when
+    Figure~\ref{fig:phase_diagrams}), where configurations generated
+    by widely different parameter values relax into statistically
+    similar noise textures, inflating the absolute error even when
     the global $R^2$ correlation remains strong. The comparatively
     small MAE of $\tilde{J}_3$ and $\tilde{J}_4$ despite their
     near-zero $R^2$ reflects the narrow dynamic range of these
     parameters in the dataset rather than genuine predictive skill.
-    Gold-bordered bars indicate the best-performing architecture
+    Black-bordered bars indicate the best-performing architecture
     for each parameter.}
     \label{fig:mae_metrics}
-\end{figure}
+\end{figure*}
 
 %umap visualization
-To gain deeper insight into the internal representations learned by 
-the ViT during the inverse Hamiltonian estimation task, 
-Figure~\ref{fig:umap_latent} presents a Uniform Manifold 
-Approximation and Projection (UMAP) of the model's latent 
-space~\cite{ghojogh2021uniform}, where each point corresponds to a 
-test sample colored by the value of each of the eight Hamiltonian 
-parameters $\boldsymbol{\theta}$. The UMAP embedding was computed 
-from the high-dimensional feature vectors extracted from the ViT's 
-final encoder block prior to the regression head, providing a 
-two-dimensional visualization of the geometric structure that the 
+To gain deeper insight into the internal representations learned by
+the best-performing model, Xception, during the inverse Hamiltonian estimation task,
+Figure~\ref{fig:umap_latent} presents a Uniform Manifold
+Approximation and Projection (UMAP) of the model's latent
+space~\cite{ghojogh2021uniform}, where each point corresponds to a
+test sample colored by the value of each of the eight Hamiltonian
+parameters $\boldsymbol{\theta}$. The UMAP embedding was computed
+from the high-dimensional feature vectors extracted from the Xception
+backbone prior to the regression head, providing a
+two-dimensional visualization of the geometric structure that the
 model has learned to impose on the magnetization image manifold. 
 Rather than forming a single undifferentiated cloud, the latent 
 space exhibits a rich topological structure composed of several 
@@ -1186,32 +1292,37 @@ predictive performance of the model on $T^{(0)}$. The DMI strength
 $\tilde{K}_{DM}$ also produces a structured gradient in the latent 
 space, with high-$\tilde{K}_{DM}$ helical configurations forming a 
 distinct elongated region separated from the low-$\tilde{K}_{DM}$ 
-disordered states, confirming that the ViT has successfully encoded 
-the chiral winding imposed by the DMI as a geometrically meaningful 
-direction in its latent representation. In contrast, the 
-longer-range exchange constants $\tilde{J}_3$ and $\tilde{J}_4$ 
-produce nearly uniform colorings across the entire embedding, 
-indicating that the model's internal representations carry little 
-discriminative information about these parameters a result that 
-is fully consistent with their low $R^2$ values and their energetic 
-subordination to the dominant first-shell exchange 
-$\tilde{J}_1 = 1.0$~meV. Similarly, the anisotropy constants 
-$\tilde{K}_{an1}$ and $\tilde{K}_{anS}$ and the external field 
-$\tilde{H}_{ex}$ show spatially mixed and unstructured colorings, 
-corroborating the partial observability limitations and the 
-confounding effects identified in the regression analysis.
+disordered states, confirming that Xception has successfully encoded
+the chiral winding imposed by the DMI as a geometrically meaningful
+direction in its latent representation. The bulk anisotropy $\tilde{K}_{an1}$ and the external field
+$\tilde{H}_{ex}$ likewise display coherent, structured gradients
+across the embedding, mirroring their high regression accuracy and
+confirming that Xception encodes them as well-defined directions in
+its latent geometry --- a direct consequence of the out-of-plane
+field configurations and the extended anisotropy range, which render
+these parameters observable in the $s_z$ projection. In contrast, the
+longer-range exchange constants $\tilde{J}_3$ and $\tilde{J}_4$
+produce nearly uniform colorings across the entire embedding,
+indicating that the model's internal representations carry little
+discriminative information about these parameters --- a result that
+is fully consistent with their low $R^2$ values and their energetic
+subordination to the dominant first-shell exchange
+$\tilde{J}_1 = 1.0$~meV. The surface anisotropy $\tilde{K}_{anS}$
+occupies an intermediate case, showing a partially mixed coloring
+consistent with its moderate identifiability and its entanglement
+with the bulk anisotropy signature.
 
 %umap 2D
-To further investigate the physical organization of the ViT's 
-latent representations, a structured clustering analysis was 
-conducted directly on the two-dimensional UMAP embedding of the 
-test set feature vectors. Prior to visualization, the raw UMAP 
-coordinates were normalized to the unit interval $[0,1]$ along 
-each axis using a min-max transformation. The spatial distribution 
-of magnetization images across the normalized latent space, 
-illustrated in Figure~\ref{fig:umap_images_only}, reveals that 
-the Vision Transformer has organized the magnetization textures 
-into geometrically distinct and physically interpretable regions 
+To further investigate the physical organization of the Xception
+latent representations, a structured clustering analysis was
+conducted directly on the two-dimensional UMAP embedding of the
+test set feature vectors. Prior to visualization, the raw UMAP
+coordinates were normalized to the unit interval $[0,1]$ along
+each axis using a min-max transformation. The spatial distribution
+of magnetization images across the normalized latent space,
+illustrated in Figure~\ref{fig:umap_images_only}, reveals that
+Xception has organized the magnetization textures
+into geometrically distinct and physically interpretable regions
 without any explicit supervision of magnetic phase labels. The 
 lower-left region of the embedding is occupied by ordered, 
 low-temperature spin configurations exhibiting well-defined 
@@ -1227,171 +1338,170 @@ of $\tilde{J}_1$ and $\tilde{K}_{DM}$. The isolated cluster
 visible in the upper-right corner of the embedding corresponds 
 to a qualitatively distinct topological regime --- ferromagnetic 
 and skyrmion-like configurations with uniform or radially 
-symmetric $s_z$ distributions --- whose geometric separation 
-from the main manifold confirms that the Vision Transformer has 
-successfully encoded these structures as a fundamentally 
+symmetric $s_z$ distributions --- whose geometric separation
+from the main manifold confirms that Xception has
+successfully encoded these structures as a fundamentally
 different category of spin texture in its latent space.
 
 %UMAP ViT
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth]
-    {umap_latent}
-    \caption{UMAP-based 2D projection of the ViT latent space 
-    on the held-out test set, colored by each of the eight 
-    Hamiltonian parameters $\boldsymbol{\theta} = [T^{(0)}, 
-    \tilde{J}_2, \tilde{J}_3, \tilde{J}_4, \tilde{K}_{an1}, 
-    \tilde{K}_{anS}, \tilde{H}_{ex}, \tilde{K}_{DM}]$. Each 
-    point represents a magnetization image $\mathbf{X}_n$ 
-    projected from the high-dimensional feature space of the 
-    final Transformer encoder block into two dimensions via UMAP.}
+    {latent_xception_umap}
+    \caption{UMAP-based 2D projection of the Xception latent space
+    on the held-out test set, colored by each of the eight
+    Hamiltonian parameters $\boldsymbol{\theta} = [T^{(0)},
+    \tilde{J}_2, \tilde{J}_3, \tilde{J}_4, \tilde{K}_{an1},
+    \tilde{K}_{anS}, \tilde{H}_{ex}, \tilde{K}_{DM}]$. Each
+    point represents a magnetization image $\mathbf{X}_n$
+    projected from the high-dimensional feature space of the
+    Xception backbone into two dimensions via UMAP.}
     \label{fig:umap_latent}
-\end{figure}
+\end{figure*}
 
 %umap 2D
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth]
-    {umap_images_only}
-    \caption{Spatial distribution of magnetization images $\mathbf{X}_n$ across the normalized two-dimensional UMAP projection of the ViT latent space (test set). Both axes are normalized to $[0,1]$. Each thumbnail represents the out-of-plane magnetization field $s_z$ of a randomly selected test sample placed at its corresponding normalized UMAP coordinate.}
+    {latent_umap_states}
+    \caption{Spatial distribution of magnetization images $\mathbf{X}_n$ across the normalized two-dimensional UMAP projection of the Xception latent space (test set). Both axes are normalized to $[0,1]$. Each thumbnail represents the out-of-plane magnetization field $s_z$ of a randomly selected test sample placed at its corresponding normalized UMAP coordinate.}
     \label{fig:umap_images_only}
-\end{figure}
+\end{figure*}
 
-To systematically identify and characterize the dominant magnetic 
-phases encoded in the latent space, a density-based clustering 
-analysis was performed using the HDBSCAN algorithm on the UMAP 
-embedding, followed by a KMeans subdivision of anomalously large 
-clusters. Based on visual inspection of representative samples 
-and the mean values of the Hamiltonian parameters 
-$\boldsymbol{\theta}$ within each group, the resulting clusters 
-were consolidated into four physically meaningful magnetic phase 
+To systematically identify and characterize the dominant magnetic
+phases encoded in the latent space, a density-based clustering
+analysis was performed using the HDBSCAN algorithm on the UMAP
+embedding, followed by a KMeans subdivision of anomalously large
+clusters. Based on visual inspection of representative samples
+and the mean values of the Hamiltonian parameters
+$\boldsymbol{\theta}$ within each group, the resulting clusters
+were consolidated into five physically meaningful magnetic phase
 categories.
 
-The \textit{ferromagnetic phase} groups configurations characterized by near-uniform out-of-plane magnetization distributions, where the spins are predominantly aligned along a single direction with minimal spatial modulation, reflecting the dominance of ferromagnetic exchange interactions over chiral and thermal perturbations. The \textit{others} category constitutes the most heterogeneous group in the dataset, gathering configurations that do not exhibit the defining spatial signatures of any single ordered magnetic phase. This category encompasses thermally disordered states in which thermal fluctuations have disrupted long-range spin order, transitional configurations located at the boundaries between competing phases, and topologically mixed textures whose spatial structure is ambiguous or intermediate between ordered regimes. The common characteristic of all configurations in this group is the absence of a distinctive and reproducible magnetization pattern, making them the most structurally ill-conditioned samples in the dataset. The \textit{labyrinthine \& conical phase} comprises configurations exhibiting well-defined, spatially extended stripe and labyrinthine domain patterns with clear periodicity and chiral winding, reflecting the stabilization of competing magnetic interactions into ordered mesoscopic textures at sufficiently low annealing temperatures. Finally, the \textit{helical phase} contains the most spatially coherent and regularly ordered configurations in the dataset, displaying well-defined helical stripe patterns with consistent chiral winding direction and spatial periodicity across the entire nanodot, representing the most energetically ordered magnetic ground states accessible within the sampled parameter space.
+The \textit{helical phase} contains the most spatially coherent and regularly ordered configurations in the dataset, displaying well-defined stripe and labyrinthine patterns with consistent chiral winding direction and spatial periodicity across the nanodot, stabilized at low annealing temperature by a moderate DMI ($\langle\tilde{K}_{DM}\rangle \approx 0.75$~meV). The \textit{skyrmion phase} groups configurations in which the strong DMI ($\langle\tilde{K}_{DM}\rangle \approx 0.88$~meV) stabilizes dense lattices of isolated, radially symmetric topological solitons, clearly visible as arrays of circular cores of reversed $s_z$ embedded in a uniform background. The \textit{Ising phase} comprises the low-temperature ($\langle T^{(0)}\rangle \approx 1.86$~K), high-anisotropy configurations characterized by sharp, discrete domain walls separating collinear up/down regions, reflecting the deliberately extended anisotropy range that drives the system toward an Ising-like regime. The \textit{bimeron phase} gathers mixed-chirality textures in which in-plane and out-of-plane components coexist as paired meron-antimeron structures, forming irregular large-scale domains without the long-range periodicity of the helical phase. Finally, the \textit{others} category constitutes the most heterogeneous group, gathering thermally disordered states in which thermal fluctuations have disrupted long-range spin order, transitional configurations located at the boundaries between competing phases, and topologically mixed textures whose spatial structure is ambiguous. The common characteristic of this group is the absence of a distinctive and reproducible magnetization pattern, making them the most structurally ill-conditioned samples in the dataset.
 
-Figure~\ref{fig:structure_representatives} presents five 
-representative magnetization images per phase, selected as the 
-samples closest to the centroid of each group in the UMAP 
-embedding, along with the mean Hamiltonian parameters 
-$\langle T^{(0)}\rangle$, $\langle\tilde{J}_2\rangle$, and 
+Figure~\ref{fig:structure_representatives} presents five
+representative magnetization images per phase, selected as the
+samples closest to the centroid of each group in the UMAP
+embedding, along with the mean Hamiltonian parameters
+$\langle T^{(0)}\rangle$, $\langle\tilde{J}_2\rangle$, and
 $\langle\tilde{K}_{DM}\rangle$ characterizing each phase.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.5\linewidth]
+    \includegraphics[width=0.7\linewidth]
     {structure_representatives}
-    \caption{Representative magnetization images $\mathbf{X}_n$ 
-    for each of the four magnetic phase categories identified 
-    through clustering of the Vision Transformer latent space. 
-    Each row displays five samples selected as the nearest 
-    neighbors to the cluster centroid in the UMAP embedding. 
-    Mean Hamiltonian parameters $\langle T^{(0)}\rangle$, 
-    $\langle\tilde{J}_2\rangle$, and $\langle\tilde{K}_{DM}\rangle$ 
-    are reported below each row. The Ferromagnetic phase displays 
-    near-uniform $s_z$ distributions with minimal spatial 
-    modulation. The Others category gathers thermally disordered, 
-    transitional, and topologically mixed configurations that 
-    lack a defining spatial signature and represent the most 
-    structurally ambiguous samples in the dataset. The 
-    Labyrinthine \& Conical phase exhibits spatially extended 
-    stripe and labyrinthine domain patterns with clear chiral 
-    winding. The Helical phase presents the most ordered and 
-    spatially coherent helical stripe configurations in the 
-    dataset, with consistent periodicity and chiral winding 
-    direction across the entire nanodot.}
+    \caption{Representative magnetization images $\mathbf{X}_n$
+    for each of the five magnetic phase categories identified
+    through clustering of the Xception latent space.
+    Each row displays five samples selected as the nearest
+    neighbors to the cluster centroid in the UMAP embedding.
+    Mean Hamiltonian parameters $\langle T^{(0)}\rangle$,
+    $\langle\tilde{J}_2\rangle$, and $\langle\tilde{K}_{DM}\rangle$
+    are reported below each row. The Helical phase presents ordered,
+    spatially coherent stripe and labyrinthine configurations with
+    consistent periodicity and chiral winding. The Others category
+    gathers thermally disordered, transitional, and topologically
+    mixed configurations that lack a defining spatial signature. The
+    Bimeron phase shows mixed-chirality textures with coexisting
+    in-plane and out-of-plane components forming irregular domains.
+    The Skyrmion phase displays dense lattices of isolated, radially
+    symmetric topological solitons stabilized by a strong DMI. The
+    Ising phase exhibits sharp, discrete domain walls between
+    collinear up/down regions, characteristic of the high-anisotropy
+    regime.}
     \label{fig:structure_representatives}
-\end{figure}
+\end{figure*}
 
-The per-phase regression performance of the Vision Transformer,
-evaluated on the 8,000 test samples used for the clustering
-analysis, is summarized in Figures~\ref{fig:metrics_by_structure}
+The per-phase regression performance of the best-performing model,
+Xception, is summarized in Figures~\ref{fig:metrics_by_structure}
 and~\ref{fig:mae_by_structure}. The results reveal a pronounced
 heterogeneity in predictive accuracy across magnetic phases that
 is physically consistent with the identifiability analysis
-presented earlier in this section. The labyrinthine \& conical
-and helical phases achieve the highest $R^2$ values and the
-lowest MAE across all architectures, particularly for $T^{(0)}$
-and $\tilde{K}_{DM}$, reflecting the fact that these ordered,
-low-temperature configurations exhibit the most discriminative
-and spatially coherent signatures in the $s_z$ projection.
-Within these phases, the well-defined periodicity and chiral
-winding of the magnetization texture provide unambiguous
-observational constraints that allow the model to recover the
-underlying Hamiltonian parameters with high fidelity.
+presented earlier in this section. The \textit{skyrmion} and
+\textit{Ising} phases achieve the highest $R^2$ values (typically
+$0.94$--$0.99$) and the lowest MAE across essentially all
+identifiable parameters, reflecting the fact that these highly
+ordered configurations---dense soliton lattices and sharp,
+discrete domain walls, respectively---exhibit the most
+discriminative and spatially coherent signatures in the $s_z$
+projection. Within these phases, the well-defined periodicity and
+topological structure of the magnetization texture provide
+unambiguous observational constraints that allow the model to
+recover the underlying Hamiltonian parameters with high fidelity.
+The \textit{helical} phase follows closely, with excellent recovery
+of $T^{(0)}$ and $\tilde{K}_{DM}$ ($R^2 \approx 0.99$) and good
+performance for $\tilde{J}_2$ and $\tilde{H}_{ex}$, although its
+anisotropy constants are estimated less accurately owing to the
+weaker anisotropic imprint in the chiral stripe regime.
 
-In stark contrast, the \textit{others} category concentrates
-the largest absolute errors across virtually all Hamiltonian
-parameters, as evidenced by the dominant MAE values in
-Figure~\ref{fig:mae_by_structure}. This result directly
-confirms the physical interpretation advanced earlier: the
-thermally disordered, transitional, and topologically mixed
-configurations grouped in this category collapse into
-structurally indistinguishable magnetization textures despite
-corresponding to widely different parameter combinations,
-making the inverse mapping fundamentally ill-posed within
-this regime. The elevated MAE for $T^{(0)}$ in the
-\textit{others} phase is particularly revealing, as it quantitatively isolates the
-contribution of the high-temperature paramagnetic regime to
-the global prediction error observed in the aggregated
-analysis. Similarly, the Ferromagnetic phase exhibits
-near-zero MAE for $\tilde{K}_{DM}$ and the exchange
-constants, consistent with the near-constant values of
-these parameters within this cluster and confirming that
-the apparent low error in these cases reflects degeneracy
-rather than genuine predictive capacity.
+In stark contrast, the \textit{others} and \textit{bimeron}
+categories concentrate the largest absolute errors across
+virtually all Hamiltonian parameters, as evidenced by the dominant
+MAE values in Figure~\ref{fig:mae_by_structure}. This result
+directly confirms the physical interpretation advanced earlier:
+the thermally disordered configurations grouped in the
+\textit{others} category, and the mixed-chirality meron-antimeron
+textures of the \textit{bimeron} phase, relax into structurally
+weakly-discriminative magnetization patterns, so that widely
+different parameter combinations produce statistically similar
+textures and inflate the inverse-mapping error within these
+regimes. The elevated MAE for $T^{(0)}$ in the \textit{others}
+phase is particularly revealing, as it quantitatively isolates the
+contribution of the high-temperature paramagnetic regime to the
+global prediction error observed in the aggregated analysis;
+likewise, the \textit{bimeron} phase yields the lowest $R^2$ for
+the anisotropy and field parameters, reflecting the intrinsic
+spatial ambiguity of its coexisting in-plane and out-of-plane
+components.
 
-Within the ordered phases, the exchange constants
-$\tilde{J}_2$, $\tilde{J}_3$, and $\tilde{J}_4$ yield
-near-zero $R^2$ values for the Labyrinthine \& Conical
-and Helical phases a direct consequence of the physical
-constraint that these textures are generated exclusively
-at $\tilde{J}_2 \approx 0$~meV, making the regression
-target degenerate and the inverse mapping statistically
-ill-posed for these parameters within these specific
-structural regimes.
+Across all five phases, the higher-order exchange constants
+$\tilde{J}_3$ and $\tilde{J}_4$ retain near-zero $R^2$, confirming
+at the per-phase level that their unidentifiability is a
+fundamental property of the $s_z$ observation rather than an
+artifact of any particular structural regime.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.8\linewidth, keepaspectratio]
-    {R2_metrics_structure}
-    \caption{Per-phase $R^2$ score of the Vision Transformer
-    across all eight Hamiltonian parameters
-    $\boldsymbol{\theta}$ for the four identified magnetic
-    phase categories (test set, $N=8{,}000$). Each bar group
+    \includegraphics[width=\linewidth, keepaspectratio]
+    {metrics_by_structure_r2}
+    \caption{Per-phase $R^2$ score of the best-performing model,
+    Xception, across all eight Hamiltonian parameters
+    $\boldsymbol{\theta}$ for the five identified magnetic
+    phase categories. Each bar group
     corresponds to one magnetic phase and each bar to one
     target parameter. Dashed horizontal lines mark the
     identifiability thresholds at $R^2 = 0.85$ (high
     predictability) and $R^2 = 0.50$ (partial predictability).
     Negative $R^2$ values and near-zero variance cases (N/A)
-    are clipped to zero. The Labyrinthine \& Conical and
-    Helical phases achieve the highest accuracy for $T^{(0)}$
-    and $\tilde{K}_{DM}$, while the Ferromagnetic phase
-    exhibits the lowest identifiability due to the
-    near-constant values of $\tilde{K}_{DM}$ and the exchange
-    parameters within this topological regime.}
+    are clipped to zero. The Skyrmion and Ising phases achieve
+    near-perfect accuracy across the identifiable parameters,
+    while the Bimeron and Others phases exhibit the lowest
+    identifiability owing to their weakly discriminative,
+    structurally ambiguous magnetization textures.}
     \label{fig:metrics_by_structure}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth, keepaspectratio]
-    {mae_structure}
-    \caption{Per-phase Mean Absolute Error (MAE) of the Vision
-    Transformer across all eight Hamiltonian parameters
-    $\boldsymbol{\theta}$ for the four identified magnetic
-    phase categories (test set, $N=8{,}000$), reported in the
+    {metrics_by_structure_mae_grid}
+    \caption{Per-phase Mean Absolute Error (MAE) of the
+    best-performing model, Xception, across all eight Hamiltonian
+    parameters $\boldsymbol{\theta}$ for the five identified magnetic
+    phase categories, reported in the
     original physical units of each parameter after inverse
     Min-Max scaling. Each panel corresponds to one target
     parameter and shows one bar per magnetic phase. The
-    \textit{others} category consistently concentrates the
-    largest absolute errors across all parameters, confirming
-    that the thermally disordered and transitional
-    configurations within this group constitute the primary
-    source of prediction error in the global regression
-    analysis. Gold-bordered bars indicate the magnetic phase
-gur    with the lowest MAE for each parameter.}
+    \textit{others} and \textit{bimeron} categories consistently
+    concentrate the largest absolute errors across most parameters,
+    confirming that the thermally disordered, transitional, and
+    mixed-chirality configurations within these groups constitute
+    the primary source of prediction error in the global regression
+    analysis. Black-bordered bars indicate the magnetic phase
+    with the lowest MAE for each parameter.}
     \label{fig:mae_by_structure}
-\end{figure}
+\end{figure*}
 
 \subsection{RAMs-based Interpretability Results}
 \label{sec:rams_results}
@@ -1475,7 +1585,7 @@ that the resulting RAMs are both spatially discriminative
 and physically interpretable across the full
 identifiability spectrum of the inverse problem.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth, keepaspectratio]
     {gamma_selection}
@@ -1500,7 +1610,7 @@ identifiability spectrum of the inverse problem.
     10$ is selected as the most selective operating point
     within the stable gradient regime.}
     \label{fig:gamma_selection}
-\end{figure}
+\end{figure*}
 
 To ensure that activation magnitudes remain physically
 interpretable and spatially confined to the nanodot
@@ -1550,7 +1660,7 @@ local features into macro-scale thermodynamic
 representations governed by $T^{(0)}$ and the
 anisotropy constants.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=0.7\linewidth]{rams_xception_unified}
     \caption{RAMs
@@ -1579,7 +1689,7 @@ anisotropy constants.
     layers consolidate activations into topologically
     significant spatial hotspots.}
     \label{fig:rams_xception_unified}
-\end{figure}
+\end{figure*}
 
 To quantify the relative importance of each network layer
 and each Hamiltonian parameter in driving the gradient
@@ -1628,7 +1738,7 @@ with their physical coupling to the in-plane spin
 components $s_x$ and $s_y$ that are not observable in
 the $s_z$ projection.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth]
     {rams_xception_bars}
@@ -1656,7 +1766,7 @@ the $s_z$ projection.
     confirming the partial observability limitations
     identified in the regression analysis.}
     \label{fig:rams_xception_bars}
-\end{figure}
+\end{figure*}
 
 %\subsubsection{Spatial Interpretability via Vision Transformer}
 
@@ -1713,7 +1823,7 @@ consistent with the near-zero DMI value ($\tilde{K}_{DM}
 model's inability to identify physically meaningful DMI
 features in the absence of chiral spin winding.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth]
     {rams_vit_compact}
@@ -1746,7 +1856,7 @@ features in the absence of chiral spin winding.
     while producing spatially diffuse activations for
     the thermally degenerate \textit{Others} phase.}
     \label{fig:rams_vit_compact}
-\end{figure}
+\end{figure*}
 
 Figure~\ref{fig:rams_vit_bars} quantifies the mean
 maximum RAM activation per Hamiltonian parameter
@@ -1817,7 +1927,7 @@ regression analysis, demonstrating that the model's
 internal representations are physically grounded
 rather than statistically arbitrary.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth]
     {rams_vit_bars}
@@ -1851,7 +1961,7 @@ rather than statistically arbitrary.
     corroborating the identifiability analysis of
     Section~\ref{sec:dl_results}.}
     \label{fig:rams_vit_bars}
-\end{figure}
+\end{figure*}
 
 %\subsubsection{Comparative Analysis and Physical Interpretation}
 
@@ -1958,7 +2068,7 @@ converged at epoch 48, resulting in total training
 times of approximately 3.2~hours and 1.4~hours 
 respectively.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=0.9\linewidth]
     {training_times}
@@ -1977,7 +2087,7 @@ respectively.
     hierarchy directly reflects the architectural 
     complexity of each model.}
     \label{fig:training_times}
-\end{figure}
+\end{figure*}
 
 %\subsubsection{Inference Latency Analysis}
 
@@ -2023,7 +2133,7 @@ Vision Transformer's self-attention parallelism becomes
 increasingly competitive with convolutional processing 
 at larger batch sizes.
 
-\begin{figure}[h]
+\begin{figure*}[!t]
     \centering
     \includegraphics[width=\linewidth]{inference}
     \caption{Inference latency comparison across the 
@@ -2044,7 +2154,7 @@ at larger batch sizes.
     $1.31\times$ overhead relative to Xception, 
     despite its $4.1\times$ larger parameter count.}
     \label{fig:inference_times}
-\end{figure}
+\end{figure*}
 
 Taken together, the computational analysis establishes 
 a clear and physically motivated architecture selection 

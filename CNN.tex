@@ -1,0 +1,95 @@
+
+    \begin{tikzpicture}[
+        % Define styles for the nodes
+        base_node/.style={rectangle, draw=black, minimum width=1.6cm, minimum height=0.9cm, align=center, font=\scriptsize, rounded corners=2pt},
+        proc_node/.style={base_node, fill=blue!10},
+        layer_node/.style={base_node, fill=orange!15},
+        special_node/.style={base_node, fill=orange!30, dashed, thick, minimum width=2.0cm},
+        head_node/.style={base_node, fill=green!15},
+        output_node/.style={rectangle, align=center, font=\scriptsize},
+        % Styles for arrows
+        arrow/.style={-Latex, thick},
+        skip/.style={->, thick, dashed, gray}
+    ]
+
+    % =========================================================================
+    % MAIN FLOW - INPUT & AUGMENTATION (Horizontal)
+    % =========================================================================
+    \node (raw_input) [output_node] {Raw Input\\$\mathbf{X}_n$\\$39{\times}39{\times}1$};
+
+    \node (aug) [proc_node, right=0.3cm of raw_input] {$90^\circ$ Rotation\\Augmentation};
+    \draw [arrow] (raw_input) -- (aug);
+
+    % =========================================================================
+    % MAIN FLOW - CONVOLUTIONAL BACKBONE (Horizontal)
+    % =========================================================================
+    \node (cb1) [layer_node, right=0.3cm of aug] {Conv Block\\$32$};
+    \draw [arrow] (aug) -- (cb1);
+
+    \node (p1) [proc_node, fill=orange!8, right=0.25cm of cb1] {Max Pool\\$2{\times}2$};
+    \draw [arrow] (cb1) -- (p1);
+
+    \node (cb2) [layer_node, right=0.25cm of p1] {Conv Block\\$64$};
+    \draw [arrow] (p1) -- (cb2);
+
+    \node (p2) [proc_node, fill=orange!8, right=0.25cm of cb2] {Max Pool\\$2{\times}2$};
+    \draw [arrow] (cb2) -- (p2);
+
+    \node (cb3) [layer_node, right=0.25cm of p2] {Conv Block\\$128$};
+    \draw [arrow] (p2) -- (cb3);
+
+    \node (p3) [proc_node, fill=orange!8, right=0.25cm of cb3] {Max Pool\\$2{\times}2$};
+    \draw [arrow] (cb3) -- (p3);
+
+    \node (cb4) [special_node, right=0.25cm of p3] {Conv Block\\$256$};
+    \draw [arrow] (p3) -- (cb4);
+
+    % =========================================================================
+    % MAIN FLOW - REGRESSION HEAD & OUTPUT (Horizontal)
+    % =========================================================================
+    \node (gap) [head_node, right=0.5cm of cb4] {GAP};
+    \draw [arrow, rounded corners=2pt] (cb4.east) -- ++(0.2,0) |- (gap.west);
+
+    \node (dense1) [head_node, right=0.3cm of gap] {Dense $256$\\BN $+$ Drop};
+    \draw [arrow] (gap) -- (dense1);
+
+    \node (dense2) [head_node, right=0.3cm of dense1] {Dense $\breve{P}$\\(Linear)};
+    \draw [arrow] (dense1) -- (dense2);
+
+    \node (final_output) [output_node, right=0.3cm of dense2] {Output\\$\hat{\boldsymbol{\theta}}_n$};
+    \draw [arrow] (dense2) -- (final_output);
+
+    % =========================================================================
+    % INSET - CONVOLUTIONAL BLOCK DETAIL (Horizontal)
+    % =========================================================================
+    \begin{scope}[shift={($(cb4.south)+(-4cm, -2.2cm)$)}]
+
+        \node[align=left, font=\scriptsize\bfseries] (inset_title) at (-0.3, 1.0) {Conv\\Block};
+
+        \node (in_x) [output_node] at (0, 0) {$\mathbf{x}$};
+
+        \node (c1) [proc_node, fill=orange!5, right=0.5cm of in_x] {Conv $3{\times}3$\\BN $+$ ReLU};
+        \draw [arrow] (in_x) -- (c1);
+
+        \node (c2) [proc_node, fill=orange!5, right=0.4cm of c1] {Conv $3{\times}3$\\BN $+$ ReLU};
+        \draw [arrow] (c1) -- (c2);
+
+        \node (sd) [proc_node, fill=blue!5, right=0.4cm of c2] {Spatial\\Dropout};
+        \draw [arrow] (c2) -- (sd);
+
+        \node (out_y) [output_node, right=0.5cm of sd] {Output};
+        \draw [arrow] (sd) -- (out_y);
+
+        % Math label inside inset
+        \node[align=right, font=\scriptsize, blue!80!black] at (6.2, -0.9)
+            {Mechanism: two $3{\times}3$ convolutions $+$ BN $+$ ReLU $+$ spatial dropout};
+
+        % Draw Frame around inset
+        \node[draw=gray, thick, fit=(inset_title) (in_x) (out_y) (sd), inner sep=0.25cm, rounded corners] (inset_frame) {};
+    \end{scope}
+
+    % Dynamic Dashed lines connecting the Backbone to the Inset
+    \draw[gray!60, dashed, thick] (cb4.south west) -- (inset_frame.north west);
+    \draw[gray!60, dashed, thick] (cb4.south east) -- (inset_frame.north east);
+
+    \end{tikzpicture}
