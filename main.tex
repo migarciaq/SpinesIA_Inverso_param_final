@@ -749,7 +749,7 @@ To broaden the structural diversity of the dataset beyond a single field geometr
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\linewidth]{param_correlation_matrix}
+    \includegraphics[width=\linewidth, trim=0 0 0 52bp, clip]{param_correlation_matrix}
     \caption{Pairwise Pearson correlation matrix of the eight
     Hamiltonian parameters computed over the entire dataset of
     $166{,}141$ configurations. All parameter pairs are essentially
@@ -1087,7 +1087,7 @@ To further validate the physical consistency of the generated dataset and provid
 %Monte carlo convergence
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]{convergence}
+    \includegraphics[width=\linewidth, trim=0 0 0 82bp, clip]{convergence}
     \caption{Thermodynamic convergence of a representative magnetic nanodot during simulated annealing. The main panel shows the total Hamiltonian energy $\mathcal{H}$ [meV] as a function of the exchange-normalized annealing temperature $T^{(0)}$ [K] under the fixed parameter configuration. Each inset depicts the 
     two-dimensional out-of-plane magnetization field $s_z$ of the central layer at the corresponding thermal state, illustrating the progressive transition from a fully disordered paramagnetic phase at high $T^{(0)}$ to a thermodynamically relaxed labyrinthine domain configuration at $T^{(0)} = 0.1$~K, driven by the competing energetic contributions of $\tilde{J}_1$ and $\tilde{K}_{DM}$.}
     \label{fig:convergence}
@@ -1099,7 +1099,7 @@ Figure~\ref{fig:spin_configuration} illustrates the converged ground-state spin 
 %2D and 3D configuration
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]{3D}
+    \includegraphics[width=\linewidth, trim=0 0 0 54bp, clip]{3D}
     \caption{Converged ground-state spin configuration of a representative magnetic nanodot at $T^{(0)}_{final} = 0.1$~K under a fixed parameter configuration. (a)~Two-dimensional projection of the out-of-plane magnetization field $s_z$: colored dots indicate spins oriented predominantly out-of-plane, while colored arrows represent the in-plane orientation $(s_x, s_y)$ of transverse moments. (b)~Full three-dimensional spin configuration, revealing the volumetric coherence of the labyrinthine chiral domain structure stabilized by the competition between $\tilde{J}_1$ and $\tilde{K}_{DM}$. Color encodes the $s_z$ component.}
     \label{fig:spin_configuration}
 \end{figure*}
@@ -1184,7 +1184,7 @@ parameters is a robust, architecture-independent property of the data.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\linewidth]{accuracy_vs_size}
+    \includegraphics[width=\linewidth, trim=0 0 0 37.2bp, clip]{accuracy_vs_size}
     \caption{Mean $R^2$ over the identifiable Hamiltonian parameters
     as a function of the number of trainable weights (log scale) for
     the five evaluated architectures. The nearly flat trend---with the
@@ -1282,7 +1282,7 @@ fundamental identifiability limit of the inverse problem.
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]
+    \includegraphics[width=\linewidth, trim=0 0 0 50.0bp, clip]
     {model_comparison_r2}
     \caption{Per-variable $R^2$ score across the five evaluated
     architectures (Xception, DenseNet, ResNet, ViT, and the
@@ -1298,7 +1298,7 @@ fundamental identifiability limit of the inverse problem.
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]
+    \includegraphics[width=\linewidth, trim=0 0 0 50.0bp, clip]
     {model_comparison_mae}
     \caption{Per-variable Mean Absolute Error (MAE) across the five
     evaluated architectures for the eight Hamiltonian parameters
@@ -1394,7 +1394,7 @@ phases.
 %UMAP Xception
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]
+    \includegraphics[width=\linewidth, trim=0 0 0 43.8bp, clip]
     {latent_xception_umap}
     \caption{UMAP-based 2D projection of the Xception latent space
     on the held-out test set, colored by each of the eight
@@ -1429,7 +1429,7 @@ $\langle\tilde{K}_{DM}\rangle$ characterizing each phase.
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.7\linewidth]
+    \includegraphics[width=0.7\linewidth, trim=0 0 0 44.4bp, clip]
     {structure_representatives}
     \caption{Representative magnetization images $\mathbf{X}_n$
     for each of the five magnetic phase categories identified
@@ -1477,7 +1477,7 @@ weaker anisotropic imprint in the chiral stripe regime.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth, keepaspectratio]
+    \includegraphics[width=\linewidth, keepaspectratio, trim=0 0 0 41.4bp, clip]
     {metrics_by_structure_r2}
     \caption{Per-phase $R^2$ score of the best-performing model,
     Xception, across all eight Hamiltonian parameters
@@ -1524,7 +1524,7 @@ artifact of any particular structural regime.
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth, keepaspectratio]
+    \includegraphics[width=\linewidth, keepaspectratio, trim=0 0 0 33.5bp, clip]
     {metrics_by_structure_mae_grid}
     \caption{Per-phase Mean Absolute Error (MAE) of the
     best-performing model, Xception, across all eight Hamiltonian
@@ -1702,7 +1702,7 @@ governed by $T^{(0)}$.
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]{rams_xception_overlay_Skyrmiones}
+    \includegraphics[width=\linewidth, trim=0 0 0 45.5bp, clip]{rams_xception_overlay_Skyrmiones}
     \caption{RAMs
     $\tilde{\mathcal{R}}_{\text{RAM}}^{(l,p)}$ for the
     Xception architecture, shown for the skyrmion phase,
@@ -1780,7 +1780,7 @@ in the regression analysis.
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]
+    \includegraphics[width=\linewidth, trim=0 0 0 73bp, clip]
     {rams_xception_magnitude_bars}
     \caption{Mean maximum RAM activation per network
     layer and Hamiltonian parameter $\boldsymbol{\theta}$,
@@ -1820,7 +1820,7 @@ The perturbation baselines operate on superpixels rather than individual pixels,
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\linewidth]{slic_physical_criterion}
+    \includegraphics[width=\linewidth, trim=0 0 0 36.9bp, clip]{slic_physical_criterion}
     \caption{Physical criterion for the SLIC segmentation used by the perturbation-based baselines. The superpixel equivalent diameter is plotted against the number of SLIC segments; the selected value $N=100$ (dashed red) yields superpixels whose size matches the characteristic magnetic domain width ($\approx 4.9$~px, dashed green), so that each interpretable region corresponds to a single magnetic domain.}
     \label{fig:slic_criterion}
 \end{figure}
@@ -1829,14 +1829,14 @@ Figure~\ref{fig:deletion_comparison} reports the deletion curves for the three m
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]{deletion_comparison}
+    \includegraphics[width=\linewidth, trim=0 0 0 32.6bp, clip]{deletion_comparison}
     \caption{Deletion curves (Most Relevant First) for RAM, LIME, SHAP, and SF-SHAP, with a random-relevance lower bound, for the three representative parameters $T^{(0)}$, $\tilde{J}_2$, and $\tilde{K}_{DM}$. The vertical axis is the induced deviation $|\hat{\theta}_{\text{pert}}-\hat{\theta}_0|$ as the most relevant pixels are progressively replaced by the baseline; the area under each curve (AUC, reported in the legend) quantifies faithfulness. For the spatially localized $\tilde{K}_{DM}$ all attribution methods lie well above the random baseline, whereas for the global parameter $T^{(0)}$ no method separates from random, reflecting its delocalized thermodynamic nature.}
     \label{fig:deletion_comparison}
 \end{figure*}
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=\linewidth]{deletion_auc_by_structure}
+    \includegraphics[width=\linewidth, trim=0 0 0 35.5bp, clip]{deletion_auc_by_structure}
     \caption{Deletion AUC resolved by magnetic phase for RAM, LIME, SHAP, and SF-SHAP (with the random baseline), for $T^{(0)}$, $\tilde{J}_2$, and $\tilde{K}_{DM}$. RAMs attain a faithfulness comparable to the perturbation-based methods and far above the random baseline for the localized $\tilde{K}_{DM}$, especially in the ordered skyrmion and Ising phases, whereas the delocalized $T^{(0)}$ shows no method separating from random.}
     \label{fig:deletion_auc}
 \end{figure*}
@@ -1845,7 +1845,7 @@ The decisive advantage of RAMs lies in their computational cost. Figure~\ref{fig
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\linewidth]{interpretability_cost}
+    \includegraphics[width=\linewidth, trim=0 0 0 29.4bp, clip]{interpretability_cost}
     \caption{Computational cost of the interpretability methods. Left: measured wall-clock time per relevance map (log scale). Right: hardware-independent cost as the number of model evaluations per map (log scale). A RAM requires a single backward pass (one model evaluation), against $\sim\!10^3$ evaluations for LIME and SHAP and $128$ for SF-SHAP, yielding an efficiency advantage of one to two orders of magnitude.}
     \label{fig:interp_cost}
 \end{figure}
