@@ -84,6 +84,13 @@
 \setcounter{bottomnumber}{2}
 \setcounter{totalnumber}{5}
 
+% Tighter spacing around floats to reduce whitespace between stacked figures/text
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{9pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{8pt plus 2pt minus 2pt}
+
 %% Journal name (optional)
 \journal{Results in Engineering}
 
@@ -504,7 +511,7 @@ For nanoscale magnetism, this extreme decoupling allows the network to efficient
 \begin{equation}\label{eq:ViT}
 \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V,
 \end{equation}
-where $d_k$ is the scaling factor (the dimension of the keys). By employing MSA, the ViT can explicitly correlate a localized structural defect on one edge of the nanodot with a compensatory chiral boundary on the opposite edge, mapping these distant correlations directly to the global DMI or symmetric exchange strengths.
+where $d_k$ is the scaling factor (the dimension of the keys). By employing MSA, the ViT can explicitly correlate a localized structural defect on one edge of the nanodot with a compensatory chiral boundary on the opposite edge, mapping these distant correlations directly to the global DMI or symmetric exchange strengths (see Figure~\ref{fig:vit_implementation}).
 
 \begin{figure*}[!t]
     \centering
@@ -1068,18 +1075,8 @@ the Xception CNN and the Vision Transformer.
 \subsection{Thermodynamic Simulation of Magnetic Topologies}
 \label{sec:image_results}
 
-%parameter kde
-We present the main results of the proposed atomistic Hamiltonian simulation framework (see Section~\ref{sec:materials}). Figure~\ref{fig:parameter_distributions} delineates the empirical probability density functions---comprising histograms and kernel density estimates---for the extended parameter space $\theta$, capturing the foundational statistical architecture of the simulated dataset. The exchange constants $\tilde{J}_{2}$, $\tilde{J}_{3}$, and $\tilde{J}_{4}$ concentrate sharply around zero with narrow, nearly symmetric distributions, whereas the DMI strength $\tilde{K}_{DM}$ spans its full $[0, 1.2]$~meV range with a broad, well-populated distribution. The initial annealing temperature $T^{(0)}$ exhibits a pronounced right-skewed profile, while the bulk anisotropy $\tilde{K}_{an1}$ and the external field $\tilde{H}_{ex}$ are strongly peaked near zero with heavy tails extending toward high values---reflecting the deliberate inclusion of high-anisotropy, Ising-like regimes and out-of-plane field configurations. This rigorous statistical characterization is crucial because these specific distributional shapes, bounded ranges, and sampling heterogeneities explicitly govern the topological diversity of the generated magnetic phase space. Consequently, this varying sampling density directly dictates the learning dynamics, optimization stability, and predictive limits of the downstream deep regression frameworks, particularly when navigating the highly degenerate regimes of the extended Heisenberg Hamiltonian.
-
-%parameter kde
-\begin{figure*}[!t]
-    \centering
-    \includegraphics[width=\linewidth]{parameter_distributions_kde}
-    \caption{Empirical distributions of the thermodynamic and Hamiltonian parameters $\{T^{(0)}, \tilde{J}_2, \tilde{J}_3, \tilde{J}_4, \tilde{K}_{an1}, \tilde{K}_{anS}, \tilde{H}_{ex}, \tilde{K}_{DM}\}$ 
-    used to generate the dataset. Each subplot presents a histogram and KDE for a given variable, along with 
-    summary statistics including mean, standard deviation, and value range.}
-    \label{fig:parameter_distributions}
-\end{figure*}
+%dataset statistics
+We present the main results of the proposed atomistic Hamiltonian simulation framework (see Section~\ref{sec:materials}). The simulated dataset spans the eight-dimensional parameter space $\boldsymbol{\theta}$ over the bounds summarized in Table~\ref{tab:param_ranges}, sampled with deliberately heterogeneous densities: the higher-order exchange constants $\tilde{J}_2$, $\tilde{J}_3$, and $\tilde{J}_4$ concentrate near zero, whereas the DMI strength $\tilde{K}_{DM}$ is broadly populated across its full $[0, 1.2]$~meV range, and the bulk anisotropy $\tilde{K}_{an1}$ and external field $\tilde{H}_{ex}$ exhibit heavy tails toward high values that deliberately incorporate high-anisotropy, Ising-like regimes and out-of-plane field configurations. These bounded ranges and sampling heterogeneities explicitly govern the topological diversity of the generated magnetic phase space and, in turn, the learning dynamics, optimization stability, and predictive limits of the downstream deep regression frameworks when navigating the challenging regimes of the extended Heisenberg Hamiltonian.
 
 %convergence monte carlo example
 To further validate the physical consistency of the generated dataset and provide an intuitive understanding of the underlying spin dynamics, Figure~\ref{fig:convergence} illustrates the thermodynamic evolution of a representative magnetic nanodot during the Metropolis--Hastings Monte Carlo annealing process. This simulation is conducted under the fixed parameter configuration $\tilde{J}_1 = 1.0$~meV, $\tilde{J}_2 = \tilde{J}_3 = \tilde{J}_4 = 0.0$~meV, $\tilde{K}_{an1} = 0.10$~meV/atom, $\tilde{K}_{anS} = 0.00$~meV/atom, $\tilde{H}_{ex} = 0.00$~meV/atom, and $\tilde{K}_{DM} = 1.00$~meV, which constitutes a representative point within the full eight-dimensional parameter space $\boldsymbol{\theta}$ defined in Table~\ref{tab:param_ranges}. The vanishing values of the higher-order exchange constants ($\tilde{J}_2$, $\tilde{J}_3$, $\tilde{J}_4$), surface anisotropy ($\tilde{K}_{anS}$), and external field ($\tilde{H}_{ex}$) isolate the dominant energetic competition between the first-shell symmetric exchange $\tilde{J}_1$ and the DMI $\tilde{K}_{DM}$, making this configuration particularly illustrative of the chiral ordering mechanism. The main panel tracks the total Hamiltonian energy $\mathcal{H}$ [meV] as a function of the exchange-normalized annealing temperature $T^{(0)}$ [K], while each inset displays the corresponding two-dimensional out-of-plane magnetization field $s_z$ of the central layer at that specific thermal state. At elevated temperatures ($T^{(0)} \gtrsim 15$~K), the spin configurations exhibit a fully disordered, paramagnetic character, manifesting as spatially uncorrelated fluctuations of $s_z$ with no preferred orientation. As the system is progressively cooled through the intermediate regime ($5~\text{K} \lesssim T^{(0)} \lesssim 15$~K), short-range correlated domains begin to nucleate, reflecting the growing dominance of the symmetric exchange interaction $\tilde{J}_1$ over thermal fluctuations. In this regime, the competition between $\tilde{J}_1$ and the $\tilde{K}_{DM}$ progressively induced non-collinear and chiral spin winding, visible as the emergence of alternating red-blue stripe-like patterns. Upon convergence to the near-ground state at $T^{(0)} = 0.1$~K, the system stabilizes into a well-defined labyrinthine domain configuration, characteristic of the helical phase governed by a strong DMI relative to the exchange energy. The monotonic decrease $\mathcal{H}$ throughout the annealing trajectory confirms the thermodynamic relaxation of the system toward \ch{a low-energy stable configuration}, validating the physical correctness of the Monte Carlo pipeline and the quality of the generated dataset as input for the deep learning regression framework.
