@@ -126,7 +126,7 @@
 
 
 \begin{abstract}
-Magnetic nanodots host topological spin textures whose stability is dictated by an extended Heisenberg Hamiltonian combining symmetric exchange, the Dzyaloshinskii--Moriya interaction (DMI), magnetocrystalline anisotropy, and the Zeeman field. Inferring these atomistic parameters from two-dimensional magnetization images underpins the design of functional magnetic materials, yet it remains an ill-posed inverse problem: under certain external conditions and transient states, configurations relax into noisy, weakly discriminative textures that render the dataset intrinsically ill-conditioned. Existing deep-learning estimators act as opaque black boxes and rely on slow atomistic simulations. We propose an explainable regression methodology whose novelty lies in data generation and interpretability, not the predictors: a matrix decomposition of the extended Hamiltonian enables GPU-accelerated Metropolis--Hastings Monte Carlo with simulated annealing, accelerating computation without altering the underlying physics, while Regression Activation Maps (RAMs)---a novel error-based attribution metric---turn the network into a traceable gray-box model. Trained on $166{,}141$ configurations, convolutional and Vision Transformer regressors reliably recover six of the eight parameters, while the two higher-order exchange constants remain bounded by the intrinsic identifiability limits of the $s_z$ projection. Comparing both families through their attention maps and accuracy-versus-size trade-off, RAMs isolate the chiral domain walls and skyrmion cores driving predictions.
+Magnetic nanodots host topological spin textures whose stability is dictated by an extended Heisenberg Hamiltonian combining symmetric exchange, the Dzyaloshinskii--Moriya interaction, magnetocrystalline anisotropy, and the Zeeman field. Inferring these atomistic parameters from two-dimensional magnetization images underpins the design of functional magnetic materials, yet it remains an ill-posed inverse problem: under certain external conditions and transient states, configurations relax into noisy, weakly discriminative textures that render the dataset intrinsically ill-conditioned. Deep-learning estimators act as opaque black boxes and rely on slow atomistic simulations. We propose an explainable regression methodology whose novelty lies in data generation and interpretability: a matrix decomposition of the extended Hamiltonian enables GPU-accelerated Metropolis--Hastings Monte Carlo with simulated annealing, accelerating computation without altering the underlying physics, while Regression Activation Maps (RAMs)---a novel error-based attribution metric---turn the network into a traceable gray-box model. Trained on $166{,}141$ configurations, convolutional and Vision Transformer regressors reliably recover the physical parameters, while the higher-order exchange constants remain bounded by the intrinsic identifiability limits of the $s_z$ projection. Comparing both families through their attention maps and accuracy-versus-size trade-off, RAMs isolate the chiral domain walls and skyrmion cores driving predictions.
 \end{abstract}
 
 %%Graphical abstract
@@ -1039,12 +1039,12 @@ We present the main results of the proposed atomistic Hamiltonian simulation fra
 To further validate the physical consistency of the generated dataset and provide an intuitive understanding of the underlying spin dynamics, Figure~\ref{fig:convergence} illustrates the thermodynamic evolution of a representative magnetic nanodot during the Metropolis--Hastings Monte Carlo annealing process. This simulation is conducted under the fixed parameter configuration $\tilde{J}_1 = 1.0$~meV, $\tilde{J}_2 = \tilde{J}_3 = \tilde{J}_4 = 0.0$~meV, $\tilde{K}_{an1} = 0.10$~meV/atom, $\tilde{K}_{anS} = 0.00$~meV/atom, $\tilde{H}_{ex} = 0.00$~meV/atom, and $\tilde{K}_{DM} = 1.00$~meV, which constitutes a representative point within the full eight-dimensional parameter space $\boldsymbol{\theta}$ defined in Table~\ref{tab:param_ranges}. The vanishing values of the higher-order exchange constants ($\tilde{J}_2$, $\tilde{J}_3$, $\tilde{J}_4$), surface anisotropy ($\tilde{K}_{anS}$), and external field ($\tilde{H}_{ex}$) isolate the dominant energetic competition between the first-shell symmetric exchange $\tilde{J}_1$ and the DMI $\tilde{K}_{DM}$, making this configuration particularly illustrative of the chiral ordering mechanism. The main panel tracks the total Hamiltonian energy $\mathcal{H}$ [meV] as a function of the exchange-normalized annealing temperature $T^{(0)}$ [K], while each inset displays the corresponding two-dimensional out-of-plane magnetization field $s_z$ of the central layer at that specific thermal state. At elevated temperatures ($T^{(0)} \gtrsim 15$~K), the spin configurations exhibit a fully disordered, paramagnetic character, manifesting as spatially uncorrelated fluctuations of $s_z$ with no preferred orientation. As the system is progressively cooled through the intermediate regime ($5~\text{K} \lesssim T^{(0)} \lesssim 15$~K), short-range correlated domains begin to nucleate, reflecting the growing dominance of the symmetric exchange interaction $\tilde{J}_1$ over thermal fluctuations. In this regime, the competition between $\tilde{J}_1$ and the $\tilde{K}_{DM}$ progressively induced non-collinear and chiral spin winding, visible as the emergence of alternating red-blue stripe-like patterns. Upon convergence to the near-ground state at $T^{(0)} = 0.1$~K, the system stabilizes into a well-defined labyrinthine domain configuration, characteristic of the helical phase governed by a strong DMI relative to the exchange energy. The monotonic decrease $\mathcal{H}$ throughout the annealing trajectory confirms the thermodynamic relaxation of the system toward \ch{a low-energy stable configuration}, validating the physical correctness of the Monte Carlo pipeline and the quality of the generated dataset as input for the deep learning regression framework.
 
 %Monte carlo convergence
-\begin{figure*}[!t]
+\begin{figure}[!t]
     \centering
-    \includegraphics[width=\linewidth, trim=0 0 0 82bp, clip]{convergence}
+    \includegraphics[width=\linewidth, trim=0 0 0 40bp, clip]{fig1_convergence_all_params}
     \caption{Thermodynamic convergence of a representative nanodot during simulated annealing. The main panel shows the total Hamiltonian energy $\mathcal{H}$ [meV] versus the annealing temperature $T^{(0)}$ [K]; each inset shows the $s_z$ field of the central layer at that state, tracing the transition from a disordered paramagnetic phase at high $T^{(0)}$ to a relaxed labyrinthine configuration at $T^{(0)} = 0.1$~K.}
     \label{fig:convergence}
-\end{figure*}
+\end{figure}
 
 To fully characterize the structural diversity generated by the Monte Carlo annealing protocol across the entire dataset, Figure~\ref{fig:phase_diagrams} presents two-dimensional phase diagrams of the magnetization image as a function of key Hamiltonian parameter pairs: $T^{(0)}$ versus $\tilde{J}_2$ and $T^{(0)}$ versus $\tilde{K}_{DM}$. These diagrams illustrate the macroscopic topological transitions driven by the underlying atomistic energetic competition. In the low-temperature regime, the system stabilizes into well-defined ordered textures whose morphology is dictated by the parameters: increasing $\tilde{K}_{DM}$ drives the sequence from nearly uniform ferromagnetic states, through chiral stripe and labyrinthine domains, to isolated skyrmionic textures, while the sign of $\tilde{J}_2$ separates ferromagnetic from antiferromagnetically modulated exchange ordering. Crucially, these ordered configurations remain visually distinguishable across the parameter space, which is precisely what allows the majority of the Hamiltonian parameters to be recovered by the inverse models. The principal source of ill-conditioning is instead thermal in origin: as the annealing temperature approaches the effective Curie point $T_C$, thermal fluctuations progressively overwhelm the magnetic interactions, and the system passes through transient, partially ordered states before collapsing into a paramagnetic, spatially uncorrelated texture that carries little discriminative information about the generating parameters. This temperature-driven loss of structure---together with the weakly discriminative transient regimes, rather than any intrinsic parameter degeneracy---constitutes the dominant challenge the dataset poses to the inverse estimation, consistent with the noisy, ill-conditioned regimes highlighted in the abstract. By comprehensively sampling this phase space, including these transient and high-temperature regimes, the thermodynamic simulation establishes a rich yet rigorously challenging foundation for the subsequent inverse deep learning parameter estimation.
 
@@ -1315,7 +1315,7 @@ which we use next to identify and characterize the dominant magnetic
 phases.
 
 %UMAP Xception
-\begin{figure*}[!t]
+\begin{figure}[!t]
     \centering
     \includegraphics[width=\linewidth, trim=0 0 0 43.8bp, clip]
     {latent_xception_umap}
@@ -1328,7 +1328,7 @@ phases.
     projected from the high-dimensional feature space of the
     Xception backbone into two dimensions via UMAP.}
     \label{fig:umap_latent}
-\end{figure*}
+\end{figure}
 
 
 To systematically identify and characterize the dominant magnetic
@@ -1350,9 +1350,9 @@ embedding, along with the mean Hamiltonian parameters
 $\langle T^{(0)}\rangle$, $\langle\tilde{J}_2\rangle$, and
 $\langle\tilde{K}_{DM}\rangle$ characterizing each phase.
 
-\begin{figure*}[!t]
+\begin{figure}[!t]
     \centering
-    \includegraphics[width=0.75\linewidth]
+    \includegraphics[width=\linewidth]
     {structures_representatives_horizontal}
     \caption{Representative magnetization images $\mathbf{X}_n$ for
     the five magnetic phase categories identified by clustering the
@@ -1363,7 +1363,7 @@ $\langle\tilde{K}_{DM}\rangle$ characterizing each phase.
     disordered \textit{others}, mixed-chirality bimerons, dense
     skyrmion lattices, and sharp Ising domain walls.}
     \label{fig:structure_representatives}
-\end{figure*}
+\end{figure}
 
 The per-phase regression performance of the best-performing model,
 Xception, is summarized in Figures~\ref{fig:metrics_by_structure}
