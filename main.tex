@@ -167,10 +167,10 @@ Explainable AI \sep Magnetic Nanodots \sep Hamiltonian Parameters \sep Regressio
 \section{Introduction}\label{sec:intro}
 
 %nanoscale motivation and structures: helical, labyrinth and skyrmion
-Understanding and controlling magnetic behavior at the nanometric scale is a central challenge in modern condensed matter physics and materials engineering~\cite{heinrich2021quantum}. This capability is particularly relevant to the development of spintronic devices, ultrahigh-density magnetic memories, and neuromorphic computing platforms based on topological magnetic textures~\cite{wang2022fundamental, fert2024electrical}. At such length scales, surface effects, geometric confinement, and energy quantization substantially modify magnetic properties relative to the bulk~\cite{issa2013magnetic}. The resulting enhancement of surface anisotropy, structural imperfections, and thermal fluctuations strongly affects the stability and dynamics of spin configurations~\cite{charalampidis2023metadynamics}. These effects give rise to emergent collective states—including ferromagnetic, helical, labyrinthine, and skyrmionic textures~\cite{yua2017magnetic, birch2020real, yu2021magnetic, zhang2023magnetic}—whose stability is governed by the interplay of competing microscopic interactions~\cite{tokura2020magnetic}. In this context, magnetic nanodots constitute an ideal model platform, as their lateral confinement favors the formation of single-domain states, vortices, and skyrmion-like configurations controlled by the balance among symmetric exchange, magnetic anisotropy, DMI, and external magnetic fields~\cite{zelent2023stabilization, rohart2013skyrmion}. Therefore, inferring these underlying physical parameters directly from magnetic domain images has become a critical inverse problem for the rational engineering of functional magnetic materials~\cite{kong2023quantifying}.
+Understanding and controlling magnetic behavior at the nanometric scale is a central challenge in modern condensed matter physics and materials engineering~\cite{heinrich2021quantum}. This capability is particularly relevant to the development of spintronic devices, ultrahigh-density magnetic memories, and neuromorphic computing platforms based on topological magnetic textures~\cite{fert2024electrical}. At such length scales, surface effects, geometric confinement, and energy quantization substantially modify magnetic properties relative to the bulk~\cite{issa2013magnetic}. The resulting enhancement of surface anisotropy, structural imperfections, and thermal fluctuations strongly affects the stability and dynamics of spin configurations~\cite{charalampidis2023metadynamics}. These effects give rise to emergent collective states—including ferromagnetic, helical, labyrinthine, and skyrmionic textures~\cite{yu2021magnetic}—whose stability is governed by the interplay of competing microscopic interactions~\cite{tokura2020magnetic}. In this context, magnetic nanodots constitute an ideal model platform, as their lateral confinement favors the formation of single-domain states, vortices, and skyrmion-like configurations controlled by the balance among symmetric exchange, magnetic anisotropy, DMI, and external magnetic fields~\cite{rohart2013skyrmion}. Therefore, inferring these underlying physical parameters directly from magnetic domain images has become a critical inverse problem for the rational engineering of functional magnetic materials~\cite{kong2023quantifying}.
 
 %hammiltonian and ill conditioned problem (degenerecy)
-Within this framework, atomistic Hamiltonian-based modeling constitutes the most rigorous description of the discrete spin interactions, localized dynamics, and boundary effects that dominate nanoscale magnetic systems. Unlike continuum micromagnetic models, which can mask essential surface and finite-size contributions, the extended Heisenberg Hamiltonian explicitly captures the atomistic interactions responsible for stabilizing complex topological textures in magnetic nanodots~\cite{evans2014atomistic}. In its general form, the Hamiltonian includes several competing terms: the symmetric exchange interaction ($\tilde{J}$ [meV]), which promotes collinear alignment; the DMI ($\tilde{K}_{DM}$ [meV]), which favors chiral and non-collinear spin textures; the magnetocrystalline anisotropy ($\tilde{K}$ [meV]), which selects preferred crystallographic orientations; and the Zeeman coupling to an external magnetic field ($\tilde{H}_{ex}$ [meV])~\cite{aldarawsheh2023intrinsic}. The competition among these contributions generates a highly multimodal energy landscape~\cite{tokura2020magnetic,finocchio2016magnetic}, in which physically distinct parameter sets may produce spin states with nearly indistinguishable out-of-plane textures, allowing helical, skyrmion-like, and other metastable configurations to coexist~\cite{back20202020, he2023ferroelectrically}. Compounded by the noise that external conditions and transient states introduce during thermal relaxation, this degeneracy renders the inverse estimation of Hamiltonian parameters from two-dimensional magnetic domain images intrinsically ill-conditioned, imposing a physical limit on parameter identifiability that must be explicitly characterized rather than assumed away~\cite{murakami2022inverse, kwon2020magnetic}.
+Within this framework, atomistic Hamiltonian-based modeling constitutes the most rigorous description of the discrete spin interactions, localized dynamics, and boundary effects that dominate nanoscale magnetic systems. Unlike continuum micromagnetic models, which can mask essential surface and finite-size contributions, the extended Heisenberg Hamiltonian explicitly captures the atomistic interactions responsible for stabilizing complex topological textures in magnetic nanodots~\cite{evans2014atomistic}. In its general form, the Hamiltonian includes several competing terms: the symmetric exchange interaction ($\tilde{J}$ [meV]), which promotes collinear alignment; the DMI ($\tilde{K}_{DM}$ [meV]), which favors chiral and non-collinear spin textures; the magnetocrystalline anisotropy ($\tilde{K}$ [meV]), which selects preferred crystallographic orientations; and the Zeeman coupling to an external magnetic field ($\tilde{H}_{ex}$ [meV])~\cite{aldarawsheh2023intrinsic}. The competition among these contributions generates a highly multimodal energy landscape~\cite{tokura2020magnetic}, in which physically distinct parameter sets may produce spin states with nearly indistinguishable out-of-plane textures, allowing helical, skyrmion-like, and other metastable configurations to coexist~\cite{back20202020}. Compounded by the noise that external conditions and transient states introduce during thermal relaxation, this degeneracy renders the inverse estimation of Hamiltonian parameters from two-dimensional magnetic domain images intrinsically ill-conditioned, imposing a physical limit on parameter identifiability that must be explicitly characterized rather than assumed away~\cite{murakami2022inverse, kwon2020magnetic}.
 
 % SOTA 1: Experimental and simulation limitations
 The intrinsic ambiguity of the inverse problem is further exacerbated by the limitations of current experimental and analytical methodologies. Although advanced imaging techniques, including magnetic force microscopy, Lorentz transmission electron microscopy, and spin-polarized scanning tunneling microscopy~\cite{nguyen2022cooperative}, enable high-resolution visualization of magnetic textures, they typically provide indirect or transformed measurements that are subject to modality-dependent distortions, noise, and finite spatial resolution~\cite{zhao2025overview, gaida2023lorentz}. In practice, parameter estimation therefore relies heavily on empirical fitting or on comparison with synthetic magnetic configurations generated by atomistic spin simulations or continuum micromagnetic models~\cite{d2023micromagnetic, lepadatu2021micromagnetic}. Yet similarity measures defined in image space—such as mean squared error or structural similarity—are often inadequate for resolving topologically distinct states, since they primarily quantify visual resemblance rather than physical equivalence. Consequently, the optimization process remains structurally ambiguous, and substantially different Hamiltonian parameter sets may produce magnetic domain patterns that are visually indistinguishable ~\cite{yin2023computational, karnatov2025analysis}.
@@ -192,16 +192,16 @@ To assess the effectiveness of the proposed framework, extensive experiments wer
 The inverse estimation of Hamiltonian parameters from magnetic domain configurations is widely recognized as a highly challenging problem due to the complex, nonlinear relationship between physical interactions and observable spin textures. From an experimental standpoint, researchers heavily rely on advanced indirect imaging techniques such as magnetic force microscopy, Lorentz transmission electron microscopy, and spin-polarized scanning tunneling microscopy~\cite{nguyen2022cooperative}. While these modalities enable high-resolution visualization of magnetic domains, they inherently capture transformed or partial projections of the underlying three-dimensional spin configurations. Because each technique is governed by distinct physical interaction principles, experimental observations are frequently contaminated by modality-specific distortions, finite spatial resolution limits, and heterogeneous noise, making direct inversion from these measurements generally infeasible~\cite{zhao2025overview, gaida2023lorentz}. 
 
 %simulation methods
-Consequently, practical parameter estimation heavily depends on empirical fitting or direct comparison with synthetic data generated through numerical simulations~\cite{zeng2022direct, altaf2024applications}. Computationally, the problem is most commonly addressed using physics-based forward simulations, specifically atomistic spin models governed by the extended Heisenberg Hamiltonian and continuum micromagnetic models~\cite{d2023micromagnetic, lepadatu2021micromagnetic, silva2024three}. However, attempting to optimize the inverse mapping by minimizing pixel-level discrepancy functions—such as Mean Squared Error or Mean Absolute Error—frequently fails to capture physically meaningful topological differences or vital spin interactions~\cite{mongwe2021adaptive, talapatra2022understanding}. Even structural metrics like the Structural Similarity Index fall short in this regard~\cite{karnatov2025analysis}. Ultimately, because the comparison between simulated and experimental data occurs strictly in the image space rather than the parameter space, the optimization landscape becomes highly ambiguous, allowing disparate parameter configurations to yield visually identical domain patterns~\cite{yin2023computational}.
+Consequently, practical parameter estimation heavily depends on empirical fitting or direct comparison with synthetic data generated through numerical simulations~\cite{zeng2022direct}. Computationally, the problem is most commonly addressed using physics-based forward simulations, specifically atomistic spin models governed by the extended Heisenberg Hamiltonian and continuum micromagnetic models~\cite{d2023micromagnetic, lepadatu2021micromagnetic, silva2024three}. However, attempting to optimize the inverse mapping by minimizing pixel-level discrepancy functions—such as Mean Squared Error or Mean Absolute Error—frequently fails to capture physically meaningful topological differences or vital spin interactions~\cite{talapatra2022understanding}. Even structural metrics like the Structural Similarity Index fall short in this regard~\cite{karnatov2025analysis}. Ultimately, because the comparison between simulated and experimental data occurs strictly in the image space rather than the parameter space, the optimization landscape becomes highly ambiguous, allowing disparate parameter configurations to yield visually identical domain patterns~\cite{yin2023computational}.
 
 %Deep Learning Architectures for Inverse Parameter Inference
 To bypass the computationally prohibitive nature of iterative simulation-based optimization, recent advances have increasingly framed the inverse problem as a data-driven mapping utilizing deep learning architectures~\cite{lee2024deep}. The most prevalent approach employs supervised regression models, including convolutional neural networks and transformer-based architectures, to approximate this mapping deterministically. While these models offer rapid inference and scalability, they inherently assume a one-to-one mapping between images and parameters. In highly degenerate magnetic systems, this assumption causes the models to collapse the intrinsic multimodality of the parameter space into a single, often smoothed, point estimate, rendering them highly sensitive to dataset bias and sim-to-real mismatch~\cite{chen2024data}. 
 
 %Bayesian methods
-To explicitly model uncertainty and capture this multimodality, probabilistic frameworks such as Bayesian inference methods, conditional variational autoencoders, and diffusion models have been introduced~\cite{lan2022scaling, liu2026bayesian, zhao2023generative, shmakov2023end}. Despite their theoretical flexibility in sampling multiple plausible configurations, these generative and Bayesian approaches suffer from immense computational overhead, unstable training dynamics, and a distinct lack of explicit physical guarantees. In parallel, cycle-consistent frameworks and Physics-Informed Neural Networks attempt to constrain the solution space by enforcing coherence between forward and inverse mappings, or by directly embedding thermodynamic penalties into the loss function~\cite{huang2023cycle, sui2026cyclemamba, baldan2023physics}. While physically plausible, these hybrid models introduce severe optimization stiffness and rely fundamentally on the accuracy of the underlying forward surrogate, which can dangerously propagate errors within strongly degenerate spin regimes.
+To explicitly model uncertainty and capture this multimodality, probabilistic frameworks such as Bayesian inference methods, conditional variational autoencoders, and diffusion models have been introduced~\cite{zhao2023generative}. Despite their theoretical flexibility in sampling multiple plausible configurations, these generative and Bayesian approaches suffer from immense computational overhead, unstable training dynamics, and a distinct lack of explicit physical guarantees. In parallel, cycle-consistent frameworks and Physics-Informed Neural Networks attempt to constrain the solution space by enforcing coherence between forward and inverse mappings, or by directly embedding thermodynamic penalties into the loss function~\cite{huang2023cycle, baldan2023physics}. While physically plausible, these hybrid models introduce severe optimization stiffness and rely fundamentally on the accuracy of the underlying forward surrogate, which can dangerously propagate errors within strongly degenerate spin regimes.
 
 %Explainability and Interpretability in Physical Machine Learning
-Despite the growing predictive capabilities of advanced deep neural networks, their fundamental opacity remains a critical barrier to their widespread adoption in condensed matter physics. In the context of nanoscale magnetism, the delicate energetic competition among the exchange interaction, the DMI, and magnetocrystalline anisotropy creates a densely degenerate parameter space where multiple physical configurations present nearly identical free energies~\cite{vcadevz2026neural, will2021application}. Traditional black-box deep learning architectures provide no mechanistic insight into how specific spatial features within a magnetic domain image correlate with the predicted Hamiltonian constants~\cite{wang2021learning, sridharan2022modern}. This lack of interpretability prevents researchers from distinguishing whether a model has genuinely captured the underlying physical laws or merely memorized superficial dataset artifacts. While gradient-based attribution methods like Class Activation Maps have been widely adopted for discrete classification tasks, interpreting continuous regression outputs in highly multimodal physical systems remains largely underexplored~\cite{he2022survey}. The inability to spatially trace and quantify the sources of prediction errors restricts the scientific traceability of these models, underscoring an urgent necessity for architectures that inherently couple high predictive accuracy with transparent, physics-informed spatial interpretations.
+Despite the growing predictive capabilities of advanced deep neural networks, their fundamental opacity remains a critical barrier to their widespread adoption in condensed matter physics. In the context of nanoscale magnetism, the delicate energetic competition among the exchange interaction, the DMI, and magnetocrystalline anisotropy creates a densely degenerate parameter space where multiple physical configurations present nearly identical free energies~\cite{vcadevz2026neural}. Traditional black-box deep learning architectures provide no mechanistic insight into how specific spatial features within a magnetic domain image correlate with the predicted Hamiltonian constants~\cite{wang2021learning}. This lack of interpretability prevents researchers from distinguishing whether a model has genuinely captured the underlying physical laws or merely memorized superficial dataset artifacts. While gradient-based attribution methods like Class Activation Maps have been widely adopted for discrete classification tasks, interpreting continuous regression outputs in highly multimodal physical systems remains largely underexplored~\cite{he2022survey}. The inability to spatially trace and quantify the sources of prediction errors restricts the scientific traceability of these models, underscoring an urgent necessity for architectures that inherently couple high predictive accuracy with transparent, physics-informed spatial interpretations.
 
 %novelty
 To overcome these limitations, our methodology departs from prior work along three concrete axes. First, whereas most existing approaches operate at the continuum micromagnetic scale, we adopt an atomistic description at the nanometric scale, grounded in a rigorous extended Heisenberg Hamiltonian that explicitly resolves the discrete spin interactions and the surface and finite-size effects governing magnetic nanodots. Second, in contrast to the predominantly black-box models used in this field---which expose no mechanism to trace how spatial features drive the inferred parameters---we introduce RAMs, an error-based attribution method that correlates localized spatial activations with the absolute prediction error of the continuous physical targets, turning the regressor into a transparent, physically traceable gray-box model. Third, rather than relying on conventional classical simulation software, we build the data-generation process from a matrix/tensor (algebraic) decomposition of the extended Hamiltonian that, coupled with GPU computing, substantially accelerates the Metropolis--Hastings Monte Carlo with simulated annealing without altering the underlying physics. Together, these choices couple physics-grounded, high-throughput simulation with an inherently explainable regression model, enabling the precise isolation of the degenerate magnetic textures---such as chiral domain walls and skyrmions---that drive specific parameter estimations, and establishing a reliable, transparent, and traceable pathway for analyzing complex nanoscale magnetic systems. Table~\ref{tab:literature_comparison} contrasts these distinctions with representative deep-learning approaches for magnetic Hamiltonian parameter estimation across six technical dimensions.
@@ -269,7 +269,7 @@ approach~\cite{fert2024electrical}. This extended framework rigorously incorpora
 
 %generalized formulation
 Formally, let $\mathcal{V} = \{1, \dots, N\}$ denote the set of indices for the discrete magnetic lattice sites. The thermodynamic state of the system is characterized by the spatial distribution of localized magnetic moments, represented by the normalized spin vectors $\mathbf{s}_i \in \mathbb{R}^3$, subject to the constraint 
-$\|\mathbf{s}_i\|_2 = 1$, for $i\in\mathcal{V}$. In a generalized theoretical context, all pairwise symmetric and antisymmetric interactions, as well as site-specific field and anisotropy alignments, can be collapsed into a unified geometric approach~\cite{moriya1960anisotropic,eriksson2017atomistic}. The total effective energy of the system $\mathcal{H}\in\mathbb{R}$ [meV] is thus defined by the following generalized quadratic form:
+$\|\mathbf{s}_i\|_2 = 1$, for $i\in\mathcal{V}$. In a generalized theoretical context, all pairwise symmetric and antisymmetric interactions, as well as site-specific field and anisotropy alignments, can be collapsed into a unified geometric approach~\cite{moriya1960anisotropic, eriksson2017atomistic}. The total effective energy of the system $\mathcal{H}\in\mathbb{R}$ [meV] is thus defined by the following generalized quadratic form:
 
 \begin{equation}\label{eq:GeneralizedHamiltonian}
 \begin{split}
@@ -376,9 +376,9 @@ parameter is expressed in meV per atom, mathematically representing the effectiv
 
 Finally, the magnetocrystalline anisotropy encodes the intrinsic directional preference for magnetization relative to the underlying crystal lattice~\cite{cullity2011introduction}. Arising from 
 relativistic spin-orbit coupling, this term rigorously establishes the energetically favorable (easy) and unfavorable (hard) crystallographic axes for spin orientation within the nanodot. Both constants are measured in meV per atom and represent a relatively subtle symmetry-breaking energy compared to the dominant isotropic 
-exchange. The bulk anisotropy constant $\tilde{K}_{an1}$ governs interior lattice sites $i \in \mathcal{V}_{bulk}$, where each atom is fully coordinated by neighbors in all spatial directions, yielding a locally symmetric energetic environment. Its magnitude ranges from near-zero in soft magnets to several meV per atom in strongly anisotropic interfacial systems~\cite{cullity2011introduction,gambardella2003giant}, with the sampled range specified in Section~\ref{sec:experiments}. The surface anisotropy constant $\tilde{K}_{anS}$, by contrast, 
+exchange. The bulk anisotropy constant $\tilde{K}_{an1}$ governs interior lattice sites $i \in \mathcal{V}_{bulk}$, where each atom is fully coordinated by neighbors in all spatial directions, yielding a locally symmetric energetic environment. Its magnitude ranges from near-zero in soft magnets to several meV per atom in strongly anisotropic interfacial systems~\cite{cullity2011introduction, gambardella2003giant}, with the sampled range specified in Section~\ref{sec:experiments}. The surface anisotropy constant $\tilde{K}_{anS}$, by contrast, 
 governs boundary sites $i \in \mathcal{V}_{surf}$, where broken spatial inversion symmetry---arising from the absence of neighbors on the exterior side of the nanodot---produces an asymmetric local environment that intensifies the directional preference for spin orientation. Consequently, $|\tilde{K}_{anS}|$ is generally larger than $|\tilde{K}_{an1}|$, reflecting the enhanced symmetry-breaking at the nanodot boundary. This two-constant formulation is essential for accurately capturing the finite-size and surface-dominated effects that critically govern the stability of emergent topological textures
-in confined nanoscale geometries~\cite{fert2024electrical,borisov2021heisenberg}.
+in confined nanoscale geometries~\cite{fert2024electrical, borisov2021heisenberg}.
 
 Although the parameter vector $\boldsymbol{\theta}$ governs the full three-dimensional spin field, the observable exploited in this work is restricted to its out-of-plane projection, the $s_z$ component. This choice is dictated by experimental measurability: the most widely available magnetic imaging modalities---such as magnetic force microscopy and the polar magneto-optical Kerr effect---are primarily sensitive to the out-of-plane magnetization~\cite{li2023magnetic}, whereas resolving the in-plane components requires substantially more specialized techniques. Working on $s_z$ therefore keeps the framework consistent with the information realistically accessible from experiment. This restriction, however, imposes a theoretical limit on parameter identifiability: distinct parameter sets---most notably those related by the sign of the antisymmetric exchange, which reverses the in-plane chirality while leaving $s_z$ invariant---become indistinguishable in the observation space, so that a regressor exposed to both would collapse its predictions toward a degenerate average. To avoid this pathology, the present study deliberately samples the Hamiltonian parameters over value ranges that remain well-posed under the $s_z$-only observation, ensuring that the retained configurations do not induce the aforementioned averaging saturation; the specific bounds and the associated sign convention are detailed in Section~\ref{sec:experiments}.
 
@@ -1947,79 +1947,58 @@ During the preparation of this work the author(s) used Gemini and Claude in orde
 \begin{thebibliography}{10}
 
 \bibitem{heinrich2021quantum}
-A.~J. Heinrich, W.~D. Oliver, L.~M. Vandersypen, A.~Ardavan, R.~Sessoli, D.~Loss, A.~B. Jayich, J.~Fernandez-Rossier, A.~Laucht, and A.~Morello, ``Quantum-coherent nanoscience,'' {\em Nature nanotechnology}, vol.~16, no.~12, pp.~1318--1329, 2021.
-
-\bibitem{wang2022fundamental}
-K.~Wang, V.~Bheemarasetty, J.~Duan, S.~Zhou, and G.~Xiao, ``Fundamental physics and applications of skyrmions: A review,'' {\em Journal of Magnetism and Magnetic Materials}, vol.~563, p.~169905, 2022.
+A.~J. Heinrich, W.~D. Oliver, L.~M. Vandersypen, A.~Ardavan, R.~Sessoli, D.~Loss, A.~B. Jayich, J.~Fernandez-Rossier, A.~Laucht, and A.~Morello, ``Quantum-coherent nanoscience,'' {\em Nat. Nanotechnol.}, vol.~16, no.~12, pp.~1318--1329, 2021.
 
 \bibitem{fert2024electrical}
-A.~Fert, R.~Ramesh, V.~Garcia, F.~Casanova, and M.~Bibes, ``Electrical control of magnetism by electric field and current-induced torques,'' {\em Reviews of Modern Physics}, vol.~96, no.~1, p.~015005, 2024.
+A.~Fert, R.~Ramesh, V.~Garcia, F.~Casanova, and M.~Bibes, ``Electrical control of magnetism by electric field and current-induced torques,'' {\em Rev. Mod. Phys.}, vol.~96, no.~1, p.~015005, 2024.
 
 \bibitem{issa2013magnetic}
-B.~Issa, I.~M. Obaidat, B.~A. Albiss, and Y.~Haik, ``Magnetic nanoparticles: surface effects and properties related to biomedicine applications,'' {\em International journal of molecular sciences}, vol.~14, no.~11, pp.~21266--21305, 2013.
+B.~Issa, I.~M. Obaidat, B.~A. Albiss, and Y.~Haik, ``Magnetic nanoparticles: surface effects and properties related to biomedicine applications,'' {\em Int. J. Mol. Sci.}, vol.~14, no.~11, pp.~21266--21305, 2013.
 
 \bibitem{charalampidis2023metadynamics}
 I.~Charalampidis and J.~Barker, ``Metadynamics calculations of the effect of thermal spin fluctuations on skyrmion stability,'' {\em arXiv preprint arXiv:2310.03169}, 2023.
 
-\bibitem{yua2017magnetic}
-X.~Yua, M.~Mostovoyb, Y.~Tokunagaa, W.~Zhangc, K.~Kimotoc, Y.~Matsuic, Y.~Kanekod, N.~Nagaosaa, and Y.~Tokuraa, ``Magnetic stripes and skyrmions with helicity reversals,'' {\em PNAS}, vol.~114, no.~2, p.~E265, 2017.
-
-\bibitem{birch2020real}
-M.~Birch, D.~Cort{\'e}s-Ortu{\~n}o, L.~Turnbull, M.~Wilson, F.~Gro{\ss}, N.~Tr{\"a}ger, A.~Laurenson, N.~Bukin, S.~Moody, M.~Weigand, {\em et~al.}, ``Real-space imaging of confined magnetic skyrmion tubes,'' {\em Nature communications}, vol.~11, no.~1, p.~1726, 2020.
-
 \bibitem{yu2021magnetic}
-X.~Yu, ``Magnetic imaging of various topological spin textures and their dynamics,'' {\em Journal of Magnetism and Magnetic Materials}, vol.~539, p.~168332, 2021.
-
-\bibitem{zhang2023magnetic}
-H.~Zhang, Y.~Zhang, Z.~Hou, M.~Qin, X.~Gao, and J.~Liu, ``Magnetic skyrmions: materials, manipulation, detection, and applications in spintronic devices,'' {\em Materials Futures}, vol.~2, no.~3, p.~032201, 2023.
+X.~Yu, ``Magnetic imaging of various topological spin textures and their dynamics,'' {\em J. Magn. Magn. Mater.}, vol.~539, p.~168332, 2021.
 
 \bibitem{tokura2020magnetic}
-Y.~Tokura and N.~Kanazawa, ``Magnetic skyrmion materials,'' {\em Chemical Reviews}, vol.~121, no.~5, pp.~2857--2897, 2020.
-
-\bibitem{zelent2023stabilization}
-M.~Zelent, M.~Moalic, M.~Mruczkiewicz, X.~Li, Y.~Zhou, and M.~Krawczyk, ``Stabilization and racetrack application of asymmetric n{\'e}el skyrmions in hybrid nanostructures,'' {\em Scientific Reports}, vol.~13, no.~1, p.~13572, 2023.
+Y.~Tokura and N.~Kanazawa, ``Magnetic skyrmion materials,'' {\em Chem. Rev.}, vol.~121, no.~5, pp.~2857--2897, 2020.
 
 \bibitem{rohart2013skyrmion}
-S.~Rohart and A.~Thiaville, ``Skyrmion confinement in ultrathin film nanostructures in the presence of dzyaloshinskii-moriya interaction,'' {\em Physical Review B—Condensed Matter and Materials Physics}, vol.~88, no.~18, p.~184422, 2013.
+S.~Rohart and A.~Thiaville, ``Skyrmion confinement in ultrathin film nanostructures in the presence of dzyaloshinskii-moriya interaction,'' {\em Phys. Rev. B}, vol.~88, no.~18, p.~184422, 2013.
 
 \bibitem{kong2023quantifying}
-J.~F. Kong, Y.~Ren, M.~N. Tey, P.~Ho, K.~H. Khoo, X.~Chen, and A.~Soumyanarayanan, ``Quantifying the magnetic interactions governing chiral spin textures using deep neural networks,'' {\em ACS Applied Materials \& Interfaces}, vol.~16, no.~1, pp.~1025--1032, 2023.
+J.~F. Kong, Y.~Ren, M.~N. Tey, P.~Ho, K.~H. Khoo, X.~Chen, and A.~Soumyanarayanan, ``Quantifying the magnetic interactions governing chiral spin textures using deep neural networks,'' {\em ACS Appl. Mater. Interfaces}, vol.~16, no.~1, pp.~1025--1032, 2023.
 
 \bibitem{evans2014atomistic}
-R.~F. Evans, W.~J. Fan, P.~Chureemart, T.~A. Ostler, M.~O. Ellis, and R.~W. Chantrell, ``Atomistic spin model simulations of magnetic nanomaterials,'' {\em Journal of Physics: Condensed Matter}, vol.~26, no.~10, p.~103202, 2014.
+R.~F. Evans, W.~J. Fan, P.~Chureemart, T.~A. Ostler, M.~O. Ellis, and R.~W. Chantrell, ``Atomistic spin model simulations of magnetic nanomaterials,'' {\em J. Phys.: Condens. Matter}, vol.~26, no.~10, p.~103202, 2014.
 
 \bibitem{aldarawsheh2023intrinsic}
-A.~Aldarawsheh, M.~Sallermann, M.~Abusaa, and S.~Lounis, ``Intrinsic n{\'e}el antiferromagnetic multimeronic spin textures in ultrathin films,'' {\em The journal of physical chemistry letters}, vol.~14, no.~40, pp.~8970--8978, 2023.
-
-\bibitem{finocchio2016magnetic}
-G.~Finocchio, F.~B{\"u}ttner, R.~Tomasello, M.~Carpentieri, and M.~Kl{\"a}ui, ``Magnetic skyrmions: from fundamental to applications,'' {\em Journal of Physics D: Applied Physics}, vol.~49, no.~42, p.~423001, 2016.
+A.~Aldarawsheh, M.~Sallermann, M.~Abusaa, and S.~Lounis, ``Intrinsic n{\'e}el antiferromagnetic multimeronic spin textures in ultrathin films,'' {\em J. Phys. Chem. Lett.}, vol.~14, no.~40, pp.~8970--8978, 2023.
 
 \bibitem{back20202020}
-C.~Back, V.~Cros, H.~Ebert, K.~Everschor-Sitte, A.~Fert, M.~Garst, T.~Ma, S.~Mankovsky, T.~Monchesky, M.~Mostovoy, {\em et~al.}, ``The 2020 skyrmionics roadmap,'' {\em Journal of Physics D: Applied Physics}, vol.~53, no.~36, p.~363001, 2020.
-
-\bibitem{he2023ferroelectrically}
-Z.~He, W.~Du, K.~Dou, Y.~Dai, B.~Huang, and Y.~Ma, ``Ferroelectrically tunable magnetic skyrmions in two-dimensional multiferroics,'' {\em Materials Horizons}, vol.~10, no.~9, pp.~3450--3457, 2023.
+C.~Back, V.~Cros, H.~Ebert, K.~Everschor-Sitte, A.~Fert, M.~Garst, T.~Ma, S.~Mankovsky, T.~Monchesky, M.~Mostovoy, {\em et~al.}, ``The 2020 skyrmionics roadmap,'' {\em J. Phys. D: Appl. Phys.}, vol.~53, no.~36, p.~363001, 2020.
 
 \bibitem{murakami2022inverse}
-R.~Murakami, M.~Mizumaki, I.~Akai, and H.~Shouno, ``Inverse estimation of parameters for the magnetic domain via dynamics matching using visual-perceptive similarity,'' {\em Science and Technology of Advanced Materials: Methods}, vol.~2, no.~1, pp.~139--152, 2022.
+R.~Murakami, M.~Mizumaki, I.~Akai, and H.~Shouno, ``Inverse estimation of parameters for the magnetic domain via dynamics matching using visual-perceptive similarity,'' {\em Sci. Technol. Adv. Mater.: Methods}, vol.~2, no.~1, pp.~139--152, 2022.
 
 \bibitem{kwon2020magnetic}
-H.~Y. Kwon, H.~Yoon, C.~Lee, G.~Chen, K.~Liu, A.~Schmid, Y.~Wu, J.~Choi, and C.~Won, ``Magnetic hamiltonian parameter estimation using deep learning techniques,'' {\em Science advances}, vol.~6, no.~39, p.~eabb0872, 2020.
+H.~Y. Kwon, H.~Yoon, C.~Lee, G.~Chen, K.~Liu, A.~Schmid, Y.~Wu, J.~Choi, and C.~Won, ``Magnetic hamiltonian parameter estimation using deep learning techniques,'' {\em Sci. Adv.}, vol.~6, no.~39, p.~eabb0872, 2020.
 
 \bibitem{nguyen2022cooperative}
-T.~N.~H. Nguyen, L.~Rasabathina, O.~Hellwig, A.~Sharma, G.~Salvan, S.~Yochelis, Y.~Paltiel, L.~T. Baczewski, and C.~Tegenkamp, ``Cooperative effect of electron spin polarization in chiral molecules studied with non-spin-polarized scanning tunneling microscopy,'' {\em ACS applied materials \& interfaces}, vol.~14, no.~33, pp.~38013--38020, 2022.
+T.~N.~H. Nguyen, L.~Rasabathina, O.~Hellwig, A.~Sharma, G.~Salvan, S.~Yochelis, Y.~Paltiel, L.~T. Baczewski, and C.~Tegenkamp, ``Cooperative effect of electron spin polarization in chiral molecules studied with non-spin-polarized scanning tunneling microscopy,'' {\em ACS Appl. Mater. Interfaces}, vol.~14, no.~33, pp.~38013--38020, 2022.
 
 \bibitem{zhao2025overview}
 J.~Zhao, L.~Bai, S.~Li, Z.~Cao, Y.~Peng, J.~Bai, X.~Cai, X.~Shi, X.~Lin, G.~Wei, {\em et~al.}, ``An overview of advanced instruments for magnetic characterization and measurements,'' {\em Frontiers in Electronics}, vol.~6, p.~1645594, 2025.
 
 \bibitem{gaida2023lorentz}
-J.~H. Gaida, H.~Louren{\c{c}}o-Martins, S.~V. Yalunin, A.~Feist, M.~Sivis, T.~Hohage, F.~J. Garc{\'\i}a~de Abajo, and C.~Ropers, ``Lorentz microscopy of optical fields,'' {\em Nature Communications}, vol.~14, no.~1, p.~6545, 2023.
+J.~H. Gaida, H.~Louren{\c{c}}o-Martins, S.~V. Yalunin, A.~Feist, M.~Sivis, T.~Hohage, F.~J. Garc{\'\i}a~de Abajo, and C.~Ropers, ``Lorentz microscopy of optical fields,'' {\em Nat. Commun.}, vol.~14, no.~1, p.~6545, 2023.
 
 \bibitem{d2023micromagnetic}
-M.~d'Aquino, S.~Perna, M.~Pancaldi, R.~Hertel, S.~Bonetti, and C.~Serpico, ``Micromagnetic study of inertial spin waves in ferromagnetic nanodots,'' {\em Physical Review B}, vol.~107, no.~14, p.~144412, 2023.
+M.~d'Aquino, S.~Perna, M.~Pancaldi, R.~Hertel, S.~Bonetti, and C.~Serpico, ``Micromagnetic study of inertial spin waves in ferromagnetic nanodots,'' {\em Phys. Rev. B}, vol.~107, no.~14, p.~144412, 2023.
 
 \bibitem{lepadatu2021micromagnetic}
-S.~Lepadatu, ``Micromagnetic monte carlo method with variable magnetization length based on the landau--lifshitz--bloch equation for computation of large-scale thermodynamic equilibrium states,'' {\em Journal of Applied Physics}, vol.~130, no.~16, 2021.
+S.~Lepadatu, ``Micromagnetic monte carlo method with variable magnetization length based on the landau--lifshitz--bloch equation for computation of large-scale thermodynamic equilibrium states,'' {\em J. Appl. Phys.}, vol.~130, no.~16, 2021.
 
 \bibitem{yin2023computational}
 X.~Yin, {\em Computational Materials Design: Integrating Physics With Optimization and Machine Learning}.
@@ -2029,70 +2008,49 @@ X.~Yin, {\em Computational Materials Design: Integrating Physics With Optimizati
 S.~Karnatov, ``Analysis of psnr, ssim, lpips metrics in the context of human perception of visual similarity,'' {\em Transport systems and technologies}, no.~46, 2025.
 
 \bibitem{lee2024deep}
-W.~S. Lee, T.~Song, and K.-M. Kim, ``Deep learning methods for hamiltonian parameter estimation and magnetic domain image generation in twisted van der waals magnets,'' {\em Machine Learning: Science and Technology}, vol.~5, no.~2, p.~025073, 2024.
+W.~S. Lee, T.~Song, and K.-M. Kim, ``Deep learning methods for hamiltonian parameter estimation and magnetic domain image generation in twisted van der waals magnets,'' {\em Mach. Learn.: Sci. Technol.}, vol.~5, no.~2, p.~025073, 2024.
 
 \bibitem{chen2024data}
-Y.~Chen, Q.~Yang, Y.~Li, H.~Zhang, and C.~Zhang, ``Data-driven deep convolutional neural networks for electromagnetic field estimation of transformers,'' {\em IEEE Transactions on Applied Superconductivity}, vol.~34, no.~8, pp.~1--5, 2024.
+Y.~Chen, Q.~Yang, Y.~Li, H.~Zhang, and C.~Zhang, ``Data-driven deep convolutional neural networks for electromagnetic field estimation of transformers,'' {\em IEEE Trans. Appl. Supercond.}, vol.~34, no.~8, pp.~1--5, 2024.
 
 \bibitem{lan2022scaling}
-S.~Lan, S.~Li, and B.~Shahbaba, ``Scaling up bayesian uncertainty quantification for inverse problems using deep neural networks,'' {\em SIAM/ASA Journal on Uncertainty Quantification}, vol.~10, no.~4, pp.~1684--1713, 2022.
+S.~Lan, S.~Li, and B.~Shahbaba, ``Scaling up bayesian uncertainty quantification for inverse problems using deep neural networks,'' {\em SIAM/ASA J. Uncertain. Quantif.}, vol.~10, no.~4, pp.~1684--1713, 2022.
 
 \bibitem{huang2023cycle}
-L.~Huang, J.~Li, X.~Ding, Y.~Zhang, H.~Chen, and A.~Ozcan, ``Cycle-consistency-based uncertainty quantification of neural networks in inverse imaging problems,'' {\em Intelligent Computing}, vol.~2, p.~0071, 2023.
+L.~Huang, J.~Li, X.~Ding, Y.~Zhang, H.~Chen, and A.~Ozcan, ``Cycle-consistency-based uncertainty quantification of neural networks in inverse imaging problems,'' {\em Intell. Comput.}, vol.~2, p.~0071, 2023.
 
 \bibitem{baldan2023physics}
-M.~Baldan, P.~Di~Barba, and D.~A. Lowther, ``Physics-informed neural networks for inverse electromagnetic problems,'' {\em IEEE Transactions on Magnetics}, vol.~59, no.~5, pp.~1--5, 2023.
+M.~Baldan, P.~Di~Barba, and D.~A. Lowther, ``Physics-informed neural networks for inverse electromagnetic problems,'' {\em IEEE Trans. Magn.}, vol.~59, no.~5, pp.~1--5, 2023.
 
 \bibitem{wang2021learning}
-W.~Wang, Z.~Wang, Y.~Zhang, B.~Sun, and K.~Xia, ``Learning order parameters from videos of skyrmion dynamical phases with neural networks,'' {\em Physical Review Applied}, vol.~16, no.~1, p.~014005, 2021.
+W.~Wang, Z.~Wang, Y.~Zhang, B.~Sun, and K.~Xia, ``Learning order parameters from videos of skyrmion dynamical phases with neural networks,'' {\em Phys. Rev. Appl.}, vol.~16, no.~1, p.~014005, 2021.
 
 \bibitem{vcadevz2026neural}
-T.~{\v{C}}ade{\v{z}} and K.-M. Kim, ``Neural scaling laws for deep regression on domain image data of twisted magnets,'' {\em Machine Learning: Science and Technology}, vol.~7, no.~2, p.~025011, 2026.
+T.~{\v{C}}ade{\v{z}} and K.-M. Kim, ``Neural scaling laws for deep regression on domain image data of twisted magnets,'' {\em Mach. Learn.: Sci. Technol.}, vol.~7, no.~2, p.~025011, 2026.
 
 \bibitem{he2022survey}
-M.~He, B.~Li, and S.~Sun, ``A survey of class activation mapping for the interpretability of convolution neural networks,'' in {\em International Conference On Signal And Information Processing, Networking And Computers}, pp.~399--407, Springer, 2022.
+M.~He, B.~Li, and S.~Sun, ``A survey of class activation mapping for the interpretability of convolution neural networks,'' in {\em Proc. Int. Conf. Signal Inf. Process., Netw. Comput.}, pp.~399--407, Springer, 2022.
 
 \bibitem{zeng2022direct}
-J.~Zeng, M.~Albooyeh, M.~Rajaei, A.~A. Sifat, E.~O. Potma, H.~K. Wickramasinghe, and F.~Capolino, ``Direct detection of photoinduced magnetic force at the nanoscale reveals magnetic nearfield of structured light,'' {\em Science advances}, vol.~8, no.~45, p.~eadd0233, 2022.
-
-\bibitem{altaf2024applications}
-A.~Altaf, M.~Shakir, H.~A. Irshad, S.~Atif, U.~Kumari, O.~Islam, W.~T. Kimberly, E.~Knopp, C.~Truwit, K.~Siddiqui, {\em et~al.}, ``Applications, limitations and advancements of ultra-low-field magnetic resonance imaging: a scoping review,'' {\em Surgical neurology international}, vol.~15, p.~218, 2024.
+J.~Zeng, M.~Albooyeh, M.~Rajaei, A.~A. Sifat, E.~O. Potma, H.~K. Wickramasinghe, and F.~Capolino, ``Direct detection of photoinduced magnetic force at the nanoscale reveals magnetic nearfield of structured light,'' {\em Sci. Adv.}, vol.~8, no.~45, p.~eadd0233, 2022.
 
 \bibitem{silva2024three}
-G.~A. Silva, A.~Bergeron, J.~Plascak, and D.~Landau, ``Three-dimensional heisenberg model with dzyaloshinskii-moriya interaction: A monte carlo study,'' {\em Physical Review E}, vol.~109, no.~6, p.~064113, 2024.
-
-\bibitem{mongwe2021adaptive}
-W.~T. Mongwe, R.~Mbuvha, and T.~Marwala, ``Adaptive magnetic hamiltonian monte carlo,'' {\em IEEE Access}, vol.~9, pp.~152993--153003, 2021.
+G.~A. Silva, A.~Bergeron, J.~Plascak, and D.~Landau, ``Three-dimensional heisenberg model with dzyaloshinskii-moriya interaction: A monte carlo study,'' {\em Phys. Rev. E}, vol.~109, no.~6, p.~064113, 2024.
 
 \bibitem{talapatra2022understanding}
-A.~Talapatra, U.~Gajera, S.~P. P, J.~Arout~Chelvane, and J.~R. Mohanty, ``Understanding the magnetic microstructure through experiments and machine learning algorithms,'' {\em ACS applied materials \& interfaces}, vol.~14, no.~44, pp.~50318--50330, 2022.
-
-\bibitem{liu2026bayesian}
-M.~Liu, D.~Grana, K.~Mosegaard, M.~K. Sen, M.~Xu, and T.~Mukerji, ``Bayesian inference for subsurface geophysical inverse problems,'' {\em Reviews of Geophysics}, vol.~64, no.~1, p.~e2025RG000884, 2026.
+A.~Talapatra, U.~Gajera, S.~P. P, J.~Arout~Chelvane, and J.~R. Mohanty, ``Understanding the magnetic microstructure through experiments and machine learning algorithms,'' {\em ACS Appl. Mater. Interfaces}, vol.~14, no.~44, pp.~50318--50330, 2022.
 
 \bibitem{zhao2023generative}
-Z.~Zhao, J.~C. Ye, and Y.~Bresler, ``Generative models for inverse imaging problems: From mathematical foundations to physics-driven applications,'' {\em IEEE Signal Processing Magazine}, vol.~40, no.~1, pp.~148--163, 2023.
-
-\bibitem{shmakov2023end}
-A.~Shmakov, K.~Greif, M.~Fenton, A.~Ghosh, P.~Baldi, and D.~Whiteson, ``End-to-end latent variational diffusion models for inverse problems in high energy physics,'' {\em Advances in neural information processing systems}, vol.~36, pp.~65102--65127, 2023.
-
-\bibitem{sui2026cyclemamba}
-C.~Sui, Z.~Xu, Y.~Meng, H.~Wang, B.~Zhang, and G.~Vivone, ``Cyclemamba: Cycle-consistent learning for aerial visible-to-infrared image translation,'' {\em IEEE Transactions on Geoscience and Remote Sensing}, 2026.
-
-\bibitem{will2021application}
-A.~Will-Cole, A.~G. Kusne, P.~Tonner, C.~Dong, X.~Liang, H.~Chen, and N.~X. Sun, ``Application of bayesian optimization and regression analysis to ferromagnetic materials development,'' {\em IEEE transactions on magnetics}, vol.~58, no.~1, pp.~1--8, 2021.
-
-\bibitem{sridharan2022modern}
-B.~Sridharan, M.~Goel, and U.~D. Priyakumar, ``Modern machine learning for tackling inverse problems in chemistry: molecular design to realization,'' {\em Chemical communications}, vol.~58, no.~35, pp.~5316--5331, 2022.
+Z.~Zhao, J.~C. Ye, and Y.~Bresler, ``Generative models for inverse imaging problems: From mathematical foundations to physics-driven applications,'' {\em IEEE Signal Process. Mag.}, vol.~40, no.~1, pp.~148--163, 2023.
 
 \bibitem{agudelo2019study}
-J.~Agudelo-Giraldo, E.~Restrepo-Parra, and D.~Landau, ``A study of magnetic domains in thin films from fm and afm interactions,'' {\em Physica A: Statistical Mechanics and its Applications}, vol.~517, pp.~542--550, 2019.
+J.~Agudelo-Giraldo, E.~Restrepo-Parra, and D.~Landau, ``A study of magnetic domains in thin films from fm and afm interactions,'' {\em Physica A}, vol.~517, pp.~542--550, 2019.
 
 \bibitem{borisov2021heisenberg}
-V.~Borisov, Y.~O. Kvashnin, N.~Ntallis, D.~Thonig, P.~Thunstr{\"o}m, M.~Pereiro, A.~Bergman, E.~Sj{\"o}qvist, A.~Delin, L.~Nordstr{\"o}m, {\em et~al.}, ``Heisenberg and anisotropic exchange interactions in magnetic materials with correlated electronic structure and significant spin-orbit coupling,'' {\em Physical Review B}, vol.~103, no.~17, p.~174422, 2021.
+V.~Borisov, Y.~O. Kvashnin, N.~Ntallis, D.~Thonig, P.~Thunstr{\"o}m, M.~Pereiro, A.~Bergman, E.~Sj{\"o}qvist, A.~Delin, L.~Nordstr{\"o}m, {\em et~al.}, ``Heisenberg and anisotropic exchange interactions in magnetic materials with correlated electronic structure and significant spin-orbit coupling,'' {\em Phys. Rev. B}, vol.~103, no.~17, p.~174422, 2021.
 
 \bibitem{moriya1960anisotropic}
-T.~Moriya, ``Anisotropic superexchange interaction and weak ferromagnetism,'' {\em Physical review}, vol.~120, no.~1, p.~91, 1960.
+T.~Moriya, ``Anisotropic superexchange interaction and weak ferromagnetism,'' {\em Phys. Rev.}, vol.~120, no.~1, p.~91, 1960.
 
 \bibitem{eriksson2017atomistic}
 O.~Eriksson, A.~Bergman, L.~Bergqvist, and J.~Hellsvik, {\em Atomistic spin dynamics: foundations and applications}.
@@ -2107,14 +2065,14 @@ J.~M. Coey, {\em Magnetism and magnetic materials}.
 \newblock Cambridge university press, 2010.
 
 \bibitem{fert2017magnetic}
-A.~Fert, N.~Reyren, and V.~Cros, ``Magnetic skyrmions: advances in physics and potential applications,'' {\em Nature Reviews Materials}, vol.~2, no.~7, p.~17031, 2017.
+A.~Fert, N.~Reyren, and V.~Cros, ``Magnetic skyrmions: advances in physics and potential applications,'' {\em Nat. Rev. Mater.}, vol.~2, no.~7, p.~17031, 2017.
 
 \bibitem{landau2021guide}
 D.~Landau and K.~Binder, {\em A guide to Monte Carlo simulations in statistical physics}.
 \newblock Cambridge university press, 2021.
 
 \bibitem{desplat2018thermal}
-L.~Desplat, D.~Suess, J.-V. Kim, and R.~L. Stamps, ``Thermal stability of metastable magnetic skyrmions: Entropic narrowing and significance of internal eigenmodes,'' {\em Physical Review B}, vol.~98, no.~13, p.~134407, 2018.
+L.~Desplat, {\em Thermal Stability of Metastable Magnetic Skyrmions}. \newblock Springer Theses, Springer International Publishing, 2021.
 
 \bibitem{murphy2023probabilistic}
 K.~P. Murphy, {\em Probabilistic machine learning: Advanced topics}.
@@ -2124,16 +2082,16 @@ K.~P. Murphy, {\em Probabilistic machine learning: Advanced topics}.
 B.~Koonce, ``Resnet 50,'' in {\em Convolutional neural networks with swift for tensorflow: image recognition and dataset categorization}, pp.~63--72, Springer, 2021.
 
 \bibitem{huang2017densely}
-G.~Huang, Z.~Liu, L.~Van Der~Maaten, and K.~Q. Weinberger, ``Densely connected convolutional networks,'' in {\em Proceedings of the IEEE conference on computer vision and pattern recognition}, pp.~4700--4708, 2017.
+G.~Huang, Z.~Liu, L.~Van Der~Maaten, and K.~Q. Weinberger, ``Densely connected convolutional networks,'' in {\em Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR)}, pp.~4700--4708, 2017.
 
 \bibitem{chollet2017xception}
-F.~Chollet, ``Xception: Deep learning with depthwise separable convolutions,'' in {\em Proceedings of the IEEE conference on computer vision and pattern recognition}, pp.~1251--1258, 2017.
+F.~Chollet, ``Xception: Deep learning with depthwise separable convolutions,'' in {\em Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR)}, pp.~1251--1258, 2017.
 
 \bibitem{dosovitskiy2020image}
 A.~Dosovitskiy, L.~Beyer, A.~Kolesnikov, D.~Weissenborn, X.~Zhai, T.~Unterthiner, M.~Dehghani, M.~Minderer, G.~Heigold, S.~Gelly, {\em et~al.}, ``An image is worth 16x16 words: Transformers for image recognition at scale,'' {\em arXiv preprint arXiv:2010.11929}, 2020.
 
 \bibitem{vinogradova2020gradcam}
-K.~Vinogradova, A.~Dibrov, and G.~Myers, ``Towards interpretable semantic segmentation via gradient-weighted class activation mapping (student abstract),'' in {\em Proceedings of the AAAI Conference on Artificial Intelligence}, 2020.
+K.~Vinogradova, A.~Dibrov, and G.~Myers, ``Towards interpretable semantic segmentation via gradient-weighted class activation mapping (student abstract),'' in {\em Proc. AAAI Conf. Artif. Intell.}, 2020.
 
 \bibitem{zhang2024gradcam}
 Y.~Zhang, Y.~Zhu, J.~Liu, and W.~Yu, ``An interpretability optimization method for deep learning networks based on grad-cam,'' {\em IEEE}, 2024.
@@ -2145,28 +2103,28 @@ N.~Makke and S.~Chawla, ``Interpretable scientific discovery with symbolic regre
 B.~Ghojogh, A.~Ghodsi, F.~Karray, and M.~Crowley, ``Uniform manifold approximation and projection (umap) and its variants: tutorial and survey,'' {\em arXiv preprint arXiv:2109.02508}, 2021.
 
 \bibitem{li2023magnetic}
-S.~Li, X.~Wang, and T.~Rasing, ``Magnetic skyrmions: Basic properties and potential applications,'' {\em Interdisciplinary Materials}, vol.~2, no.~2, pp.~260--289, 2023.
+S.~Li, X.~Wang, and T.~Rasing, ``Magnetic skyrmions: Basic properties and potential applications,'' {\em Interdiscip. Mater.}, vol.~2, no.~2, pp.~260--289, 2023.
 
 \bibitem{fillion2022gate}
-C.-E.~Fillion, J.~Fischer, R.~Kumar, {\em et~al.}, ``Gate-controlled skyrmion and domain wall chirality,'' {\em Nature Communications}, vol.~13, no.~1, p.~5257, 2022.
+C.-E.~Fillion, J.~Fischer, R.~Kumar, {\em et~al.}, ``Gate-controlled skyrmion and domain wall chirality,'' {\em Nat. Commun.}, vol.~13, no.~1, p.~5257, 2022.
 
 \bibitem{heinze2011spontaneous}
-S.~Heinze, K.~von Bergmann, M.~Menzel, J.~Brede, A.~Kubetzka, R.~Wiesendanger, G.~Bihlmayer, and S.~Bl{\"u}gel, ``Spontaneous atomic-scale magnetic skyrmion lattice in two dimensions,'' {\em Nature Physics}, vol.~7, no.~9, pp.~713--718, 2011.
+S.~Heinze, K.~von Bergmann, M.~Menzel, J.~Brede, A.~Kubetzka, R.~Wiesendanger, G.~Bihlmayer, and S.~Bl{\"u}gel, ``Spontaneous atomic-scale magnetic skyrmion lattice in two dimensions,'' {\em Nat. Phys.}, vol.~7, no.~9, pp.~713--718, 2011.
 
 \bibitem{dupe2014tailoring}
-B.~Dup{\'e}, M.~Hoffmann, C.~Paillard, and S.~Heinze, ``Tailoring magnetic skyrmions in ultra-thin transition metal films,'' {\em Nature Communications}, vol.~5, p.~4030, 2014.
+B.~Dup{\'e}, M.~Hoffmann, C.~Paillard, and S.~Heinze, ``Tailoring magnetic skyrmions in ultra-thin transition metal films,'' {\em Nat. Commun.}, vol.~5, p.~4030, 2014.
 
 \bibitem{buhrandt2013skyrmion}
-S.~Buhrandt and L.~Fritz, ``Skyrmion lattice phase in three-dimensional chiral magnets from Monte Carlo simulations,'' {\em Physical Review B}, vol.~88, no.~19, p.~195137, 2013.
+S.~Buhrandt and L.~Fritz, ``Skyrmion lattice phase in three-dimensional chiral magnets from Monte Carlo simulations,'' {\em Phys. Rev. B}, vol.~88, no.~19, p.~195137, 2013.
 
 \bibitem{gambardella2003giant}
 P.~Gambardella, S.~Rusponi, M.~Veronese, {\em et~al.}, ``Giant magnetic anisotropy of single cobalt atoms and nanoparticles,'' {\em Science}, vol.~300, no.~5622, pp.~1130--1133, 2003.
 
 \bibitem{johnson1996magnetic}
-M.~T. Johnson, P.~J.~H. Bloemen, F.~J.~A. den~Broeder, and J.~J. de~Vries, ``Magnetic anisotropy in metallic multilayers,'' {\em Reports on Progress in Physics}, vol.~59, no.~11, pp.~1409--1458, 1996.
+M.~T. Johnson, P.~J.~H. Bloemen, F.~J.~A. den~Broeder, and J.~J. de~Vries, ``Magnetic anisotropy in metallic multilayers,'' {\em Rep. Prog. Phys.}, vol.~59, no.~11, pp.~1409--1458, 1996.
 
 \bibitem{bogdanov1989thermodynamically}
-A.~N. Bogdanov and D.~A. Yablonskii, ``Thermodynamically stable ``vortices'' in magnetically ordered crystals. The mixed state of magnets,'' {\em Soviet Physics JETP}, vol.~68, no.~1, pp.~101--103, 1989.
+A.~N. Bogdanov and D.~A. Yablonskii, ``Thermodynamically stable ``vortices'' in magnetically ordered crystals. The mixed state of magnets,'' {\em Sov. Phys. JETP}, vol.~68, no.~1, pp.~101--103, 1989.
 
 \end{thebibliography}
 
