@@ -149,7 +149,7 @@ We truly appreciate all your valuable comments. After a careful review, we have 
 \item \textit{Architectural compatibility.} A single scalar field $s_z$ defined over the two-dimensional lattice is naturally represented as a grayscale image, which maps directly onto the input format expected by the CNN and ViT backbones employed here. Providing the full spin-vector field would triple the number of input channels while adding precisely the in-plane information that is degenerate with respect to the DMI sign, as discussed below.
 \end{enumerate}
 
-Regarding the reviewer's specific request---how the prediction performance would be affected if both positive and negative DMI values were included simultaneously---we note that, because our framework operates solely on the domain image ($s_z$) without any additional data, configurations generated with $+\tilde{K}_{DM}$ and $-\tilde{K}_{DM}$ would appear as nearly identical $s_z$ textures carrying opposite (and unobserved) in-plane chirality. Including both signs in the training set would thus introduce a two-fold degeneracy in the input--output mapping: two distinct labels ($+\tilde{K}_{DM}$ and $-\tilde{K}_{DM}$) associated with essentially the same input image. Under a standard regression objective, this ambiguity drives the model toward the average of the two admissible solutions ($\hat{\tilde{K}}_{DM}\approx 0$), degrading rather than improving DMI identifiability. For the present study---intentionally constrained to the experimentally faithful $s_z$ observable and starting only from the domain image without additional data---this sign degeneracy is therefore an intrinsic limitation of the input modality rather than of the estimation method, and we must presently accommodate it by restricting the sampling to $\tilde{K}_{DM}\geq 0$; the chirality handedness is instead fixed by convention through the DMI direction vector $\hat{\mathbf{d}}_{ij}$. This restriction, and the accompanying non-negative sampling range, are now stated explicitly in the Experimental Set-Up (Table~2 and the accompanying paragraph). Recovering the DMI sign would require chirality-sensitive observables (the in-plane components or the full three-dimensional spin field), which we identify as a direction for future work in the Conclusions.
+Regarding the reviewer's specific request---how the prediction performance would be affected if both positive and negative DMI values were included simultaneously---we note that, because our framework operates solely on the domain image ($s_z$) without any additional data, configurations generated with $+\tilde{K}_{DM}$ and $-\tilde{K}_{DM}$ would appear as nearly identical $s_z$ textures carrying opposite (and unobserved) in-plane chirality. Including both signs in the training set would thus introduce a two-fold degeneracy in the input--output mapping: two distinct labels ($+\tilde{K}_{DM}$ and $-\tilde{K}_{DM}$) associated with essentially the same input image. Under a standard regression objective, this ambiguity drives the model toward the average of the two admissible solutions ($\hat{\tilde{K}}_{DM}\approx 0$), degrading rather than improving DMI identifiability. For the present study---intentionally constrained to the experimentally faithful $s_z$ observable and starting only from the domain image without additional data---this sign degeneracy is therefore an intrinsic limitation of the input modality rather than of the estimation method, and we must presently accommodate it by restricting the sampling to $\tilde{K}_{DM}\geq 0$; the chirality handedness is instead fixed by convention through the DMI direction vector $\hat{\mathbf{d}}_{ij}$. This restriction, and the accompanying non-negative sampling range, are now stated explicitly in the Experimental Set-Up (Table~1 and the accompanying paragraph). Recovering the DMI sign would require chirality-sensitive observables (the in-plane components or the full three-dimensional spin field), which we identify as a direction for future work in the Conclusions.
 
 These points are now supported in the revised manuscript by recent references: the out-of-plane sensitivity of the standard imaging modalities is backed by Li~\textit{et al.} (Interdisciplinary Materials, 2023), and the convention by which the sign of the antisymmetric exchange sets the chiral handedness by Fillion~\textit{et al.} (Nature Communications, 2022).}
 
@@ -162,7 +162,7 @@ These points are now supported in the revised manuscript by recent references: t
 
 To address this point directly, we performed a controlled comparison in which all architectures were trained from random initialization (i.e., from scratch), and we additionally included a conventional (vanilla) CNN as a reference baseline. The results, now reported in the revised manuscript, show that ImageNet pretraining does \emph{not} produce a meaningful improvement in the estimation of the Hamiltonian parameters: the marginal convergence advantage observed early in training does not translate into better final accuracy. Strikingly, the conventional CNN baseline---trained from scratch and devoid of any pretraining or specialized inductive biases---matches, and for some parameters even exceeds, the deeper residual, dense, depthwise, and attention-based backbones. This confirms that the estimation accuracy is governed by the physical information available in the $s_z$ projection rather than by transfer learning from natural images.
 
-In light of this finding, the updated workflow no longer relies on ImageNet-pretrained weights; all networks are initialized randomly and trained end-to-end on the magnetic dataset. This both simplifies the pipeline and removes the conceptual mismatch---rightly noted by the reviewer---between natural-image priors and magnetic-texture statistics. The revised manuscript reflects this change throughout: the \emph{Pretraining} column of the architecture-configuration table now reports ``None (from scratch)'', the conventional CNN has been added to the architecture comparison (Deep Regression Framework, Section~3.3, with its own diagram), and the Experimental Set-Up no longer invokes ImageNet pretraining.}
+In light of this finding, the updated workflow no longer relies on ImageNet-pretrained weights; all networks are initialized randomly and trained end-to-end on the magnetic dataset. This both simplifies the pipeline and removes the conceptual mismatch---rightly noted by the reviewer---between natural-image priors and magnetic-texture statistics. The revised manuscript reflects this change throughout: the \emph{Pretraining} column of the architecture-configuration table (Table~2) now reports ``None (from scratch)'', the conventional CNN has been added to the architecture comparison (Deep Regression Framework, Section~3.3), and the Experimental Set-Up no longer invokes ImageNet pretraining.}
 
  
 
@@ -175,10 +175,10 @@ As the reviewer correctly observes, simulated annealing provides a probabilistic
 
 In the revised manuscript, we have systematically replaced all instances of ``absolute global minimum'' and ``global energy minimum'' with physically accurate terminology. Specifically, the outcome of the annealing process is now described as convergence to a \emph{low-energy, thermodynamically stable configuration consistent with the annealing schedule}, rather than a guaranteed global minimum. This revision appears in:
 \begin{itemize}
-    \item Section~2.1 (Monte Carlo simulation description, introductory paragraph);
-    \item Section~2.1 (annealing convergence discussion, formerly Lines 406--407);
-    \item Section~3 (Experimental Setup, dataset generation description);
-    \item Section~4.1 (convergence analysis of the representative nanodot).
+    \item Section~3.2 (Monte Carlo simulation description, introductory paragraph);
+    \item Section~3.2 (annealing convergence discussion, formerly Lines 406--407);
+    \item Section~3.4 (RAMs description); and
+    \item Section~5.1 (convergence analysis of the representative nanodot).
 \end{itemize}
 
 We believe this revised terminology accurately reflects the thermodynamic behavior of the simulation while avoiding any misleading implication of guaranteed global optimality.}
@@ -188,7 +188,7 @@ We believe this revised terminology accurately reflects the thermodynamic behavi
  %4
 \point{Regarding Fig. 10, although I agree that it is not necessary to show every individual spin configuration in full detail, the current magnetic texture images appear too small to clearly identify the relevant features discussed in the manuscript. Improving the visualization would make the physical interpretation more accessible to readers.}
 
-\reply{We thank the reviewer for this helpful suggestion. We agree that, in the original version, the individual magnetization textures in Figure~10 were too small to allow a clear identification of the relevant spin features. Following the reviewer's observation---and taking advantage of the reviewer's own remark that it is not necessary to display every individual spin configuration in full detail---we have replaced Figure~10 with an improved version. The revised figure retains the two-dimensional phase-diagram layout ($T^{(0)}$ vs $\tilde{J}_2$ and $T^{(0)}$ vs $\tilde{K}_{DM}$), but employs a coarser sampling grid with substantially enlarged representative magnetization images, so that the characteristic textures---skyrmionic, labyrinthine/chiral, ferromagnetic, and paramagnetic---are now clearly discernible. This makes the physical interpretation of the phase transitions across the parameter space considerably more accessible to the reader, while preserving the overview of the structural diversity of the dataset.}
+\reply{We thank the reviewer for this helpful suggestion. We agree that, in the original version, the individual magnetization textures in the phase-diagram figure were too small to allow a clear identification of the relevant spin features. Following the reviewer's observation---and taking advantage of the reviewer's own remark that it is not necessary to display every individual spin configuration in full detail---we have replaced it with an improved version (now Figure~4 in the revised manuscript). The revised figure employs a coarser sampling grid with substantially enlarged representative magnetization images along the $T^{(0)}$--$\tilde{K}_{DM}$ axes, so that the characteristic textures---skyrmionic, labyrinthine/chiral, ferromagnetic, and paramagnetic---are now clearly discernible. This makes the physical interpretation of the phase transitions across the parameter space considerably more accessible to the reader, while preserving the overview of the structural diversity of the dataset.}
 
 \end{reviewer}
  
@@ -213,7 +213,57 @@ We believe this revised terminology accurately reflects the thermodynamic behavi
 \item \textit{Interpretability.} In contrast to the predominantly black-box models used in this field---which expose no mechanism to trace how spatial features drive the inferred parameters---we introduce Regression Activation Maps (RAMs), a novel error-based attribution method that supports layer-wise and structure-wise analysis of the regions relevant to each Hamiltonian parameter. RAMs are benchmarked against three perturbation-based methods---LIME, SHAP, and an exact spatial-frequency Shapley estimator (SF-SHAP)---through a deletion protocol, achieving competitive spatial faithfulness at a single backward pass per explanation, as opposed to the hundreds to thousands of model evaluations required by these baselines.
 \end{enumerate}
 
-To make these distinctions explicit, we have expanded the Related Work section and added a comparative table (Table~1) that contrasts our framework against representative prior studies across six technical dimensions---the Hamiltonian terms modeled, the simulation method, the deep-learning architecture, the parameters estimated, the performance metrics, and, crucially, the interpretability mechanism---highlighting that these earlier works, while accurate, provide no spatially resolved physical explainability.}
+To make these distinctions explicit, we have expanded the Related Work section, and we summarize the comparison in Table~\ref{tab:litcomp_resp} below, which contrasts our framework against representative prior studies across six technical dimensions---the Hamiltonian terms modeled, the simulation method, the deep-learning architecture, the parameters estimated, the performance metrics, and, crucially, the interpretability mechanism---highlighting that these earlier works, while accurate, provide no spatially resolved physical explainability.
+
+\begin{table}[H]
+\centering
+\caption{Comparative analysis of deep learning approaches for magnetic Hamiltonian parameter estimation. The works of Kong~\textit{et al.}~\cite{kong2023quantifying}, Kwon~\textit{et al.}~\cite{kwon2020magnetic}, and Lee~\textit{et al.}~\cite{lee2024deep} are contrasted against the proposed framework across six technical dimensions.}
+\label{tab:litcomp_resp}
+\setlength{\tabcolsep}{4pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}p{2.2cm} p{2.6cm} p{2.6cm} p{2.6cm} p{3.4cm}@{}}
+\toprule
+\textbf{\footnotesize Dimension} & \textbf{\footnotesize Kong~\cite{kong2023quantifying}} & \textbf{\footnotesize Kwon~\cite{kwon2020magnetic}} & \textbf{\footnotesize Lee~\cite{lee2024deep}} & \textbf{\footnotesize Ours} \\
+\midrule
+\textbf{\footnotesize Hamiltonian terms}
+& \footnotesize Exchange $A$, aniso.\ $K_\text{eff}$, DMI $D$
+& \footnotesize Exchange $J$, DMI $\beta$, dipolar $D$, aniso.\ $K$
+& \footnotesize Intralayer $J$, single-ion $A$, interlayer $J^{\perp}$
+& \footnotesize Ext.\ Heisenberg $\tilde{J}_1$--$\tilde{J}_4$, $\tilde{K}_{DM}$, $\tilde{H}_{ex}$, $\tilde{K}_{an1}$, $\tilde{K}_{anS}$ \\
+\midrule
+\textbf{\footnotesize Simulation}
+& \footnotesize Micromagnetic (mumax3, LLG)
+& \footnotesize MC simulated annealing
+& \footnotesize Atomistic (stochastic LLG)
+& \footnotesize Atomistic MC (Metropolis + annealing, multi-GPU) \\
+\midrule
+\textbf{\footnotesize DL architecture}
+& \footnotesize Custom CNN
+& \footnotesize ResNet18/50, CNN
+& \footnotesize MLPs
+& \footnotesize CNN baseline + DenseNet, ViT, Xception, ResNet \\
+\midrule
+\textbf{\footnotesize Params.\ estimated}
+& \footnotesize 4
+& \footnotesize 3
+& \footnotesize 3
+& \footnotesize 8 \\
+\midrule
+\textbf{\footnotesize Metrics}
+& \footnotesize MAE, $R^2$
+& \footnotesize MAE, PCA of errors
+& \footnotesize MAPE, MSE
+& \footnotesize $R^2$, MAE + UMAP/HDBSCAN clustering \\
+\midrule
+\textbf{\footnotesize Interpret.}
+& \footnotesize Feature maps (black box)
+& \footnotesize Black box
+& \footnotesize Black box (PCA)
+& \footnotesize \textbf{RAMs} (layer/structure) + identifiability \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}}
  
 
 
@@ -280,6 +330,15 @@ P.~Gambardella, S.~Rusponi, M.~Veronese, {\em et~al.}, ``Giant magnetic anisotro
 
 \bibitem{johnson1996magnetic}
 M.~T. Johnson, P.~J.~H. Bloemen, F.~J.~A. den~Broeder, and J.~J. de~Vries, ``Magnetic anisotropy in metallic multilayers,'' {\em Reports on Progress in Physics}, vol.~59, no.~11, pp.~1409--1458, 1996.
+
+\bibitem{kong2023quantifying}
+J.~Kong, Y.~Ren, M.~Tey, P.~Ho, K.~Khoo, X.~Chen, and A.~Soumyanarayanan, ``Quantifying the magnetic interactions governing chiral spin textures using deep neural networks,'' {\em ACS Appl. Mater. Interfaces}, vol.~16, no.~1, pp.~1025--1032, 2023.
+
+\bibitem{kwon2020magnetic}
+H.~Kwon, H.~Yoon, C.~Lee, G.~Chen, K.~Liu, A.~Schmid, Y.~Wu, J.~Choi, and C.~Won, ``Magnetic hamiltonian parameter estimation using deep learning techniques,'' {\em Sci. Adv.}, vol.~6, no.~39, p.~eabb0872, 2020.
+
+\bibitem{lee2024deep}
+W.~Lee, T.~Song, and K.~Kim, ``Deep learning methods for hamiltonian parameter estimation and magnetic domain image generation in twisted van der waals magnets,'' {\em Mach. Learn.: Sci. Technol.}, vol.~5, no.~2, p.~025073, 2024.
 
 \end{thebibliography}
 
