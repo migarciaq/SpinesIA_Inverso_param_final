@@ -2,7 +2,7 @@
     \begin{tikzpicture}[
         % --- TikZ Styles ---
         basebox/.style={
-            draw, thick, minimum width=3.5cm, minimum height=1.2cm, 
+            draw, thick, minimum width=3.5cm, minimum height=1.2cm,
             text width=3.2cm, align=center, font=\scriptsize, rounded corners=3pt,
             inner sep=3pt
         },
@@ -14,7 +14,7 @@
 
     % --- 1. INPUTS ---
     \node[inputbox] (params) {
-        \textbf{Physical\\ Parameters ($\boldsymbol{\theta}$)}        
+        \textbf{Physical\\ Parameters ($\boldsymbol{\theta}$)}
     };
 
     \node[inputbox, below=0.5cm of params] (lattice) {
@@ -37,7 +37,7 @@
         Metropolis Monte Carlo + Simulated Annealing Loop\\
         Governing $\mathcal{H}(\mathbf{S}, \dots | \boldsymbol{\theta})$ \\
         Annealing Temperature $T$\\
-        Transition $P(\mu^{(t)} \to \mu^{(t+1)})$ 
+        Transition $P(\mu^{(t)} \to \mu^{(t+1)})$
     };
 
     \node[processbox, fill=processblue!50, dashed, right=1cm of mcsim] (topology) {
@@ -59,21 +59,71 @@
     };
 
 % --- CONNECTIONS ---
-    
+
     % 1. Inputs to Simulation (Grouped 'Bus' Routing)
     % Draw horizontal lines out from top and bottom nodes
     \draw[thick] (params.east) -- ++(0.5,0) coordinate (bus_top);
     \draw[thick] (vectors.east) -- ++(0.5,0) coordinate (bus_bot);
-    
+
     % Connect them with a vertical line
     \draw[thick] (bus_top) -- (bus_bot);
-    
+
     % Draw the main arrow from the center node (intersecting the bus) to the simulation
     \draw[arrow] (lattice.east) -- (mcsim.west);
-    
+
     % 2. Simulation to Pipeline to Output
     \draw[arrow] (mcsim.east) -- (topology.west);
     \draw[arrow] (topology.south) -- (pipeline.north);
     \draw[arrow] (pipeline.east) -- (dataset.west);
+
+    % =====================================================================
+    % --- 4. GPU PARALLELIZATION INSET (how/where the MC loop runs on GPU) ---
+    % =====================================================================
+    \begin{scope}[shift={($(mcsim.south)+(-0.6,-4.7)$)}, font=\scriptsize]
+    \begin{scope}[local bounding box=gpubox]
+
+    % (a) Within one nanodot: checkerboard disk
+    \node[font=\scriptsize\bfseries] at (1.1,2.35) {(a) Within one nanodot};
+    \begin{scope}
+      \clip (1.1,1.1) circle (1.0);
+      \foreach \i in {0,...,9}{
+        \foreach \j in {0,...,9}{
+          \pgfmathparse{mod(\i+\j,2)==0 ? "subAcol" : "subBcol"}
+          \edef\cellcol{\pgfmathresult}
+          \fill[\cellcol] (0.1+\i*0.2, 0.1+\j*0.2) rectangle ++(0.2,0.2);
+        }
+      }
+    \end{scope}
+    \draw[thick] (1.1,1.1) circle (1.0);
+    \node[align=center, font=\scriptsize] at (1.1,-0.4)
+      {Bipartite sublattices A/B (checkerboard):\\ all A sites updated in parallel, then all B\\ (nearest-neighbor $\mathcal{H}\Rightarrow$ conditionally independent)};
+
+    % (b) Across nanodots: multi-GPU (pmap)
+    \node[font=\scriptsize\bfseries] at (5.7,2.35) {(b) Across nanodots};
+    \foreach \k/\dx/\dy in {2/0.16/0.16, 1/0.08/0.08, 0/0/0}{
+      \fill[processblue] (4.6+\dx,1.3+\dy) circle (0.42);
+      \draw[thick] (4.6+\dx,1.3+\dy) circle (0.42);
+    }
+    \node[align=center, font=\scriptsize] at (4.7,0.5) {replicas\\ $\times$ states};
+    \node[draw, fill=gray!12, rounded corners, minimum width=0.9cm, font=\scriptsize] (g0) at (6.5,1.7) {GPU 0};
+    \node[draw, fill=gray!12, rounded corners, minimum width=0.9cm, font=\scriptsize] (g1) at (6.5,1.0) {GPU 1};
+    \node[draw, fill=gray!12, rounded corners, minimum width=0.9cm, font=\scriptsize] (gk) at (6.5,0.3) {GPU $k$};
+    \draw[-{Latex}, thick] (5.15,1.45) -- (g0.west);
+    \draw[-{Latex}, thick] (5.15,1.35) -- (g1.west);
+    \draw[-{Latex}, thick] (5.15,1.25) -- (gk.west);
+    \node[align=center, font=\scriptsize] at (6.5,-0.4) {\texttt{pmap} (SPMD):\\ independent replicas\\ \& parameter sets};
+
+    % sequential note
+    \node[draw=red!60!black, fill=red!5, rounded corners, align=center, font=\scriptsize,
+          minimum width=6.5cm] at (3.6,-1.5)
+      {\textbf{Sequential} (never parallelized): annealing temperature $T$ $+$ Monte Carlo sweeps};
+
+    \end{scope}
+    \node[draw=gray, thick, rounded corners, fit=(gpubox), inner sep=6pt,
+          label={[anchor=north west, font=\scriptsize\bfseries, gray!60!black]north west:GPU parallelization}] (gpuframe) {};
+    \end{scope}
+
+    % dashed connector: simulation block -> GPU inset
+    \draw[gray!60, dashed, thick, -{Latex}] (mcsim.south) -- (gpuframe.north);
 
     \end{tikzpicture}

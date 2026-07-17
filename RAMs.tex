@@ -53,8 +53,8 @@
     % ---- arrows ----
     \draw[arr] (input) -- (model);
     \draw[arr] (model) -- node[above, font=\tiny, gray!65!black] {Convolutions} (feat);
-    \draw[arr] (model.south) |- (pred.west);
-    \node[font=\tiny\sffamily, gray!65!black] at ($(model.south)+(0.05,-0.35)$) {Regression Head};
+    \draw[arr] (model.south) -- (pred.north);
+    \node[font=\tiny\sffamily, gray!65!black, anchor=west] at ($(model.south)!0.5!(pred.north)+(0.1,0)$) {Regression Head};
     \draw[arr] (pred) -- (error);
     \draw[arr] (feat) -- (grad);
     \draw[arr] (error.north) -- (grad.south);
