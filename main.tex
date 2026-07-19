@@ -726,40 +726,36 @@ biases of convolutional and attention-based backbones
 while ensuring a strictly comparable regression 
 capacity across all evaluated models.
 
-\begin{table*}[!t]
+\begin{table}[!t]
 \centering
 \caption{Configuration of evaluated deep learning
 architectures for inverse Hamiltonian parameter
 estimation. All models share a standardized regularized
-regression head mapped to the $\breve{P}=8$-dimensional
-physical parameter space. BN: Batch Normalization;
+output head mapped to the $\breve{P}=8$-dimensional
+physical parameter space: BN $\to$ Drop(0.4) $\to$
+Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3)
+$\to$ Dense(8). BN: Batch Normalization;
 Drop($p$): Dropout with rate $p$.}
 \label{tab:model_config}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lcccc}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcc}
 \hline
-\textbf{Model} & \textbf{Architecture Type} & 
-\textbf{Pretraining} & \textbf{Global Aggregation} & 
-\textbf{Output Head} \\
+\textbf{Model} & \textbf{Architecture Type} &
+\textbf{Global Aggregation} \\
 \hline
-Conventional CNN & Custom CNN         & None (from scratch) &
-  Global Avg.\ Pooling (spatial) &
-  BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
-ResNet50    & Residual CNN            & None (from scratch) &
-  Global Avg.\ Pooling (spatial) &
-  BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
-DenseNet121 & Densely Connected CNN   & None (from scratch) & 
-  Global Avg.\ Pooling (spatial) & 
-  BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
-Xception    & Depthwise Separable CNN & None (from scratch) & 
-  Global Avg.\ Pooling (spatial) & 
-  BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
-ViT-B/16    & Patch-based Transformer & None (from scratch) &
-  Global Avg.\ Pooling (tokens)  &
-  BN $\to$ Drop(0.4) $\to$ Dense(256, ReLU, $\ell_2$) $\to$ BN $\to$ Drop(0.3) $\to$ Dense(8) \\
+Conventional CNN & Custom CNN         &
+  Global Avg.\ Pooling (spatial) \\
+ResNet50    & Residual CNN            &
+  Global Avg.\ Pooling (spatial) \\
+DenseNet121 & Densely Connected CNN   &
+  Global Avg.\ Pooling (spatial) \\
+Xception    & Depthwise Separable CNN &
+  Global Avg.\ Pooling (spatial) \\
+ViT-B/16    & Patch-based Transformer &
+  Global Avg.\ Pooling (tokens)  \\
 \hline
 \end{tabular}}
-\end{table*}
+\end{table}
 
 The optimization of the parameter set $\hat{\Theta}$ 
 was executed utilizing the Adam optimizer with a 
