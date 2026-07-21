@@ -20,6 +20,18 @@
 \usepackage{amssymb,amsmath}
 \usepackage{url}
 \usepackage{xcolor}
+% ---- Yellow review highlighting -------------------------------------------
+% Under LuaLaTeX: real yellow highlight via lua-ul (handles math, \cite, lists).
+% Under pdfLaTeX (e.g. Elsevier production): degrades gracefully to plain text,
+% so the source always compiles. Compile the review PDF with `lualatex`.
+% For camera-ready, set the LuaLaTeX branch to {#1} as well.
+\ifdefined\directlua
+  \usepackage{luacolor}
+  \usepackage{lua-ul}
+  \providecommand{\ch}[1]{\highLight[yellow]{#1}}
+\else
+  \providecommand{\ch}[1]{#1}
+\fi
 \usepackage{bm}
 \usepackage[section]{placeins}
 \usepackage{hyperref}
@@ -71,7 +83,6 @@
 \newcommand{\dataset}{{\cal D}}
 \newcommand{\gauss}{\mathcal{N}} 
 
-\providecommand{\ch}[1]{\textcolor{blue}{#1}}
 
 \let\WriteBookmarks\relax
 
@@ -130,7 +141,7 @@
 
 
 \begin{abstract}
-Magnetic nanodots host topological spin textures whose stability is dictated by an extended Heisenberg Hamiltonian combining symmetric exchange, the Dzyaloshinskii--Moriya interaction, magnetocrystalline anisotropy, and the Zeeman field. Inferring these atomistic parameters from two-dimensional magnetization images underpins the design of functional magnetic materials, yet it remains an ill-posed inverse problem: under certain external conditions and transient states, configurations relax into noisy, weakly discriminative textures that render the dataset ill-conditioned. Deep-learning estimators act as opaque black boxes and rely on slow atomistic simulations. \textcolor{blue}{We propose an explainable regression methodology whose novelty lies in data generation and interpretability: a matrix decomposition of the extended Hamiltonian enables GPU-accelerated Metropolis--Hastings Monte Carlo with simulated annealing, accelerating computation without altering the underlying physics, while Regression Activation Maps (RAMs),  a novel error-based attribution metric, turn the network into a traceable gray-box model.} Trained on several configurations, convolutional and Vision Transformer regressors reliably recover the physical parameters from simulated nanodot images, while the higher-order exchange constants remain bounded by the intrinsic identifiability limits of the $s_z$ projection. Comparing both families through their attention maps and accuracy-versus-size trade-off,  RAMs isolate the chiral domain walls and skyrmion cores driving predictions.
+Magnetic nanodots host topological spin textures whose stability is dictated by an extended Heisenberg Hamiltonian combining symmetric exchange, the Dzyaloshinskii--Moriya interaction, magnetocrystalline anisotropy, and the Zeeman field. Inferring these atomistic parameters from two-dimensional magnetization images underpins the design of functional magnetic materials, yet it remains an ill-posed inverse problem: under certain external conditions and transient states, configurations relax into noisy, weakly discriminative textures that render the dataset ill-conditioned. Deep-learning estimators act as opaque black boxes and rely on slow atomistic simulations. \ch{We propose an explainable regression methodology whose novelty lies in data generation and interpretability: a matrix decomposition of the extended Hamiltonian enables GPU-accelerated Metropolis--Hastings Monte Carlo with simulated annealing, accelerating computation without altering the underlying physics, while Regression Activation Maps (RAMs),  a novel error-based attribution metric, turn the network into a traceable gray-box model.} Trained on several configurations, convolutional and Vision Transformer regressors reliably recover the physical parameters from simulated nanodot images, while the higher-order exchange constants remain bounded by the intrinsic identifiability limits of the $s_z$ projection. Comparing both families through their attention maps and accuracy-versus-size trade-off,  RAMs isolate the chiral domain walls and skyrmion cores driving predictions.
 \end{abstract}
 
 %%Graphical abstract
@@ -187,11 +198,11 @@ To circumvent the prohibitive cost of iterative simulation-based optimization, r
 % Proposal and Novelty
 \ch{We propose an explainable deep learning framework grounded in an atomistic extended Heisenberg Hamiltonian, coupling Metropolis--Hastings Monte Carlo with simulated annealing to generate thermodynamically relaxed magnetization fields that are then fed to a regression-based architecture for inverse parameter estimation. Our main contributions are threefold:}
 
-\ch{\begin{itemize}
-    \item[--] We design a tensor decomposition of the extended Hamiltonian that recasts the atomistic energy as linear-algebra operations, enabling a GPU-accelerated Monte Carlo simulation, without altering the underlying physics.
-    \item[--] We propose the Regression Activation Maps (RAMs), a novel error-based attribution method extending gradient activation mapping to continuous physical targets, which turns the regressor into a traceable gray-box model linking predictions to physically meaningful spin textures.
-    \item[--] We compare convolutional and Vision Transformer regressors, contrasting their attention and RAM maps as well as their accuracy relative to model size, and explicitly map the identifiability boundaries of the Hammiltonian parameters from the nanodot image, distinguishing recoverable parameters from degenerate ones.
-\end{itemize}}
+\begin{itemize}
+    \item[--] \ch{We design a tensor decomposition of the extended Hamiltonian that recasts the atomistic energy as linear-algebra operations, enabling a GPU-accelerated Monte Carlo simulation, without altering the underlying physics.}
+    \item[--] \ch{We propose the Regression Activation Maps (RAMs), a novel error-based attribution method extending gradient activation mapping to continuous physical targets, which turns the regressor into a traceable gray-box model linking predictions to physically meaningful spin textures.}
+    \item[--] \ch{We compare convolutional and Vision Transformer regressors, contrasting their attention and RAM maps as well as their accuracy relative to model size, and explicitly map the identifiability boundaries of the Hammiltonian parameters from the nanodot image, distinguishing recoverable parameters from degenerate ones.}
+\end{itemize}
 
 
 
